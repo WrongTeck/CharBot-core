@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "discord.js": "^12.5.3",
+    "mongojs": "^3.1.0",
+    "websocket": "^1.0.34"
+  },
+  "name": "main",
+  "version": "1.0.0",
+  "description": "The main and well featured core of the bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.wrongteck.ga:chairbot/core/main.git"
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "WrongTeck",
+  "license": "GPL-3.0"
+}

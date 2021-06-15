@@ -1,0 +1,22 @@
+{
+    "discord":{
+        "token":"",
+        "appId":"",
+        "appSecret":""
+    },
+    "mongojs":{
+        "connection_str":""
+    },
+    "websocket":{
+        "port":"",
+        "auth_bridge":{
+            "username":"",
+            "password":""
+        },
+        "ssl":{
+            "use":false,
+            "certificate":"",
+            "key":""
+        }
+    }
+}
