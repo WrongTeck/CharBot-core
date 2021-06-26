@@ -17,8 +17,8 @@ if(config.websocket.ssl.use){
     let start=require('./websocket/useSSL.js');
     start.execute(client);
 }else{
-    let start=require('./websocket/noSSL.js');
-    
+    const {execute}=require('./websocket/noSSL.js');
+    execute(client);
 }
 //keep this at the bottom of this file
 client.login(config.discord.token); //Login in to the discord API
