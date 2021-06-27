@@ -12,7 +12,7 @@
         "config":""
     },
     "websocket":{
-        "port":"88",
+        "port":"",
         "auth_bridge":{
             "username":"",
             "password":""
