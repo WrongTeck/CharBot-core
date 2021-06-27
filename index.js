@@ -32,5 +32,4 @@ client.on('ready', () => {
     }
     console.log('Ready! ' + client.ws.ping + "ms");
 });
-//keep this at the bottom of this file
 client.login(main.discord.token); //Login in to the discord API

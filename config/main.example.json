@@ -13,10 +13,6 @@
     },
     "websocket":{
         "port":"",
-        "auth_bridge":{
-            "username":"",
-            "password":""
-        },
         "ssl":{
             "use":false,
             "certificate":"",
