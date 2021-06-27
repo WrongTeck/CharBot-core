@@ -1,8 +1,7 @@
 const config=require('../config/main.json');
 const ws=require('ws');
 const wss=new ws.Server({port:config.websocket.port,path:"/admin"});
-exports.modules={
-    execute(client){
+function execute(client){
     wss.on('connection',(connection,req)=>{
         connection.on('ping',(data)=>{
             connection.pong(data);
@@ -22,4 +21,6 @@ exports.modules={
             }
         });
     });
-}};
+}
+
+module.exports={execute}
