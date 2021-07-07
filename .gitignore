@@ -4,3 +4,4 @@ test
 config/main.json
 */*.ts
 .vscode
+config/discord.json

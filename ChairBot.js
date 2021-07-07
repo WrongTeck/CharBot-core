@@ -2,8 +2,7 @@ const discord=require('discord.js');
 const client=new discord.Client();
 const express=require('express');
 const app=express();
-const {Plugins}=require('./Plugins');
-const {Modules}=require('./Modules');
+const {Plugins,Modules}=require('./Plugins');
 const ws = require('ws');
 const usage = require('usage');
 const fs=require('fs');
@@ -11,11 +10,11 @@ class ChairBot{
     constructor(){
         this.config=readconfig();
         console.log(this.config);
-        this.modules=this.moduleloader();
-        this.plugins=this.pluginloader();
         this.discord=this.discordload(this.config.discord);
         this.express=this.expressload(this.config.express);
         this.ws=this.websocket(this.config.websocket);
+        this.modules=this.moduleloader();
+        this.plugins=this.pluginloader();
     }
     discordload(config){ //Pass the discord config only
         if(config && config.enable){
@@ -63,20 +62,8 @@ class ChairBot{
         }
     }
     pluginloader(){
-        fs.readdir(__dirname+'/plugins',{encoding:'utf-8'},(err,files)=>{
-            if(err) throw new Error('Could not read the plugins directory!');
-            var plugins=new Array([]);
-            for (const key in files) {
-                if(!plugins[key].includes('.')){
-                    plugins.push(plugin);
-                }
-            }
-            let ok=new Plugins(plugins);
-            return {
-                plugins:ok.plugins,
-                unload:ok.unload
-            };
-        });
+        const plugins=new Plugins(this);
+        return plugins.plugins;
     }
     moduleloader(){
         fs.readdir(__dirname+'/modules',{encoding:'utf-8'},(err,files)=>{
@@ -98,7 +85,7 @@ class ChairBot{
 * Config Loader 
 */
     function require_ifexist(name){
-        return JSON.parse(fs.readFileSync(`./config/${name}.json`));
+        return fs.readFileSync(`./config/${name}.json`);
     }
     function readconfig(){
         var files=fs.readdirSync('./config');
@@ -108,7 +95,7 @@ class ChairBot{
                 let c=files[key].replace('.json','');
                 let t=require_ifexist(c);
                 if(!config){
-                    config=`"${c}":${JSON.stringify(t)}`;
+                    config=`"${c}":${t}`;
                 }else{
                     config=config+`,"${c}":"${t}"`;
                 }
