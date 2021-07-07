@@ -2,6 +2,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
     "discord.js": "^12.5.3",
+    "express": "^4.17.1",
     "mongodb": "^3.6.9",
     "mongojs": "^3.1.0",
     "usage": "^0.7.1",
