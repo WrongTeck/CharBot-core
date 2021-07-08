@@ -4,3 +4,5 @@ test
 config/main.json
 */*.ts
 .vscode
+config/*
+plugins/*

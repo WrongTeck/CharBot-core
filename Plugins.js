@@ -1,30 +1,39 @@
+const fs = require("fs");
+
 class Plugins{
-    constructor(plugins){
-        if(!Array.isArray(plugins)){
-            throw new Error("The plugins var must be an array!");
+    constructor(chairbot,cb){
+        if(chairbot){
+            this.loader(chairbot,(loaded)=>{
+                console.log(`Loaded ${loaded} plugins!`);
+                cb(this.plugins);
+            });
         }
-        this.v=this.load(plugins);
-        return { plugins:plugins };
     }
-    load(plugins){
-        var p="";
-        for (const key in plugins) {
-            let name=plugins[key].name;
-            let plugin=plugins[key];
-            if(!p){
-                p=`"${name}":"${plugin}"`;
-            }else{
-                p=p+`,"${name}":"${plugin}"`;
+    loader(chairbot,cb){
+        fs.readdir('./plugins',{encoding:'utf-8'},(err,files)=>{
+            if(err) throw new Error('Could not read the plugins directory!\nError:\n'+err);
+            var plugins=0;
+            var loaded={};
+            for (const key in files) {
+                if(!files[key].toString().includes('.')){
+                    try{
+                        const {Plugin}=require(`./plugins/${files[key]}/index.js`);
+                        let pl=new Plugin(chairbot);
+                        pl.main(chairbot,loaded);
+                        plugins++;
+                    }catch(e){
+                        console.error(`Could not load ${files[key]}:\n${e}`);
+                    }
+                    this.plugins=loaded;
+                }
             }
-        }
-        if(p){
-            return JSON.parse(`{${p}}`);
-        }else{
-            return JSON.parse({disabled:1});
-        }
-    }
-    unload(plugin_name){
-        eval(`this.v.${plugin_name}={}`);
+            cb(plugins);
+        });
     }
 }
-module.exports={Plugins};
+class Modules{
+    constructor(){
+        
+    }
+}
+module.exports={Plugins,Modules};

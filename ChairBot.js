@@ -2,25 +2,32 @@ const discord=require('discord.js');
 const client=new discord.Client();
 const express=require('express');
 const app=express();
-const {Plugins}=require('./Plugins');
-const {Modules}=require('./Modules');
+const {Plugins,Modules}=require('./Plugins');
 const ws = require('ws');
 const usage = require('usage');
 const fs=require('fs');
 class ChairBot{
-    constructor(){
+    constructor(cb){
         this.config=readconfig();
-        console.log(this.config);
-        this.modules=this.moduleloader();
-        this.plugins=this.pluginloader();
-        this.discord=this.discordload(this.config.discord);
-        this.express=this.expressload(this.config.express);
-        this.ws=this.websocket(this.config.websocket);
+        this.discordload(this.config.discord,client=>{
+            this.discord=client;
+            this.express=this.expressload(this.config.express);
+            this.ws=this.websocket(this.config.websocket);
+            this.modules=this.moduleloader();
+            this.pluginloader(plugins=>{
+                this.plugins=plugins;
+                cb(this);
+            });
+        });
     }
-    discordload(config){ //Pass the discord config only
+    discordload(config,cb){ //Pass the discord config only
         if(config && config.enable){
             client.login(config.token);
-            return client;
+            client.on('ready',()=>{
+                cb(client);
+            });
+        }else{
+            cb("");
         }
     }
     expressload(config){
@@ -62,20 +69,30 @@ class ChairBot{
             return wss;
         }
     }
-    pluginloader(){
-        fs.readdir(__dirname+'/plugins',{encoding:'utf-8'},(err,files)=>{
-            if(err) throw new Error('Could not read the plugins directory!');
-            var plugins=new Array([]);
+    pluginloader(cb){
+        /*fs.readdir('./plugins',{encoding:'utf-8'},(err,files)=>{
+            if(err) throw new Error('Could not read the plugins directory!\nError:\n'+err);
+            var plugins="";
             for (const key in files) {
-                if(!plugins[key].includes('.')){
-                    plugins.push(plugin);
+                if(!files[key].toString().includes('.')){
+                    try{
+                        const {Plugin}=require(`./plugins/${files[key]}/index.js`);
+                        const loaded=new Plugin();
+                        loaded.main(this);
+                        if(!plugins){
+                            plugins=`"${files[key]}":${loaded.unload()}`;
+                        }else{
+                            plugins=plugins+`,"${files[key]}":${JSON.parse(loaded)}`;
+                        }
+                    }catch(e){
+                        console.error(`Could not load ${files[key]}:\n${e}`);
+                    }
                 }
             }
-            let ok=new Plugins(plugins);
-            return {
-                plugins:ok.plugins,
-                unload:ok.unload
-            };
+            return JSON.parse(`{${plugins}}`);
+        });*/
+        new Plugins(this,(plugins)=>{
+            cb(plugins);
         });
     }
     moduleloader(){
@@ -98,7 +115,7 @@ class ChairBot{
 * Config Loader 
 */
     function require_ifexist(name){
-        return JSON.parse(fs.readFileSync(`./config/${name}.json`));
+        return fs.readFileSync(`./config/${name}.json`);
     }
     function readconfig(){
         var files=fs.readdirSync('./config');
@@ -108,7 +125,7 @@ class ChairBot{
                 let c=files[key].replace('.json','');
                 let t=require_ifexist(c);
                 if(!config){
-                    config=`"${c}":${JSON.stringify(t)}`;
+                    config=`"${c}":${t}`;
                 }else{
                     config=config+`,"${c}":"${t}"`;
                 }
