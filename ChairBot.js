@@ -7,19 +7,27 @@ const ws = require('ws');
 const usage = require('usage');
 const fs=require('fs');
 class ChairBot{
-    constructor(){
+    constructor(cb){
         this.config=readconfig();
-        console.log(this.config);
-        this.discord=this.discordload(this.config.discord);
-        this.express=this.expressload(this.config.express);
-        this.ws=this.websocket(this.config.websocket);
-        this.modules=this.moduleloader();
-        this.plugins=this.pluginloader();
+        this.discordload(this.config.discord,client=>{
+            this.discord=client;
+            this.express=this.expressload(this.config.express);
+            this.ws=this.websocket(this.config.websocket);
+            this.modules=this.moduleloader();
+            this.pluginloader(plugins=>{
+                this.plugins=plugins;
+                cb(this);
+            });
+        });
     }
-    discordload(config){ //Pass the discord config only
+    discordload(config,cb){ //Pass the discord config only
         if(config && config.enable){
             client.login(config.token);
-            return client;
+            client.on('ready',()=>{
+                cb(client);
+            });
+        }else{
+            cb("");
         }
     }
     expressload(config){
@@ -61,9 +69,31 @@ class ChairBot{
             return wss;
         }
     }
-    pluginloader(){
-        const plugins=new Plugins(this);
-        return plugins.plugins;
+    pluginloader(cb){
+        /*fs.readdir('./plugins',{encoding:'utf-8'},(err,files)=>{
+            if(err) throw new Error('Could not read the plugins directory!\nError:\n'+err);
+            var plugins="";
+            for (const key in files) {
+                if(!files[key].toString().includes('.')){
+                    try{
+                        const {Plugin}=require(`./plugins/${files[key]}/index.js`);
+                        const loaded=new Plugin();
+                        loaded.main(this);
+                        if(!plugins){
+                            plugins=`"${files[key]}":${loaded.unload()}`;
+                        }else{
+                            plugins=plugins+`,"${files[key]}":${JSON.parse(loaded)}`;
+                        }
+                    }catch(e){
+                        console.error(`Could not load ${files[key]}:\n${e}`);
+                    }
+                }
+            }
+            return JSON.parse(`{${plugins}}`);
+        });*/
+        new Plugins(this,(plugins)=>{
+            cb(plugins);
+        });
     }
     moduleloader(){
         fs.readdir(__dirname+'/modules',{encoding:'utf-8'},(err,files)=>{
