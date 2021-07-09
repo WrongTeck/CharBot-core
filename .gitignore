@@ -6,3 +6,4 @@ config/main.json
 .vscode
 config/*
 plugins/*
+modules/*

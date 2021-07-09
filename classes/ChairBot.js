@@ -13,7 +13,7 @@ class ChairBot{
             this.discord=client;
             this.express=this.expressload(this.config.express);
             this.ws=this.websocket(this.config.websocket);
-            this.modules=this.moduleloader();
+            this.moduleloader();
             this.pluginloader(plugins=>{
                 this.plugins=plugins;
                 cb(this);
@@ -70,33 +70,12 @@ class ChairBot{
         }
     }
     pluginloader(cb){
-        /*fs.readdir('./plugins',{encoding:'utf-8'},(err,files)=>{
-            if(err) throw new Error('Could not read the plugins directory!\nError:\n'+err);
-            var plugins="";
-            for (const key in files) {
-                if(!files[key].toString().includes('.')){
-                    try{
-                        const {Plugin}=require(`./plugins/${files[key]}/index.js`);
-                        const loaded=new Plugin();
-                        loaded.main(this);
-                        if(!plugins){
-                            plugins=`"${files[key]}":${loaded.unload()}`;
-                        }else{
-                            plugins=plugins+`,"${files[key]}":${JSON.parse(loaded)}`;
-                        }
-                    }catch(e){
-                        console.error(`Could not load ${files[key]}:\n${e}`);
-                    }
-                }
-            }
-            return JSON.parse(`{${plugins}}`);
-        });*/
         new Plugins(this,(plugins)=>{
             cb(plugins);
         });
     }
     moduleloader(){
-        fs.readdir(__dirname+'/modules',{encoding:'utf-8'},(err,files)=>{
+        /*fs.readdir(__dirname+'/modules',{encoding:'utf-8'},(err,files)=>{
             if(err) throw new Error('Could not read the plugins directory!');
             var modules=new Array([]);
             for (const key in files) {
@@ -108,7 +87,19 @@ class ChairBot{
             return {
                 modules:ok
             };
-        });
+        });*/
+        const files=fs.readdirSync('./modules');
+        this.modules={};
+        try {
+            for (const key in files) {
+                if(!files[key].includes('.')){
+                    let t=require(`../modules/${files[key]}/index.js`);
+                    t.main(this);
+                }
+            }
+        } catch (error) {
+            console.log(`Could not load Modules \n ${error}`);
+        }
     }
 }
 /* 
