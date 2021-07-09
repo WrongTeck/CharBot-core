@@ -2,7 +2,7 @@ const discord=require('discord.js');
 const client=new discord.Client();
 const express=require('express');
 const app=express();
-const {Plugins,Modules}=require('./Plugins');
+const {Plugins}=require('./Plugins');
 const ws = require('ws');
 const usage = require('usage');
 const fs=require('fs');
@@ -75,19 +75,6 @@ class ChairBot{
         });
     }
     moduleloader(){
-        /*fs.readdir(__dirname+'/modules',{encoding:'utf-8'},(err,files)=>{
-            if(err) throw new Error('Could not read the plugins directory!');
-            var modules=new Array([]);
-            for (const key in files) {
-                if(!modules[key].includes('.')){
-                    modules.push(module);
-                }
-            }
-            let ok=new Modules(modules);
-            return {
-                modules:ok
-            };
-        });*/
         const files=fs.readdirSync('./modules');
         this.modules={};
         try {
