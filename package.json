@@ -1,10 +1,13 @@
 {
   "name": "main",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The core of ChairBot",
   "main": "index.js",
   "scripts": {
-    "test": "npx nodemon"
+    "test": "npx nodemon",
+    "start":"./start.sh",
+    "install":"node install.js",
+    "stop":"./stop.sh"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,7 @@
     "bufferutil": "^4.0.3",
     "discord.js": "^12.5.3",
     "erlpack": "github:discord/erlpack",
+    "express": "^4.17.1",
     "ioredis": "^4.27.6",
     "mongodb": "^3.6.10",
     "sodium": "^3.0.2",
