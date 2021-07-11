@@ -1,31 +1,36 @@
 {
-  "dependencies": {
-    "@discordjs/opus": "^0.5.3",
-    "discord.js": "^12.5.3",
-    "express": "^4.17.1",
-    "mongodb": "^3.6.9",
-    "mongojs": "^3.1.0",
-    "usage": "^0.7.1",
-    "websocket": "^1.0.34",
-    "ws": "^7.5.0"
-  },
   "name": "main",
-  "version": "1.0.0",
-  "description": "The main and well featured core of the bot",
+  "version": "1.1.0",
+  "description": "The core of ChairBot",
   "main": "index.js",
   "scripts": {
-    "test": "npm nodemon"
+    "test": "npx nodemon",
+    "start":"./start.sh",
+    "install":"node install.js",
+    "stop":"./stop.sh"
   },
   "repository": {
     "type": "git",
     "url": "git@gitlab.wrongteck.ga:chairbot/core/main.git"
   },
   "keywords": [
-    "bot"
+    "bot",
+    "ChairBot"
   ],
   "author": "WrongTeck",
   "license": "GPL-3.0",
-  "devDependencies": {
-    "@types/node": "^15.12.4"
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "bufferutil": "^4.0.3",
+    "discord.js": "^12.5.3",
+    "erlpack": "github:discord/erlpack",
+    "express": "^4.17.1",
+    "ioredis": "^4.27.6",
+    "mongodb": "^3.6.10",
+    "sodium": "^3.0.2",
+    "usage": "^0.7.1",
+    "utf-8-validate": "^5.0.5",
+    "ws": "^7.5.3",
+    "zlib-sync": "^0.1.7"
   }
 }
