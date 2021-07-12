@@ -110,7 +110,7 @@ class ChairBot {
         type = type.toUpperCase();
         const d=new Date();
         const time=moment().format('HH:mm:ss');
-        fs.appendFile(`./logs/${this.log}.log`,)
+        fs.appendFile(`./logs/${this.log}.log`,`[${time}] [${type}] ${message}`)
         switch(type){
             case 'ERR':
                 console.log(chalk.red(`${time} [${type}] ${message}`));
