@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npx nodemon",
-    "start":"./start.sh",
-    "install":"node install.js",
-    "stop":"./stop.sh"
+    "start": "./start.sh",
+    "install": "node install.js",
+    "stop": "./stop.sh"
   },
   "repository": {
     "type": "git",
@@ -22,10 +22,12 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
     "bufferutil": "^4.0.3",
+    "chalk": "^4.1.1",
     "discord.js": "^12.5.3",
     "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
     "ioredis": "^4.27.6",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.10",
     "sodium": "^3.0.2",
     "usage": "^0.7.1",
