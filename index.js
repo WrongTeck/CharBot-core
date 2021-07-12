@@ -107,10 +107,12 @@ class ChairBot {
     logger(type, message) {
         const chalk=require('chalk');
         const moment=require('moment');
+        const fs = require('fs');
         type = type.toUpperCase();
-        const d=new Date();
+        if(!this.log){
+            this.log=moment().format(`HH-mm-ss`)+'-chairbot';
+        }
         const time=moment().format('HH:mm:ss');
-        fs.appendFile(`./logs/${this.log}.log`,`[${time}] [${type}] ${message}`);
         switch(type){
             case 'ERR':
                 console.log(chalk.red(`${time} [${type}] ${message}`));
@@ -136,9 +138,43 @@ class ChairBot {
             case 'FATAL':
                 console.log(chalk.bgRed.white(`[${time}] [${type}] ${message}`));
                 break;
+            case "LOGGER":
+                console.log(chalk.bgGray.white(`[${time}] [${type}] ${message}`));
+                break;
+            case 'G':
+                console.log(chalk.green(`[${time}] [INFO] ${message}`));
+                break;
             default:
                 console.log(chalk.red(`[${time}] [Unknown] ${message}`));
         }
+        if(type=="LOGGER"){
+            process.exit(1);
+        }else if(type=='FATAL'){
+           log(this.log,time,type,message,()=>{
+               process.exit(1);
+            });
+        }
+        function log(log,time,type,message,cb){
+            fs.appendFile(`./logs/${log}.log`,`[${time}] [${type}] ${message}\n`,(err)=>{
+                if(err){
+                    fs.mkdir('./logs',(err=>{
+                        if(err){
+                            if(cb){
+                                cb();
+                            }
+                            return logger('logger','Unable to write logs!'+err);
+                        }
+                        if(cb){
+                            cb();
+                        }
+                    }));
+                }
+                if(cb){
+                    cb();
+                }
+            });
+        }
+        log(this.log,time,type,message);
     }
     pluginsloader(){
         const fs=require('fs');
