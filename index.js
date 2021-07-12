@@ -198,8 +198,8 @@ class ChairBot {
             if(err) return this.logger('fatal',`Could not read the modules folder! \n ${err}`);
             for (const key in files) {
                 try {
-                    const m=require(`./modules/${files[key]}/index.js`);
-                    m.main(this);
+                    const {Module}=require(`./modules/${files[key]}/index.js`);
+                    const m=new Module(this);
                     this.logger('ML',`Loaded ${m.name}`);
                 } catch (error) {
                     this.logger('err',`Could not load ${files[key]}\n ${error}`);
