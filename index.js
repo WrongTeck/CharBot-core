@@ -38,6 +38,11 @@ class ChairBot {
             client.on('ready', () => {
                 this.logger('info',`Discord is ready! Ping ${client.ws.ping}ms`);
             });
+            if(config.debug){
+                client.on('debug',debug=>{
+                    this.logger('debug',debug);
+                });
+            }
             this.discord=client;
         } else {
             this.logger('err','Invalid discord config!');
@@ -69,8 +74,9 @@ class ChairBot {
                 server: this.app,
             });
             this.ws=wss;
+            this.logger('info',`WebSocket ready!`);
         } else {
-            return 'err';
+            this.ws= 'err';
         }
     }
     mongoloader() {
@@ -81,8 +87,9 @@ class ChairBot {
                 MongoClient
             } = require('mongodb');
             this.mongo = new MongoClient(config.uri, config.options);
+            this.logger('info',`MongoDB connector ready!`);
         } else {
-            return "err";
+            this.mongo= "err";
         }
     }
     redisloader() {
@@ -92,25 +99,59 @@ class ChairBot {
             const ioredis = require('ioredis');
             const redis = new ioredis(config.port, config.host, config.options);
             this.redis = redis;
+            this.logger('info','Redis connector ready!');
         } else {
-            return "err";
+            this.redis= "err";
         }
     }
     logger(type, message) {
+        const chalk=require('chalk');
+        const moment=require('moment');
         type = type.toUpperCase();
-        console.log(new Date().toUTCString() + ` [${type}] ${message}`);
+        const d=new Date();
+        const time=moment().format('HH:mm:ss');
+        fs.appendFile(`./logs/${this.log}.log`,)
+        switch(type){
+            case 'ERR':
+                console.log(chalk.red(`${time} [${type}] ${message}`));
+                break;
+            case 'INFO':
+                console.log(chalk.white(`${time} [${type}] ${message}`));
+                break;
+            case 'DEBUG':
+                console.log(chalk.gray(`${time} [${type}] ${message}`));
+                break;
+            case "ML":
+                console.log(chalk.greenBright(`[${time}] [Module Loader] ${message}`));
+                break;
+            case "MU":
+                console.log(chalk.redBright(`[${time}] [Module Unloader] ${message}`));
+                break;
+            case "PL":
+                console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message}`));
+                break;
+            case "PU":
+                console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message}`));
+                break;
+            case 'FATAL':
+                console.log(chalk.bgRed.white(`[${time}] [${type}] ${message}`));
+                break;
+            default:
+                console.log(chalk.red(`[${time}] [Unknown] ${message}`));
+        }
     }
     pluginsloader(){
         const fs=require('fs');
         fs.readdir('./plugins',(err,files)=>{
-            if(err) return this.logger('err',`Could not read the plugins folder! \n Error ${err}`);
+            if(err) return this.logger('fatal',`Could not read the plugins folder! \n ${err}`);
             for (const key in files) {
                 try {
                     const {Plugin}=require(`./plugins/${files[key]}/index.js`);
                     const p=new Plugin(this);
                     p.main(this);
+                    this.logger('PL',`Loaded ${p.name}`);
                 } catch (error) {
-                    this.logger('err',`Could not load ${files[key]}\nError: ${error}`);
+                    this.logger('err',`Could not load ${files[key]}\n ${error}`);
                 }
             }
         });
@@ -118,13 +159,14 @@ class ChairBot {
     modulesloader(){
         const fs = require('fs');
         fs.readdir('./modules',(err,files)=>{
-            if(err) return this.logger('err',`Could not read the modules folder! \nError: ${err}`);
+            if(err) return this.logger('fatal',`Could not read the modules folder! \n ${err}`);
             for (const key in files) {
                 try {
                     const m=require(`./modules/${files[key]}/index.js`);
                     m.main(this);
+                    this.logger('ML',`Loaded ${m.name}`);
                 } catch (error) {
-                    this.logger('err',`Could not load ${files[key]}\nError: ${error}`);
+                    this.logger('err',`Could not load ${files[key]}\n ${error}`);
                 }
             }
         });
