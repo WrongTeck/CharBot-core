@@ -188,8 +188,8 @@ class ChairBot {
                 return this.logger('fatal', `Could not read the plugins folder! \n ${err}`);
             for (const key in files) {
                 try {
-                    const { Plugin } = require(`./plugins/${files[key]}/index.js`);
-                    const p = new Plugin(this);
+                    const { CPlugin } = require(`./plugins/${files[key]}/index.js`);
+                    const p = new CPlugin(this);
                     p.main(this);
                     this.logger('PL', `Loaded ${p.name}`);
                 }
@@ -206,8 +206,8 @@ class ChairBot {
                 return this.logger('fatal', `Could not read the modules folder! \n ${err}`);
             for (const key in files) {
                 try {
-                    const { Module } = require(`./modules/${files[key]}/index.js`);
-                    const m = new Module(this);
+                    const { CModule } = require(`./modules/${files[key]}/index.js`);
+                    const m = new CModule(this);
                     this.logger('ML', `Loaded ${m.name}`);
                 }
                 catch (error) {
