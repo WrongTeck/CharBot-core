@@ -188,10 +188,12 @@ class ChairBot {
                 return this.logger('fatal', `Could not read the plugins folder! \n ${err}`);
             for (const key in files) {
                 try {
-                    const { CPlugin } = require(`./plugins/${files[key]}/index.js`);
-                    const p = new CPlugin(this);
-                    p.main(this);
-                    this.logger('PL', `Loaded ${p.name}`);
+                    if(!files[key].includes('.')){
+                        const { CPlugin } = require(`./plugins/${files[key]}/index.js`);
+                        const p = new CPlugin(this);
+                        p.main(this);
+                        this.logger('PL', `Loaded ${p.name}`);
+                    }
                 }
                 catch (error) {
                     this.logger('err', `Could not load ${files[key]}\n ${error}`);
@@ -206,9 +208,11 @@ class ChairBot {
                 return this.logger('fatal', `Could not read the modules folder! \n ${err}`);
             for (const key in files) {
                 try {
-                    const { CModule } = require(`./modules/${files[key]}/index.js`);
-                    const m = new CModule(this);
-                    this.logger('ML', `Loaded ${m.name}`);
+                    if(!files[key].includes('.')){
+                        const { CModule } = require(`./modules/${files[key]}/index.js`);
+                        const m = new CModule(this);
+                        this.logger('ML', `Loaded ${m.name}`);
+                    }
                 }
                 catch (error) {
                     this.logger('err', `Could not load ${files[key]}\n ${error}`);
