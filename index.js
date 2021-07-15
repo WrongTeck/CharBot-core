@@ -9,6 +9,7 @@ class ChairBot {
         this.pluginsloader();
     }
     commands(){
+        const fs = require('fs');
         process.stdin.on('data', (data) => {
             data=data.toString().replace('\n', '');
             switch (data) {
@@ -31,10 +32,13 @@ class ChairBot {
                     }
                     break;
                 case 'help':
-                    this.logger('info', fs.readFileSync('./help.txt', 'utf8'));
+                    const help=fs.readFileSync('./help.txt', 'utf8');
+                    for(let line of help.split('\n')){
+                        this.logger('info', line);
+                    }
                     break;
                 default:
-                    this.logger('err', `Unknown command: ${data}`);
+                    this.logger('err1', `Unknown command: ${data}`);
                     break;
             }
         });
@@ -171,15 +175,18 @@ class ChairBot {
                         if (err) console.log(err);
                     }));
                 }
+                    process.stdout.clearLine();
+                    process.stdout.clearLine();
+                    process.stdout.cursorTo(0);
                 switch (type) {
                     case 'ERR2':
-                        console.log(chalk.red(`${time} [${type}] ${message}`));
+                        console.log(chalk.red(`[${time}] [${type}] ${message}`));
                         break;
                     case 'INFO':
-                        console.log(chalk.white(`${time} [${type}] ${message}`));
+                        console.log(chalk.white(`[${time}] [${type}] ${message}`));
                         break;
                     case 'DEBUG':
-                        console.log(chalk.gray(`${time} [${type}] ${message}`));
+                        console.log(chalk.gray(`[${time}] [${type}] ${message}`));
                         break;
                     case "ML":
                         console.log(chalk.greenBright(`[${time}] [Module Loader] ${message}`));
@@ -214,6 +221,7 @@ class ChairBot {
                 if(cb){
                     cb();
                 }
+                process.stdout.write('> ');
             });
         }
         log(this.log, time, type, message);

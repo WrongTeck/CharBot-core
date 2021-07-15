@@ -1,0 +1,6 @@
+List of included commands:
+    - help: Show this output
+    - plugins: Show all plugins in the plugins folder
+    - modules: Show all modules in the modules folder
+    - stop: Soft shutdown of the bot
+    - restart: Stop and restart the bot (./restart.sh)
