@@ -84,7 +84,7 @@ class ChairBot {
             this.discord = client;
         } else {
             if(!config){
-                this.logger('err', 'Invalid discord config!');
+                this.logger('err1', 'Invalid discord config!');
                 this.discord = false;
             }
         }
@@ -103,7 +103,7 @@ class ChairBot {
         }
         else {
             if(!config){
-                this.logger('err', 'Invalid express config!');
+                this.logger('err1', 'Invalid express config!');
                 this.express = false;
                 this.app=false;
             }
@@ -123,7 +123,7 @@ class ChairBot {
         }
         else {
             if(!config){
-                this.logger('err', 'Invalid websocket config!');
+                this.logger('err1', 'Invalid websocket config!');
                 this.ws = false;
             }
         }
@@ -138,7 +138,7 @@ class ChairBot {
         }
         else {
             if(!config){
-                this.logger('err', 'Invalid mongo config!');
+                this.logger('err1', 'Invalid mongo config!');
                 this.mongo = false;
             }
         }
@@ -154,7 +154,7 @@ class ChairBot {
         }
         else {
             if(!config){
-                this.logger('err', 'Invalid redis config!');
+                this.logger('err1', 'Invalid redis config!');
                 this.redis = false;
             }
         }
@@ -180,7 +180,10 @@ class ChairBot {
                     process.stdout.cursorTo(0);
                 switch (type) {
                     case 'ERR2':
-                        console.log(chalk.red(`[${time}] [${type}] ${message}`));
+                        console.log(chalk.red(`[${time}] [GRAVE] ${message}`));
+                        break;
+                    case 'ERR1':
+                        console.log(chalk.red(`[${time}] [ERR] ${message}`));
                         break;
                     case 'INFO':
                         console.log(chalk.white(`[${time}] [${type}] ${message}`));
@@ -229,6 +232,7 @@ class ChairBot {
     pluginsloader() {
         const fs = require('fs');
         fs.readdir('./plugins', (err, files) => {
+            this.logger('PL', 'Loading plugins...');
             if (err)
                 return this.logger('fatal', `Could not read the plugins folder! \n ${err}`);
             for (const key in files) {
@@ -241,7 +245,7 @@ class ChairBot {
                     }
                 }
                 catch (error) {
-                    this.logger('err', `Could not load ${files[key]}\n ${error}`);
+                    this.logger('err1', `Could not load ${files[key]}\n ${error}`);
                 }
             }
             this.logger('info', 'ChairBot is ready!');
@@ -250,6 +254,7 @@ class ChairBot {
     modulesloader() {
         const fs = require('fs');
         fs.readdir('./modules', (err, files) => {
+            this.logger('ML', 'Loading modules...');
             if (err)
                 return this.logger('fatal', `Could not read the modules folder! \n ${err}`);
             for (const key in files) {
@@ -261,7 +266,7 @@ class ChairBot {
                     }
                 }
                 catch (error) {
-                    this.logger('err', `Could not load ${files[key]}\n ${error}`);
+                    this.logger('err1', `Could not load ${files[key]}\n ${error}`);
                 }
             }
         });
