@@ -306,7 +306,7 @@ class ChairBot {
                     this.logger('err1', `Could not unload ${files[key]}\n ${error}`);
                 }
             }
-            this.logger('INFO', 'Stopping chairbot...',()=>{
+            this.logger('INFO', 'Stopping ChairBot...',()=>{
                 process.exit(0);
             });
         });
