@@ -118,68 +118,56 @@ class ChairBot {
             this.log = moment().format(`HH-mm-ss`) + '-chairbot';
         }
         const time = moment().format('HH:mm:ss');
-        switch (type) {
-            case 'ERR2':
-                console.log(chalk.red(`${time} [${type}] ${message}`));
-                break;
-            case 'INFO':
-                console.log(chalk.white(`${time} [${type}] ${message}`));
-                break;
-            case 'DEBUG':
-                console.log(chalk.gray(`${time} [${type}] ${message}`));
-                break;
-            case "ML":
-                console.log(chalk.greenBright(`[${time}] [Module Loader] ${message}`));
-                break;
-            case "MU":
-                console.log(chalk.redBright(`[${time}] [Module Unloader] ${message}`));
-                break;
-            case "PL":
-                console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message}`));
-                break;
-            case "PU":
-                console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message}`));
-                break;
-            case 'FATAL':
-                console.log(chalk.bgRed.white(`[${time}] [${type}] ${message}`));
-                break;
-            case "LOGGER":
-                console.log(chalk.bgGray.white(`[${time}] [${type}] ${message}`));
-                break;
-            case 'G':
-                console.log(chalk.green(`[${time}] [INFO] ${message}`));
-                break;
-            default:
-                console.log(chalk.red(`[${time}] [Unknown] ${message}`));
-        }
-        if (type == "LOGGER") {
-            process.exit(1);
-        }
-        else if (type == 'FATAL') {
-            log(this.log, time, type, message, () => {
-                process.exit(1);
-            });
-        }
-        function log(log, time, type, message, cb) {
+        function log(log, time, type, message) {
             fs.appendFile(`./logs/${log}.log`, `[${time}] [${type}] ${message}\n`, (err) => {
                 if (err) {
                     fs.mkdir('./logs', (err => {
-                        if (err) {
-                            if (cb) {
-                                cb();
-                            }
-                        }
-                        if (cb) {
-                            cb();
-                        }
+                        if (err) {}
                     }));
                 }
-                if (cb) {
-                    cb();
+                switch (type) {
+                    case 'ERR2':
+                        console.log(chalk.red(`${time} [${type}] ${message}`));
+                        break;
+                    case 'INFO':
+                        console.log(chalk.white(`${time} [${type}] ${message}`));
+                        break;
+                    case 'DEBUG':
+                        console.log(chalk.gray(`${time} [${type}] ${message}`));
+                        break;
+                    case "ML":
+                        console.log(chalk.greenBright(`[${time}] [Module Loader] ${message}`));
+                        break;
+                    case "MU":
+                        console.log(chalk.redBright(`[${time}] [Module Unloader] ${message}`));
+                        break;
+                    case "PL":
+                        console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message}`));
+                        break;
+                    case "PU":
+                        console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message}`));
+                        break;
+                    case 'FATAL':
+                        console.log(chalk.bgRed.white(`[${time}] [${type}] ${message}`));
+                        break;
+                    case "LOGGER":
+                        console.log(chalk.bgGray.white(`[${time}] [${type}] ${message}`));
+                        break;
+                    case 'G':
+                        console.log(chalk.green(`[${time}] [INFO] ${message}`));
+                        break;
+                    default:
+                        console.log(chalk.red(`[${time}] [Unknown] ${message}`));
+                }
+                if (type == "LOGGER") {
+                    process.exit(1);
+                }
+                else if (type == 'FATAL') {
+                        process.exit(1);
                 }
             });
         }
-        log(this.log, time, type, message, () => { });
+        log(this.log, time, type, message);
     }
     pluginsloader() {
         const fs = require('fs');
