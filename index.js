@@ -1,10 +1,43 @@
 class ChairBot {
     constructor() {
+        this.logger('info', 'Starting up...');
+        this.commands();
         this.config = {};
         this.modules = {};
         this.plugins = {};
         this.modulesloader();
         this.pluginsloader();
+    }
+    commands(){
+        process.stdin.on('data', (data) => {
+            data=data.toString().replace('\n', '');
+            switch (data) {
+                case 'stop':
+                    this.stop();
+                    break;
+                case 'restart':
+                    this.logger('info','Restarting ChairBot...',()=>{
+                        //use the restart script
+                    });
+                    break;
+                case 'plugins':
+                    for(let key in this.plugins){
+                        this.logger('info', `${this.plugins[key].name}`);
+                    }
+                    break;
+                case 'modules':
+                    for(let key in this.modules){
+                        this.logger('info', `${this.modules[key].name}`);
+                    }
+                    break;
+                case 'help':
+                    this.logger('info', fs.readFileSync('./help.txt', 'utf8'));
+                    break;
+                default:
+                    this.logger('err', `Unknown command: ${data}`);
+                    break;
+            }
+        });
     }
     configloader(name) {
         const fs = require('fs');
@@ -34,7 +67,6 @@ class ChairBot {
         const config = this.configloader('discord');
         if (config && !this.discord) {
             const discord = require('discord.js');
-            this.logger('err', "ddd");
             const client = new discord.Client();
             client.login(config.token);
             client.on('ready', () => {
@@ -46,10 +78,11 @@ class ChairBot {
                 });
             }
             this.discord = client;
-        }
-        else {
-            this.logger('err', 'Invalid discord config!');
-            return 'err';
+        } else {
+            if(!config){
+                this.logger('err', 'Invalid discord config!');
+                this.discord = false;
+            }
         }
     }
     expressloader() {
@@ -65,8 +98,12 @@ class ChairBot {
             this.app = app;
         }
         else {
-            return 'err';
-        }
+            if(!config){
+                this.logger('err', 'Invalid express config!');
+                this.express = false;
+                this.app=false;
+            }
+ }
     }
     websocket() {
         const config = this.configloader('websocket');
@@ -81,7 +118,10 @@ class ChairBot {
             this.logger('info', `WebSocket ready!`);
         }
         else {
-            this.ws = 'err';
+            if(!config){
+                this.logger('err', 'Invalid websocket config!');
+                this.ws = false;
+            }
         }
     }
     mongoloader() {
@@ -93,7 +133,10 @@ class ChairBot {
             this.logger('info', `MongoDB connector ready!`);
         }
         else {
-            this.mongo = "err";
+            if(!config){
+                this.logger('err', 'Invalid mongo config!');
+                this.mongo = false;
+            }
         }
     }
     redisloader() {
@@ -106,10 +149,13 @@ class ChairBot {
             this.logger('info', 'Redis connector ready!');
         }
         else {
-            this.redis = "err";
+            if(!config){
+                this.logger('err', 'Invalid redis config!');
+                this.redis = false;
+            }
         }
     }
-    logger(type, message) {
+    logger(type, message, cb) {
         const chalk = require('chalk');
         const moment = require('moment');
         const fs = require('fs');
@@ -122,7 +168,7 @@ class ChairBot {
             fs.appendFile(`./logs/${log}.log`, `[${time}] [${type}] ${message}\n`, (err) => {
                 if (err) {
                     fs.mkdir('./logs', (err => {
-                        if (err) {}
+                        if (err) console.log(err);
                     }));
                 }
                 switch (type) {
@@ -165,6 +211,9 @@ class ChairBot {
                 else if (type == 'FATAL') {
                         process.exit(1);
                 }
+                if(cb){
+                    cb();
+                }
             });
         }
         log(this.log, time, type, message);
@@ -187,6 +236,7 @@ class ChairBot {
                     this.logger('err', `Could not load ${files[key]}\n ${error}`);
                 }
             }
+            this.logger('info', 'ChairBot is ready!');
         });
     }
     modulesloader() {
@@ -206,6 +256,46 @@ class ChairBot {
                     this.logger('err', `Could not load ${files[key]}\n ${error}`);
                 }
             }
+        });
+    }
+    stop(){
+        const fs = require('fs');
+        fs.readdir('./plugins', (err, files) => {
+            if (err)
+                return this.logger('fatal', `Could not read the plugins folder! \n ${err}`);
+            for (const key in files) {
+                try {
+                    if(!files[key].includes('.')){
+                        const { CPlugin } = require(`./plugins/${files[key]}/index.js`);
+                        const p = new CPlugin(this);
+                        p.unload();
+                        this.logger('PU', `Unloaded ${p.name}`);
+                    }
+                }
+                catch (error) {
+                    this.logger('err1', `Could not unload ${files[key]}\n ${error}`);
+                }
+            }
+        });
+        fs.readdir('./modules', (err, files)=>{
+            if (err)
+                return this.logger('fatal', `Could not read the modules folder! \n ${err}`);
+            for (const key in files) {
+                try {
+                    if(!files[key].includes('.')){
+                        const { CModule } = require(`./modules/${files[key]}/index.js`);
+                        const m = new CModule(this);
+                        m.unload();
+                        this.logger('MU', `Unloaded ${m.name}`);
+                    }
+                }
+                catch (error) {
+                    this.logger('err1', `Could not unload ${files[key]}\n ${error}`);
+                }
+            }
+            this.logger('INFO', 'Stopping chairbot...',()=>{
+                process.exit(0);
+            });
         });
     }
 }

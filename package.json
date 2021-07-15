@@ -8,7 +8,7 @@
     "start": "./start.sh",
     "install": "node install.js",
     "stop": "./stop.sh",
-    "ts":"tsc --watch"
+    "ts": "tsc --watch"
   },
   "repository": {
     "type": "git",
