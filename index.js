@@ -16,11 +16,6 @@ class ChairBot {
                 case 'stop':
                     this.stop();
                     break;
-                case 'restart':
-                    this.logger('info','Restarting ChairBot...',()=>{
-                        //use the restart script
-                    });
-                    break;
                 case 'plugins':
                     for(let key in this.plugins){
                         this.logger('info', `${this.plugins[key].name}`);
@@ -33,9 +28,10 @@ class ChairBot {
                     break;
                 case 'help':
                     const help=fs.readFileSync('./help.txt', 'utf8');
-                    for(let line of help.split('\n')){
-                        this.logger('info', line);
-                    }
+                    this.logger('info', help);
+                    break;
+                case '':
+                    this.logger('info', 'Type "help" for help!');
                     break;
                 default:
                     this.logger('err1', `Unknown command: ${data}`);
@@ -178,42 +174,44 @@ class ChairBot {
                     process.stdout.clearLine();
                     process.stdout.clearLine();
                     process.stdout.cursorTo(0);
-                switch (type) {
-                    case 'ERR2':
-                        console.log(chalk.red(`[${time}] [GRAVE] ${message}`));
-                        break;
-                    case 'ERR1':
-                        console.log(chalk.red(`[${time}] [ERR] ${message}`));
-                        break;
-                    case 'INFO':
-                        console.log(chalk.white(`[${time}] [${type}] ${message}`));
-                        break;
-                    case 'DEBUG':
-                        console.log(chalk.gray(`[${time}] [${type}] ${message}`));
-                        break;
-                    case "ML":
-                        console.log(chalk.greenBright(`[${time}] [Module Loader] ${message}`));
-                        break;
-                    case "MU":
-                        console.log(chalk.redBright(`[${time}] [Module Unloader] ${message}`));
-                        break;
-                    case "PL":
-                        console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message}`));
-                        break;
-                    case "PU":
-                        console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message}`));
-                        break;
-                    case 'FATAL':
-                        console.log(chalk.bgRed.white(`[${time}] [${type}] ${message}`));
-                        break;
-                    case "LOGGER":
-                        console.log(chalk.bgGray.white(`[${time}] [${type}] ${message}`));
-                        break;
-                    case 'G':
-                        console.log(chalk.green(`[${time}] [INFO] ${message}`));
-                        break;
-                    default:
-                        console.log(chalk.red(`[${time}] [Unknown] ${message}`));
+                for(let i in message.split('\n')){
+                    switch (type) {
+                        case 'ERR2':
+                            console.log(chalk.red(`[${time}] [GRAVE] ${message.split('\n')[i]}`));
+                            break;
+                        case 'ERR1':
+                            console.log(chalk.red(`[${time}] [ERR] ${message.split('\n')[i]}`));
+                            break;
+                        case 'INFO':
+                            console.log(chalk.white(`[${time}] [${type}] ${message.split('\n')[i]}`));
+                            break;
+                        case 'DEBUG':
+                            console.log(chalk.gray(`[${time}] [${type}] ${message.split('\n')[i]}`));
+                            break;
+                        case "ML":
+                            console.log(chalk.greenBright(`[${time}] [Module Loader] ${message.split('\n')[i]}`));
+                            break;
+                        case "MU":
+                            console.log(chalk.redBright(`[${time}] [Module Unloader] ${message.split('\n')[i]}`));
+                            break;
+                        case "PL":
+                            console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message.split('\n')[i]}`));
+                            break;
+                        case "PU":
+                            console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message.split('\n')[i]}`));
+                            break;
+                        case 'FATAL':
+                            console.log(chalk.bgRed.white(`[${time}] [${type}] ${message.split('\n')[i]}`));
+                            break;
+                        case "LOGGER":
+                            console.log(chalk.bgGray.white(`[${time}] [${type}] ${message.split('\n')[i]}`));
+                            break;
+                        case 'G':
+                            console.log(chalk.green(`[${time}] [INFO] ${message.split('\n')[i]}`));
+                            break;
+                        default:
+                            console.log(chalk.red(`[${time}] [Unknown] ${message.split('\n')[i]}`));
+                    }
                 }
                 if (type == "LOGGER") {
                     process.exit(1);
