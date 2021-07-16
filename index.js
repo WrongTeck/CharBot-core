@@ -7,6 +7,9 @@ class ChairBot {
         this.plugins = {};
         this.modulesloader();
         this.pluginsloader();
+        process.on('SIGINT',()=>{
+            this.stop();
+        });
     }
     commands(){
         const fs = require('fs');
@@ -292,6 +295,7 @@ class ChairBot {
     }
     stop(){
         const fs = require('fs');
+        this.logger('info', 'Shutting down...');
         fs.readdir('./plugins', (err, files) => {
             if (err)
                 return this.logger('fatal', `Could not read the plugins folder! \n ${err}`);
@@ -325,7 +329,7 @@ class ChairBot {
                     this.logger('err1', `Could not unload ${files[key]}\n ${error}`);
                 }
             }
-            this.logger('INFO', 'Stopping ChairBot...',()=>{
+            this.logger('INFO', 'Bye!',()=>{
                 process.exit(0);
             });
         });
