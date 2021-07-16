@@ -12,6 +12,7 @@ class ChairBot {
         const fs = require('fs');
         process.stdin.on('data', (data) => {
             data=data.toString().replace('\n', '');
+            fs.appendFile(`./logs/${this.log}.log`, `> ${data}\n`, (err) => {});
             switch (data) {
                 case 'stop':
                     this.stop();
@@ -32,6 +33,25 @@ class ChairBot {
                     break;
                 case '':
                     this.logger('info', 'Type "help" for help!');
+                    break;
+                case 'clearlogs':
+                    fs.readdir('./logs', (err, files)=>{
+                        if(err){
+                            this.logger('err', err);
+                        }
+                        else{
+                            for(let i=0; i<files.length; i++){
+                                if(files[i].toString()!==this.log+'.log'){
+                                    fs.unlink('./logs/'+files[i],(err)=>{
+                                        if(err){
+                                            this.logger('err', err);
+                                        }
+                                    });
+                                }
+                            }
+                            this.logger('info', 'Logs cleared!');
+                        }
+                    });
                     break;
                 default:
                     this.logger('err1', `Unknown command: ${data}`);
@@ -174,6 +194,7 @@ class ChairBot {
                     process.stdout.clearLine();
                     process.stdout.clearLine();
                     process.stdout.cursorTo(0);
+                    message=message.toString();
                 for(let i in message.split('\n')){
                     switch (type) {
                         case 'ERR2':
