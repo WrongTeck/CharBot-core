@@ -1,0 +1,3 @@
+class BaseModule extends Base {
+
+}

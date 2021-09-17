@@ -188,17 +188,7 @@ class ChairBot {
         if (!this.log) {
             this.log = moment().format(`HH-mm-ss`) + '-chairbot';
         }
-        const time = moment().format('HH:mm:ss');
-        function log(log, time, type, message) {
-            fs.appendFile(`./logs/${log}.log`, `[${time}] [${type}] ${message}\n`, (err) => {
-                if (err) {
-                    fs.mkdir('./logs', (err => {
-                        if (err) console.log(err);
-                    }));
-                }
-                    process.stdout.clearLine();
-                    process.stdout.clearLine();
-                    process.stdout.cursorTo(0);
+        
                     message=message.toString();
                 for(let i in message.split('\n')){
                     switch (type) {
