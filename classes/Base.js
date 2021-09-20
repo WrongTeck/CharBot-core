@@ -10,11 +10,14 @@ class Base {
       }
       this.event = new EventEmitter();
       if(data !== null && typeof data == "object") {
-        Object.assign(this, data);
+        Object.assign(bot, data);
       }
       this.on = this.event.on;
       this.modules = {};
       this.plugins = {};
       return this;
     }
+    
   }
+
+  module.exports = Base;

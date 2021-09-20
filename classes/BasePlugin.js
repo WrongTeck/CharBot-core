@@ -1,3 +1,4 @@
+const Base = require("./Base");
 class BasePlugin extends Base {
     constructor(name, module, bot) {
       let data = {};
@@ -5,3 +6,5 @@ class BasePlugin extends Base {
       super(bot, data);
     }
   }
+
+module.exports = BasePlugin;

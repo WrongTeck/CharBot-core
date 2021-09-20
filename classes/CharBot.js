@@ -1,13 +1,15 @@
+const Logger = require('./Logger');
+const Base = require("./Base");
 var version = "0.1-ALPHA"
 
 class CharBot extends Base {
     constructor() {
       let bot = super();
-      super.logger("INFO", "Starting CharBot v"+version);
       this.bot = bot;
       this.commands();
-      
+      this.logger = new Logger(console);
       //this.pluginsloader();
+      this.logger.log(`Starting CharBot v${version}...`);
       return this;
     }
     pluginsloader() {
@@ -37,8 +39,10 @@ class CharBot extends Base {
     }
     keyhandler() {
           process.on("SIGINT", (signal) => {
-              
-          });
+              this.logger.log("Shutting down...");
+              //this.unloader();
+              process.exit(0);
+            });
     }
     commands(){
       const fs = require('fs');
@@ -57,38 +61,40 @@ class CharBot extends Base {
                           this.logger('info', `${this.plugins[Object.values(this.plugins)[key]].name}`);
                       }
                   } else {
-                      this.logger('info', 'No plugin were loaded!');
+                      this.logger.log('No plugin were loaded!');
                   }
                   break;
               case 'help':
-                  this.logger('info', fs.readFileSync('./help.txt', 'utf8') );
+                  this.logger.log(fs.readFileSync('./help.txt', 'utf8') );
                   break;
               case '':
-                  this.logger('info', 'Type "help" for help!');
+                  this.logger.log('Type "help" for help!');
                   break;
               case 'clearlogs':
                   fs.readdir('./logs', (err, files)=>{
                       if(err){
-                          this.logger('err', err);
+                          this.logger.error(err);
                       }
                       else{
                           for(let i=0; i<files.length; i++){
                               if(files[i].toString()!==this.log+'.log'){
                                   fs.unlink('./logs/'+files[i],(err)=>{
                                       if(err){
-                                          this.logger('err', err);
+                                          this.logger.error(err);
                                       }
                                   });
                               }
                           }
-                          this.logger('info', 'Logs cleared!');
+                          this.logger.log('Logs cleared!');
                       }
                   });
                   break;
               default:
-                  this.logger('err1', `Unknown command: ${data}`);
+                  this.logger.error(`Unknown command: ${data}`);
                   break;
           }
       });
     }
   }
+
+module.exports = CharBot;
