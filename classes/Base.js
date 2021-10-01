@@ -1,6 +1,14 @@
 const EventEmitter = require('events');
-
+/**
+ * Where everything begins
+ */
 class Base {
+  /**
+   * The base class of CharBot
+   * @param {Base} bot The bot 
+   * @param {Object} data Data to parse
+   * @returns The bot instance
+   */
     constructor(bot, data) {
       if(bot) {
           if(data !== null && typeof data == "object") {
@@ -20,4 +28,4 @@ class Base {
     
   }
 
-  module.exports = Base;
+module.exports = Base;
