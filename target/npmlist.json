@@ -1,0 +1,54 @@
+{
+  "version": "2.0-ALPHA",
+  "name": "main",
+  "dependencies": {
+    "@discordjs/opus": {
+      "version": "0.5.3",
+      "resolved": "https://registry.npmjs.org/@discordjs/opus/-/opus-0.5.3.tgz"
+    },
+    "@wrongteck/discord.js-chairbot": {
+      "version": "13.0.3",
+      "resolved": "https://registry.npmjs.org/@wrongteck/discord.js-chairbot/-/discord.js-chairbot-13.0.3.tgz"
+    },
+    "bufferutil": {
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/bufferutil/-/bufferutil-4.0.3.tgz"
+    },
+    "chalk": {
+      "version": "4.1.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
+    },
+    "express": {
+      "version": "4.17.1",
+      "resolved": "https://registry.npmjs.org/express/-/express-4.17.1.tgz"
+    },
+    "ioredis": {
+      "version": "4.27.7",
+      "resolved": "https://registry.npmjs.org/ioredis/-/ioredis-4.27.7.tgz"
+    },
+    "moment": {
+      "version": "2.29.1",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
+    },
+    "mongodb": {
+      "version": "3.6.10",
+      "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-3.6.10.tgz"
+    },
+    "sodium": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/sodium/-/sodium-3.0.2.tgz"
+    },
+    "utf-8-validate": {
+      "version": "5.0.5",
+      "resolved": "https://registry.npmjs.org/utf-8-validate/-/utf-8-validate-5.0.5.tgz"
+    },
+    "ws": {
+      "version": "7.5.3",
+      "resolved": "https://registry.npmjs.org/ws/-/ws-7.5.3.tgz"
+    },
+    "zlib-sync": {
+      "version": "0.1.7",
+      "resolved": "https://registry.npmjs.org/zlib-sync/-/zlib-sync-0.1.7.tgz"
+    }
+  }
+}
