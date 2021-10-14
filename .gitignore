@@ -10,3 +10,5 @@ modules/*
 logs
 modules
 plugins
+.vscode
+target

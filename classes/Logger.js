@@ -4,31 +4,25 @@ const fs = require('fs');
 class Logger {
   /**
    * Create a new Logger instance
-   * @param {console} consoledefault 
    * @returns
    */
-  constructor(consoledefault) {
-    this.console = consoledefault;
+  constructor() {
+    this.console = console;
     if (!this.filename) {
         this.filename = moment().format(`HH-mm-ss`) + '-chairbot';
     }
     return this;
   }
   /**
-   * 
    * @param {string} message The message to write
    */
   file(message, type) {
     fs.appendFile(`./logs/${this.filename}.log`, `[${moment().format("HH-mm-ss")}] [${type}] ${message}\n`, (err) => {
       if (err) {
-        fs.mkdir('./logs', (err => {
-          if (err) console.log(err);
+        fs.mkdir('./logs', (err1 => {
+          if (err1) console.log(err1);
         }));
       }
-      
-      //process.stdout.clearLine();
-      //process.stdout.clearLine();
-      //process.stdout.cursorTo(0);
     });
   }
 
@@ -40,7 +34,7 @@ class Logger {
     const time = moment().format('HH:mm:ss');
     this.file(message, "INFO");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.white(`[${time}] [INFO] ${message.split('\n')[i]}`));
+        this.console.log(chalk.white(`\n[${time}] [INFO] ${message.split('\n')[i]}`));
     }
     process.stdout.write('> ');
   }
@@ -53,7 +47,7 @@ class Logger {
     const time = moment().format("HH:mm:ss");
     this.file(message, "WARN");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.yellow(`[${time}] [WARN] ${message.split("\n")[i]}`));
+        this.console.log(chalk.yellow(`\n[${time}] [WARN] ${message.split("\n")[i]}`));
     }
     process.stdout.write('> ');
   }
@@ -65,7 +59,7 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "ERROR");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.red(`[${time}] [ERROR] ${message.split("\n")[i]}`));
+            this.console.log(chalk.red(`\n[${time}] [ERROR] ${message.split("\n")[i]}`));
         }
         process.stdout.write('> ');
     }
@@ -77,7 +71,7 @@ class Logger {
     const time = moment().format("HH:mm:ss");
     this.file(message, "GRAVE");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.red(`[${time}] [GRAVE] ${message.split("\n")[i]}`));
+        this.console.log(chalk.red(`\n[${time}] [GRAVE] ${message.split("\n")[i]}`));
     }
     process.stdout.write('> ');
   }
@@ -90,7 +84,7 @@ class Logger {
       const time = moment().format("HH:mm:ss");
     this.file(message, "Module Loader");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.greenBright(`[${time}] [Module Loader] ${message.split("\n")[i]}`));
+        this.console.log(chalk.greenBright(`\n[${time}] [Module Loader] ${message.split("\n")[i]}`));
     }
     process.stdout.write('> ');
     }
@@ -103,7 +97,7 @@ class Logger {
         const time = moment().format("HH:mm:ss");
     this.file(message, "Plugin Loader");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.greenBright(`[${time}] [Plugin Loader] ${message.split("\n")[i]}`));
+        this.console.log(chalk.greenBright(`\n[${time}] [Plugin Loader] ${message.split("\n")[i]}`));
     }
     process.stdout.write('> ');
     }
@@ -116,7 +110,7 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "Module Unloader");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.redBright(`[${time}] [Module Unloader] ${message.split("\n")[i]}`));
+            this.console.log(chalk.redBright(`\n[${time}] [Module Unloader] ${message.split("\n")[i]}`));
 
         }
         process.stdout.write('> ');
@@ -130,7 +124,7 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "Plugin Unloader");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.redBright(`[${time}] [Plugin Unloader] ${message.split("\n")[i]}`));
+            this.console.log(chalk.redBright(`\n[${time}] [Plugin Unloader] ${message.split("\n")[i]}`));
         }
         process.stdout.write('> ');
     }
@@ -143,7 +137,7 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "FATAL");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.bgRed.white(`[${time}] [FATAL] ${message.split("\n")[i]}`));
+            this.console.log(chalk.bgRed.white(`\n[${time}] [FATAL] ${message.split("\n")[i]}`));
         }
         process.stdout.write('> ');
         // Need to call the stop function in the Core
