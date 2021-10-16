@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+const term = require("terminal-kit").terminal;
 const moment = require('moment');
 const fs = require('fs');
 class Logger {
@@ -6,11 +6,13 @@ class Logger {
    * Create a new Logger instance
    * @returns
    */
-  constructor() {
+  constructor(commands, executor) {
     this.console = console;
     if (!this.filename) {
         this.filename = moment().format(`HH-mm-ss`) + '-chairbot';
     }
+    this.commands = commands;
+    this.executor = executor;
     return this;
   }
   /**
@@ -34,9 +36,17 @@ class Logger {
     const time = moment().format('HH:mm:ss');
     this.file(message, "INFO");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.white(`\n[${time}] [INFO] ${message.split('\n')[i]}`));
+        term.white(`\n[${time}] [INFO] ${message.split('\n')[i]}`);
     }
-    process.stdout.write('> ');
+    process.stdout.write('\n> ');
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands)
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
   }
 
   /**
@@ -47,9 +57,17 @@ class Logger {
     const time = moment().format("HH:mm:ss");
     this.file(message, "WARN");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.yellow(`\n[${time}] [WARN] ${message.split("\n")[i]}`));
+        term.yellow(`\n[${time}] [WARN] ${message.split("\n")[i]}`);
     }
-    process.stdout.write('> ');
+    process.stdout.write('\n> ');
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands)
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
   }
   /**
    * Write an ERROR to console
@@ -59,9 +77,17 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "ERROR");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.red(`\n[${time}] [ERROR] ${message.split("\n")[i]}`));
+            term.red(`\n[${time}] [ERROR] ${message.split("\n")[i]}`);
         }
-        process.stdout.write('> ');
+        process.stdout.write('\n> ');
+        term.inputField({
+          echo: true,
+          autoCompleteHint: true,
+          autoComplete: Object.keys(this.commands)
+        }, (err, arg) => {
+          if(err) return this.error(err);
+          this.executor(arg);
+        });
     }
     /**
      * Print a GRAVE error to console
@@ -71,9 +97,17 @@ class Logger {
     const time = moment().format("HH:mm:ss");
     this.file(message, "GRAVE");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.red(`\n[${time}] [GRAVE] ${message.split("\n")[i]}`));
+        term.red(`\n[${time}] [GRAVE] ${message.split("\n")[i]}`);
     }
-    process.stdout.write('> ');
+    process.stdout.write('\n> ');
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands)
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
   }
   /**
    * Print a Module Loader message,
@@ -84,9 +118,17 @@ class Logger {
       const time = moment().format("HH:mm:ss");
     this.file(message, "Module Loader");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.greenBright(`\n[${time}] [Module Loader] ${message.split("\n")[i]}`));
+        term.brightGreen(`\n[${time}] [Module Loader] ${message.split("\n")[i]}`);
     }
-    process.stdout.write('> ');
+    process.stdout.write('\n> ');
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands)
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
     }
     /**
      * Print a Plugn loader message
@@ -97,9 +139,17 @@ class Logger {
         const time = moment().format("HH:mm:ss");
     this.file(message, "Plugin Loader");
     for(let i in message.split("\n")) {
-        this.console.log(chalk.greenBright(`\n[${time}] [Plugin Loader] ${message.split("\n")[i]}`));
+        term.brightGreen(`\n[${time}] [Plugin Loader] ${message.split("\n")[i]}`);
     }
-    process.stdout.write('> ');
+    process.stdout.write('\n> ');
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands)
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
     }
     /**
      * Print a Module Unloader message
@@ -110,10 +160,18 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "Module Unloader");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.redBright(`\n[${time}] [Module Unloader] ${message.split("\n")[i]}`));
+            term.brightRed(`\n[${time}] [Module Unloader] ${message.split("\n")[i]}`);
 
         }
-        process.stdout.write('> ');
+        process.stdout.write('\n> ');
+        term.inputField({
+          echo: true,
+          autoCompleteHint: true,
+          autoComplete: Object.keys(this.commands)
+        }, (err, arg) => {
+          if(err) return this.error(err);
+          this.executor(arg);
+        });
     }
     /**
      * Print a Plugin unloader message
@@ -124,9 +182,17 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "Plugin Unloader");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.redBright(`\n[${time}] [Plugin Unloader] ${message.split("\n")[i]}`));
+            term.brightRed(`\n[${time}] [Plugin Unloader] ${message.split("\n")[i]}`);
         }
-        process.stdout.write('> ');
+        process.stdout.write('\n> ');
+        term.inputField({
+          echo: true,
+          autoCompleteHint: true,
+          autoComplete: Object.keys(this.commands)
+        }, (err, arg) => {
+          if(err) return this.error(err);
+          this.executor(arg);
+        });
     }
     /**
      * Send a FATAL error to the console
@@ -137,10 +203,18 @@ class Logger {
         const time = moment().format("HH:mm:ss");
         this.file(message, "FATAL");
         for(let i in message.split("\n")) {
-            this.console.log(chalk.bgRed.white(`\n[${time}] [FATAL] ${message.split("\n")[i]}`));
+            term.bgRed.white(`\n[${time}] [FATAL] ${message.split("\n")[i]}`);
         }
-        process.stdout.write('> ');
-        // Need to call the stop function in the Core
+        process.stdout.write('\n> ');
+        term.inputField({
+          echo: true,
+          autoCompleteHint: true,
+          autoComplete: Object.keys(this.commands)
+        }, (err, arg) => {
+          if(err) return this.error(err);
+          this.executor(arg);
+        });
+        this.commands.stop();
     }
 }
 

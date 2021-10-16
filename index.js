@@ -1,20 +1,19 @@
-const BaseModule = require("./classes/BaseModule");
+const Console = require("./classes/Console");
 const CharBot = require("./classes/CharBot");
-const BasePlugin = require("./classes/BasePlugin");
 const Logger = require("./classes/Logger");
-const Base = require("./classes/Base");
 const fs = require('fs');
 
 try {
-  new CharBot();
+  const bot = new CharBot();
+  bot.on("ready", () => {
+    bot.logger.log("READY");
+  });
 } catch (e) {
-  fs.writeFileSync("logs/error.log", e, {encoding: "utf8"});
+  fs.writeFileSync("logs/error.log", e.toString(), {encoding: "utf8"});
 }
 
 module.exports = {
-  BaseModule,
   CharBot,
-  BasePlugin,
   Logger,
-  Base,
+  Console,
 };

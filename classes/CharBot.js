@@ -2,20 +2,14 @@ const Logger = require("./Logger");
 const Base = require("./Base");
 const Console = require("./Console");
 var version = "0.1-ALPHA";
+const EventEmitter = require("events");
 
-class CharBot {
+class CharBot extends EventEmitter {
   constructor() {
-//    this.bot = bot;
-    //this.commands();
-    this.logger = new Logger(console);
-    this.logger.log(`Starting CharBot v${version}...`);
-    process.on("SIGINT", (signal) => {
-      process.stdout.write("\n");
-      this.logger.log("Shutting down...");
-      process.stdout.clearLine();
-      process.exit(0);
-    });
-    this.console = new Console({command: () => {this.logger.warn("command triggered")}});
+    super({captureRejections: true});
+    this.console = new Console({command: () => {this.console.warn("command triggered")}, stop: ()=> {process.exit()}});
+    this.console.log("Starting CharBot v"+version);
+    this.emit("ready");
     return this;
   }
 
