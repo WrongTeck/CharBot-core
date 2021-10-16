@@ -7,7 +7,7 @@ const EventEmitter = require("events");
 class CharBot extends EventEmitter {
   constructor() {
     super({captureRejections: true});
-    this.console = new Console({command: () => {this.console.warn("command triggered")}, stop: ()=> {process.exit()}});
+    this.console = new Console(require("./Commands"));
     this.console.log("Starting CharBot v"+version);
     this.emit("ready");
     return this;

@@ -25,7 +25,13 @@ class Console extends Logger {
      * @type {String}
      */
     this.last = "";
+    /**
+     * Shut down softly the console
+     * @type {Function}
+     */
+    this.shutdown = process.exit;
     term.grabInput(true);
+    term.fullscreen(true);
     term.on("key", (name, matches, data)=>{
       this.character(name)
     });
@@ -39,36 +45,50 @@ class Console extends Logger {
     let admitted = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
                     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
-    if(admitted.includes(name)) {
-      return;
-      process.stdout.write(name);
-      this.last = this.last.concat(name);
-      termkit.autoComplete(Object.keys(this.commands), this.last, true);
-      return;
-    }
+    if(admitted.includes(name)) return;
     switch (name) {
-      case "ENTER":
-        this.history.push(this.last);
-        this.command();
-        break;
       case "CTRL_C":
+        this.log("Shutting down...");
         this.commands.stop();
-        break;
-      default:
         break;
     }
   }
   /**
    * Try to execute a command
+   * @param {String} last 
    */
   command(last) {
-    if(!last) return;
-    if(!Object.keys(this.commands).includes(last)) {
-      this.error("Command " + this.last.split(" ")[0] + " does not exists!");
-    };
-    Object.values(this.commands)[Object.keys(this.commands).indexOf(last)]();
+    if(!last) return this.enter();
+    if(last.includes(" ")) {
+      this.addHistory(last.split(" ")[0]);
+      if(!Object.keys(this.commands).includes(last.split(" ")[0])) {
+        this.log(last)
+        return this.error("Command " + last.split(" ")[0] + " does not exists!");
+      }
+      Object.values(this.commands)[Object.keys(this.commands).indexOf(last.split(" ")[0])](this, last.split(" ").shift());
+    } else {
+      this.addHistory(last);
+      if(!Object.keys(this.commands).includes(last)) {
+        return this.error("Command " + last + " does not exists!");
+      } else if(typeof Object.values(this.commands)[Object.keys(this.commands).indexOf(last)] == "function") {
+        Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this);
+      }
+    }
+  }
+  /**
+   * Prevents the console from freezing
+   */
+  enter() {
+    term.inputField({
+      echo: true,
+      autoCompleteHint: true,
+      autoComplete: Object.keys(this.commands),
+      history: this.history
+    }, (err, arg) => {
+      if(err) return this.error(err);
+      this.executor(arg);
+    });
   }
 }
-
 
 module.exports = Console;

@@ -4,16 +4,32 @@ const fs = require('fs');
 class Logger {
   /**
    * Create a new Logger instance
+   * @param {Object} commands Commands to register
    * @returns
    */
-  constructor(commands, executor) {
-    this.console = console;
+  constructor(commands) {
     if (!this.filename) {
         this.filename = moment().format(`HH-mm-ss`) + '-chairbot';
     }
+    /**
+     * Commands registered
+     * @type {Object}
+     */
     this.commands = commands;
-    this.executor = executor;
+    /**
+     * The executor of the commands
+     * @type {Function}
+     */
+    this.executor;
+    /**
+     * The history of commands typed in this session
+     * @type {Array<String>}
+     */
+    this.history = [];
     return this;
+  }
+  addHistory(command) {
+    this.history.push(command);
   }
   /**
    * @param {string} message The message to write
@@ -42,7 +58,8 @@ class Logger {
     term.inputField({
       echo: true,
       autoCompleteHint: true,
-      autoComplete: Object.keys(this.commands)
+      autoComplete: Object.keys(this.commands),
+      history: this.history
     }, (err, arg) => {
       if(err) return this.error(err);
       this.executor(arg);
@@ -63,7 +80,8 @@ class Logger {
     term.inputField({
       echo: true,
       autoCompleteHint: true,
-      autoComplete: Object.keys(this.commands)
+      autoComplete: Object.keys(this.commands),
+      history: this.history
     }, (err, arg) => {
       if(err) return this.error(err);
       this.executor(arg);
@@ -83,7 +101,8 @@ class Logger {
         term.inputField({
           echo: true,
           autoCompleteHint: true,
-          autoComplete: Object.keys(this.commands)
+          autoComplete: Object.keys(this.commands),
+          history: this.history
         }, (err, arg) => {
           if(err) return this.error(err);
           this.executor(arg);
@@ -103,7 +122,8 @@ class Logger {
     term.inputField({
       echo: true,
       autoCompleteHint: true,
-      autoComplete: Object.keys(this.commands)
+      autoComplete: Object.keys(this.commands),
+      history: this.history
     }, (err, arg) => {
       if(err) return this.error(err);
       this.executor(arg);
@@ -124,7 +144,8 @@ class Logger {
     term.inputField({
       echo: true,
       autoCompleteHint: true,
-      autoComplete: Object.keys(this.commands)
+      autoComplete: Object.keys(this.commands),
+      history: this.history
     }, (err, arg) => {
       if(err) return this.error(err);
       this.executor(arg);
@@ -145,7 +166,8 @@ class Logger {
     term.inputField({
       echo: true,
       autoCompleteHint: true,
-      autoComplete: Object.keys(this.commands)
+      autoComplete: Object.keys(this.commands),
+      history: this.history
     }, (err, arg) => {
       if(err) return this.error(err);
       this.executor(arg);
@@ -167,7 +189,8 @@ class Logger {
         term.inputField({
           echo: true,
           autoCompleteHint: true,
-          autoComplete: Object.keys(this.commands)
+          autoComplete: Object.keys(this.commands),
+          history: this.history
         }, (err, arg) => {
           if(err) return this.error(err);
           this.executor(arg);
@@ -188,7 +211,8 @@ class Logger {
         term.inputField({
           echo: true,
           autoCompleteHint: true,
-          autoComplete: Object.keys(this.commands)
+          autoComplete: Object.keys(this.commands),
+          history: this.history
         }, (err, arg) => {
           if(err) return this.error(err);
           this.executor(arg);
@@ -209,7 +233,8 @@ class Logger {
         term.inputField({
           echo: true,
           autoCompleteHint: true,
-          autoComplete: Object.keys(this.commands)
+          autoComplete: Object.keys(this.commands),
+          history: this.history
         }, (err, arg) => {
           if(err) return this.error(err);
           this.executor(arg);
