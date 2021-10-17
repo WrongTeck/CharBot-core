@@ -7,14 +7,10 @@ const EventEmitter = require("events");
 class CharBot extends EventEmitter {
   constructor() {
     super({captureRejections: true});
-    this.console = new Console(require("./Commands"));
+    this.console = new Console(require("./Commands").Commands, this);
     this.console.log("Starting CharBot v"+version);
     this.emit("ready");
     return this;
-  }
-
-  commands() {
-
   }
 }
 module.exports = CharBot;

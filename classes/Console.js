@@ -1,15 +1,23 @@
 const Logger = require("./Logger");
 const termkit = require("terminal-kit");
 const term = termkit.terminal;
+//const CharBot = require('./CharBot');
 
 class Console extends Logger {
   /**
    * Initialize a new Console instance
    * @param {Object} commands The commands to register
+   * @param {CharBot} charbot The bot instance
    */
-  constructor(commands) {
+  constructor(commands, charbot) {
+    term("> ");
     super(commands);
     super.executor = this.command;
+    /**
+     * The bot instance that created the Console instance
+     * @type {CharBot}
+     */
+    this.bot = charbot;
     /**
      * Commands registered
      * @type {Object}
@@ -27,9 +35,9 @@ class Console extends Logger {
     this.last = "";
     /**
      * Shut down softly the console
-     * @type {Function}
+     * @type {termkit.Terminal}
      */
-    this.shutdown = process.exit;
+    this.term = term;
     term.grabInput(true);
     term.fullscreen(true);
     term.on("key", (name, matches, data)=>{
@@ -49,7 +57,11 @@ class Console extends Logger {
     switch (name) {
       case "CTRL_C":
         this.log("Shutting down...");
-        this.commands.stop();
+        try {
+          this.commands.stop();
+        } catch (e) {
+          this.fatal("Something is broken! Hard exit...");
+        }
         break;
     }
   }
@@ -88,6 +100,30 @@ class Console extends Logger {
       if(err) return this.error(err);
       this.executor(arg);
     });
+  }
+  /**
+   * Unregister a command. If none is passed will unregister all commands
+   * @param {?String} name The name of the command
+   */
+  unregisterCommand(name) {
+    if(name) {
+      delete this.commands[name];
+    } else {
+      delete this.commands;
+    }
+  }
+  /**
+   * Register one or more commands
+   * @param {Object} commands Commands to register
+   */
+  registerCommand(commands) {
+    if(this.commands) {
+      this.commands = Object.assign(this.commands, commands);
+      super.commands = this.commands;
+    } else {
+      this.commands = commands;
+      super.commands = this.commands;
+    }
   }
 }
 
