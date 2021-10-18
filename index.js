@@ -1,6 +1,7 @@
 const Console = require("./classes/Console");
 const CharBot = require("./classes/CharBot");
 const Logger = require("./classes/Logger");
+const PlaceHolders = require("./classes/PlaceHolders");
 const fs = require('fs');
 
 try {
@@ -16,4 +17,5 @@ module.exports = {
   CharBot,
   Logger,
   Console,
+  PlaceHolders
 };

@@ -7,7 +7,7 @@ let Commands = {
    */
   stop(console) {
     // Should unload all plugins, then modules and soft-stop the bot
-    console.log("Shutting down...\nBye!");
+    console.log(console.bot.lang.commands.shutdown_message);
     process.stdout.clearLine();
     console.term.processExit(0);
   },
@@ -17,12 +17,12 @@ let Commands = {
    */
   clearLogs(console) {
     fs.readdir("./logs", { encoding: "utf-8" }, (err, files) => {
-      if (err) return console.error("Unable to delete logs!");
+      if (err) return console.error(console.bot.lang.commands.clear_logs_error);
       files.forEach((value, index, array) => {
         fs.rm("./logs/"+value, { force: true }, () => {});
       });
     });
-    console.log("Cleared Logs!");
+    console.log(console.bot.lang.commands.clear_logs_success);
   },
   /**
    * Show all commands typed
@@ -36,7 +36,7 @@ let Commands = {
    * @param {Console} console 
    */
   reloadCommands(console) {
-    console.log("Reloading commands...");
+    console.log(console.bot.lang.commands.reload_commands);
     console.unregisterCommand();
     console.registerCommand(require("./Commands").Commands);
     // Here we should call the bot instance to load again all modules and plugins commands
@@ -45,10 +45,19 @@ let Commands = {
    * Show what commands are registered in the bot
    * @param {Console} console 
    */
-  registeredCommands(console) {
+  commands(console) {
     console.log(Object.keys(console.commands));
+  },
+  help(console) {
+    
+  },
+  reloadLang(console) {
+    console.log(console.bot.lang.commands.reloadLang_start);
+    console.bot.reloadLang();
+    console.log(console.bot.lang.commands.reloadLang_finish);
   }
 }
+
 module.exports = {
   Commands
 }

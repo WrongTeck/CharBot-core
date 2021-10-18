@@ -55,9 +55,8 @@ class Console extends Logger {
     if(admitted.includes(name)) return;
     switch (name) {
       case "CTRL_C":
-        this.log("Shutting down...");
         try {
-          this.commands.stop();
+          this.commands.stop(this);
         } catch (e) {
           this.fatal("Something is broken! Hard exit...");
         }
@@ -73,14 +72,13 @@ class Console extends Logger {
     if(last.includes(" ")) {
       this.addHistory(last.split(" ")[0]);
       if(!Object.keys(this.commands).includes(last.split(" ")[0])) {
-        this.log(last)
-        return this.error("Command " + last.split(" ")[0] + " does not exists!");
+        return this.error(this.bot.lang.invalid_command, { command: last.split(" ")[0] });
       }
       Object.values(this.commands)[Object.keys(this.commands).indexOf(last.split(" ")[0])](this, last.split(" ").shift());
     } else {
       this.addHistory(last);
       if(!Object.keys(this.commands).includes(last)) {
-        return this.error("Command " + last + " does not exists!");
+        return this.error(this.bot.lang.invalid_command, { command: last.split(" ")[0] });
       } else if(typeof Object.values(this.commands)[Object.keys(this.commands).indexOf(last)] == "function") {
         Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this);
       }
