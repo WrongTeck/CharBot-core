@@ -1,13 +1,12 @@
 const Logger = require("./Logger");
 const termkit = require("terminal-kit");
 const term = termkit.terminal;
-//const CharBot = require('./CharBot');
 
 class Console extends Logger {
   /**
    * Initialize a new Console instance
    * @param {Object} commands The commands to register
-   * @param {CharBot} charbot The bot instance
+   * @param {Object} charbot The bot instance
    */
   constructor(commands, charbot) {
     term("> ");
@@ -15,7 +14,7 @@ class Console extends Logger {
     super.executor = this.command;
     /**
      * The bot instance that created the Console instance
-     * @type {CharBot}
+     * @type {Object}
      */
     this.bot = charbot;
     /**
