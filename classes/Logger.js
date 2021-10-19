@@ -48,22 +48,18 @@ class Logger extends PlaceHolders {
    */
   file(message, type) {
     let data;
-    if(type == "INPUT") {
+    if (type == "INPUT") {
       data = `> ${message}\n`;
     } else {
-    data = `[${moment().format("HH-mm-ss")}] [${type}] ${message}\n`;
-  }
-    fs.appendFile(
-      `./logs/${this.filename}.log`,
-      data,
-      (err) => {
-        if (err) {
-          fs.mkdir("./logs", (err1) => {
-            if (err1) console.log(err1);
-          });
-        }
+      data = `[${moment().format("HH-mm-ss")}] [${type}] ${message}\n`;
+    }
+    fs.appendFile(`./logs/${this.filename}.log`, data, (err) => {
+      if (err) {
+        fs.mkdir("./logs", (err1) => {
+          if (err1) console.log(err1);
+        });
       }
-    );
+    });
   }
   /**
    * Return the console
@@ -84,23 +80,39 @@ class Logger extends PlaceHolders {
     );
   }
   /**
+   * Runs pre-logging hooks
+   * @param {String} type Logging level
+   * @param {String} message Message to process
+   */
+  prelog(type, message) {
+    let data;
+    const time = moment().format("HH:mm:ss");
+    this.file(message, type);
+    if (this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      process.stdout.moveCursor(-2, 0)
+      data = ``;
+    } else {
+      data = "\n";
+    }
+    return [data, time];
+  }
+  /**
    * Write a message in console as INFO
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
   log(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
     message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "INFO");
+    let [data, time] = this.prelog("INFO", message);
     for (let i in message.split("\n")) {
-      term.white(super.parse(`\n[${time}] [INFO] ${message.split("\n")[i]}`, placeholders));
+      term.white(
+        super.parse(
+          data +`[${time}] [INFO] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
@@ -112,72 +124,57 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  warn(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "WARN");
+  warn(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.yellow(super.parse(`\n[${time}] [WARN] ${message.split("\n")[i]}`, placeholders));
+      term.yellow(
+        super.parse(
+          `${data}[${time}] [WARN] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Write an ERROR to console
    * @param {string} message The message to print
    * @param {Object} placeholders Custom PlaceHolders
    */
-  error(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-      this.last = true;
-
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "ERROR");
+  error(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.red(super.parse(`\n[${time}] [ERROR] ${message.split("\n")[i]}`, placeholders));
+      term.red(
+        super.parse(
+          `${data}[${time}] [ERROR] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
   }
   /**
    * Print a GRAVE error to console
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  grave(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "GRAVE");
+  grave(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.red(super.parse(`\n[${time}] [GRAVE] ${message.split("\n")[i]}`, placeholders));
+      term.red(
+        super.parse(
+          `${data}[${time}] [GRAVE] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Print a Module Loader message,
@@ -185,24 +182,19 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  ml(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "Module Loader");
+  ml(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.brightGreen(super.parse(`\n[${time}] [Module Loader] ${message.split("\n")[i]}`, placeholders));
+      term.brightGreen(
+        super.parse(
+          `${data}[${time}] [Module Loader] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Print a Plugin loader message
@@ -210,24 +202,19 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  pl(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "Plugin Loader");
+  pl(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.brightGreen(super.parse(`\n[${time}] [Plugin Loader] ${message.split("\n")[i]}`, placeholders));
+      term.brightGreen(
+        super.parse(
+          `${data}[${time}] [Plugin Loader] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Print a Module Unloader message
@@ -235,24 +222,19 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  mu(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "Module Unloader");
+  mu(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.brightRed(super.parse(`\n[${time}] [Module Unloader] ${message.split("\n")[i]}`, placeholders));
+      term.brightRed(
+        super.parse(
+          `${data}[${time}] [Module Unloader] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Print a Plugin unloader message
@@ -260,24 +242,19 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  pu(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "Plugin Unloader");
+  pu(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.brightRed(super.parse(`\n[${time}] [Plugin Unloader] ${message.split("\n")[i]}`, placeholders));
+      term.brightRed(
+        super.parse(
+          `${data}[${time}] [Plugin Unloader] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
     this.cons();
     this.last = true;
-
   }
   /**
    * Send a FATAL error to the console
@@ -285,24 +262,19 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  fatal(message, placeholders) {
-    if(this.last) {
-      this.lastcons.abort();
-      process.stdout.clearLine();
-      term.getCursorLocation((err, x, y) => {
-        term.move(x, y-1);
-      });
-    }
-    message = message.toString();
-    const time = moment().format("HH:mm:ss");
-    this.file(message, "FATAL");
+  fatal(data, placeholders) {
+    let [message, time] = this.prelog("WARN", data);
     for (let i in message.split("\n")) {
-      term.bgRed.white(super.parse(`\n[${time}] [FATAL] ${message.split("\n")[i]}`, placeholders));
+      term.bgRed(
+        super.parse(
+          `${data}[${time}] [FATAL] ${message.split("\n")[i]}`,
+          placeholders
+        )
+      );
     }
     process.stdout.write("\n> ");
-    this.commands.stop(this);
+    this.cons();
     this.last = true;
-
   }
 }
 
