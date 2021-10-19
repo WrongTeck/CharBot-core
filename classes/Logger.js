@@ -29,11 +29,20 @@ class Logger extends PlaceHolders {
      * @type {Array<String>}
      */
     this.history = [];
+    this.last = false;
+    process.stdin.on("data", () => {
+      this.last = false;
+    });
     return this;
   }
+  /**
+   * Append a command to the history of typed commands
+   * @param {String} command The command to append to the history
+   */
   addHistory(command) {
     this.history.push(command);
   }
+
   /**
    * @param {string} message The message to write
    */
@@ -60,7 +69,7 @@ class Logger extends PlaceHolders {
    * Return the console
    */
   cons() {
-    term.inputField(
+    this.lastcons = term.inputField(
       {
         echo: true,
         autoCompleteHint: true,
@@ -80,6 +89,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   log(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "INFO");
@@ -88,6 +104,7 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
   }
 
   /**
@@ -96,6 +113,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   warn(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "WARN");
@@ -104,6 +128,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
    * Write an ERROR to console
@@ -111,6 +137,15 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   error(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+      this.last = true;
+
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "ERROR");
@@ -126,6 +161,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   grave(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "GRAVE");
@@ -134,6 +176,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
    * Print a Module Loader message,
@@ -142,6 +186,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   ml(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "Module Loader");
@@ -150,14 +201,23 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
-   * Print a Plugn loader message
+   * Print a Plugin loader message
    * Should be used only by the core
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
   pl(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "Plugin Loader");
@@ -166,6 +226,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
    * Print a Module Unloader message
@@ -174,6 +236,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   mu(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "Module Unloader");
@@ -182,6 +251,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
    * Print a Plugin unloader message
@@ -190,6 +261,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   pu(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "Plugin Unloader");
@@ -198,6 +276,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.cons();
+    this.last = true;
+
   }
   /**
    * Send a FATAL error to the console
@@ -206,6 +286,13 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   fatal(message, placeholders) {
+    if(this.last) {
+      this.lastcons.abort();
+      process.stdout.clearLine();
+      term.getCursorLocation((err, x, y) => {
+        term.move(x, y-1);
+      });
+    }
     message = message.toString();
     const time = moment().format("HH:mm:ss");
     this.file(message, "FATAL");
@@ -214,6 +301,8 @@ class Logger extends PlaceHolders {
     }
     process.stdout.write("\n> ");
     this.commands.stop(this);
+    this.last = true;
+
   }
 }
 

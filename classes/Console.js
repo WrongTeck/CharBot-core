@@ -70,15 +70,15 @@ class Console extends Logger {
   command(last) {
     if(!last) return this.enter();
     if(last.includes(" ")) {
-      this.addHistory(last.split(" ")[0]);
+      this.addHistory(last);
       if(!Object.keys(this.commands).includes(last.split(" ")[0])) {
-        return this.error(this.bot.lang.invalid_command, { command: last.split(" ")[0] });
+        return this.error(this.bot.lang.commands.invalid_command, { command: last.split(" ")[0] });
       }
       Object.values(this.commands)[Object.keys(this.commands).indexOf(last.split(" ")[0])](this, last.split(" ").shift());
     } else {
       this.addHistory(last);
       if(!Object.keys(this.commands).includes(last)) {
-        return this.error(this.bot.lang.invalid_command, { command: last.split(" ")[0] });
+        return this.error(this.bot.lang.commands.invalid_command, { command: last.split(" ")[0] });
       } else if(typeof Object.values(this.commands)[Object.keys(this.commands).indexOf(last)] == "function") {
         Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this);
       }

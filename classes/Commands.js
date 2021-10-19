@@ -13,13 +13,15 @@ let Commands = {
   },
   /**
    * Clear all logs
-   * @param {Console} console 
+   * @param {Console} console
    */
   clearLogs(console) {
     fs.readdir("./logs", { encoding: "utf-8" }, (err, files) => {
       if (err) return console.error(console.bot.lang.commands.clear_logs_error);
       files.forEach((value, index, array) => {
-        fs.rm("./logs/"+value, { force: true }, () => {});
+        fs.rm("./logs/"+value, { force: true }, (err1) => {
+          if (err1) return console.log("Cannot remove logs!");
+        });
       });
     });
     console.log(console.bot.lang.commands.clear_logs_success);
@@ -49,7 +51,7 @@ let Commands = {
     console.log(Object.keys(console.commands));
   },
   help(console) {
-    
+    console.log("Not completed yet!");
   },
   reloadLang(console) {
     console.log(console.bot.lang.commands.reloadLang_start);
