@@ -13,6 +13,13 @@ let Commands = {
     console.term.processExit(0);
   },
   /**
+   * Alias for stop 
+   * @param {Console} console The console
+   */
+  exit(console) {
+    console.commands.stop(console);
+  },
+  /**
    * Clear all logs
    * @param {Console} console
    */
@@ -51,9 +58,17 @@ let Commands = {
   commands(console) {
     console.log(Object.keys(console.commands));
   },
+  /**
+   * Print a quick help
+   * @param {Console} console The console
+   */
   help(console) {
     console.log("Not completed yet!");
   },
+  /**
+   * Reload console commands
+   * @param {Console} console The console
+   */
   reloadLang(console) {
     console.log(console.bot.lang.commands.reloadLang_start);
     console.bot.reloadLang();

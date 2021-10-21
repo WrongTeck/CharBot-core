@@ -53,15 +53,22 @@ class PluginLoader {
       plugin = require(`../plugins/${dir}/index.js`);
       name = dir;
     }
-    if(plugin.commands) {
-      this.bot.console.registerCommand(plugin.commands);
-    }
     if(plugin.modules) {
       plugin.modules.forEach((value, index, array) => {
-        if(this.bot.modules[value].loaded) {
-          Object.defineProperty(this.plugins, name, {writable: true, value: plugin});
+        if(this.bot.modules[value]) {
+          let loaded;
+          if(plugin.main) {
+            loaded = new plugin.main(this.bot);
+            Object.assign(loaded, {"name": plugin.name, "version": plugin.version});
+          } else {
+            loaded = plugin;
+          }
+          if(plugin.commands) {
+            this.bot.console.registerCommand(plugin.commands);
+          }
+          Object.defineProperty(this.plugins, name, {writable: true, value: loaded});
         } else {
-          this.bot.console.error(this.bot.lang.plugins.missed_module);
+          this.bot.console.error(this.bot.lang.plugins.missed_module, {module: value, plugin: name});
         }
       })
     }

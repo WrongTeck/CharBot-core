@@ -18,6 +18,17 @@ class CharBot extends EventEmitter {
      * @type {Object}
      */
     this.lang = { "lang": config.lang };
+    /**
+     * Plugins loaded in the core of the bot
+     * @type {Object}
+     */
+    this.plugins = {};
+
+    /**
+     * Modules loaded in the core of the bot
+     * @type {Object}
+     */
+    this.modules = {};
     fs.access(__dirname + `/../languages/${config.lang}.json`, fs.constants.R_OK, (err) => {
       if (err && !config.debug) return this.console.fatal("Wrong lang configuration! Check the docs!");
       if(err) return this.console.fatal(err);
