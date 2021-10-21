@@ -8,5 +8,10 @@
     "reload_commands": "Reloading commands...",
     "reloadLang_start": "Reloading all langs...",
     "reloadLang_finish": "All lang files were reloaded!"
+  },
+  "plugins": {
+    "read_dir_err": "Failed to read the Plugin Directory!",
+    "missed_module": "Cannot load {plugin}, because {module} is missed",
+    "load_start":"Loading plugins..."
   }
 }

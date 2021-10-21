@@ -124,8 +124,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  warn(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  warn(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.yellow(
         super.parse(
@@ -143,8 +144,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message to print
    * @param {Object} placeholders Custom PlaceHolders
    */
-  error(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  error(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.red(
         super.parse(
@@ -162,8 +164,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  grave(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  grave(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.red(
         super.parse(
@@ -182,8 +185,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  ml(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  ml(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.brightGreen(
         super.parse(
@@ -202,8 +206,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  pl(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  pl(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.brightGreen(
         super.parse(
@@ -222,8 +227,8 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  mu(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  mu(message, placeholders) {
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.brightRed(
         super.parse(
@@ -242,8 +247,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  pu(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  pu(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.brightRed(
         super.parse(
@@ -262,8 +268,9 @@ class Logger extends PlaceHolders {
    * @param {string} message The message
    * @param {Object} placeholders Custom PlaceHolders
    */
-  fatal(data, placeholders) {
-    let [message, time] = this.prelog("WARN", data);
+  fatal(message, placeholders) {
+    message = message.toString();
+    let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
       term.bgRed(
         super.parse(

@@ -3,6 +3,7 @@ const Console = require("./Console");
 const EventEmitter = require("events");
 const config = require("../config/main.json");
 const fs = require("fs");
+const PluginLoader = require("./PluginLoader");
 
 class CharBot extends EventEmitter {
   constructor() {
@@ -23,12 +24,16 @@ class CharBot extends EventEmitter {
     });
     Object.assign(this.lang, require(__dirname + `/../languages/${config.lang}.json`));
     this.console.log(this.lang.bot_banner_start, { version: version });
-    this.emit("ready");
+    this.pluginLoad();
+    this.emit("ready")
     return this;
   }
   reloadLang() {
     Object.assign(this.lang, require(__dirname + `/../languages/${config.lang}.json`));
     // Here should reload lang files from plugins and modules
+  }
+  pluginLoad() {
+    this.plugins = new PluginLoader(this).plugins;
   }
 }
 module.exports = CharBot;
