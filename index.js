@@ -6,9 +6,6 @@ const fs = require('fs');
 
 try {
   const bot = new CharBot();
-  bot.on("ready", () => {
-    bot.logger.log("READY");
-  });
 } catch (e) {
   fs.writeFileSync("logs/error.log", e.toString(), {encoding: "utf8"});
 }

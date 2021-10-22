@@ -17,7 +17,8 @@ class PluginLoader {
      * @type {CharBot}
      */
     this.bot = charbot;
-    return this.readDir();
+    this.readDir();
+    return this;
   }
   /**
    * Read the plugin folder
@@ -28,7 +29,7 @@ class PluginLoader {
       encoding: "utf-8",
       withFileTypes: true
     }, (err, files) => {
-      if (err) return this.bot.console.error(this.bot.lang.plugins.read_dir_err);
+      if (err) return this.bot.console.fatal(this.bot.lang.plugins.read_dir_err);
       files.forEach((dirent, i, array) => {
         if (dirent.isDirectory()) {
           this.loadPlugin(dirent.name, "index.js");
@@ -36,8 +37,8 @@ class PluginLoader {
           this.loadPlugin(".", dirent.name);
         }
       });
+      this.bot.emit("pluginsLoaded");
     });
-    return this.plugins;
   }
   /**
    * Load a plugin
@@ -53,7 +54,7 @@ class PluginLoader {
       plugin = require(`../plugins/${dir}/index.js`);
       name = dir;
     }
-    if(plugin.modules) {
+    if(plugin.modules && this.bot.modules) {
       plugin.modules.forEach((value, index, array) => {
         if(this.bot.modules[value]) {
           let loaded;
@@ -71,6 +72,8 @@ class PluginLoader {
           this.bot.console.error(this.bot.lang.plugins.missed_module, {module: value, plugin: name});
         }
       })
+    } else {
+      this.bot.console.error(this.bot.lang.plugins.missed_module, {module: "all", plugin: name});
     }
   }
 }

@@ -74,7 +74,8 @@ let Commands = {
       borderAttr: {color: 'yellow'},
       borderChars: "heavy",
       width: 40,
-      fit:true});
+      fit:true
+    });
     console.cons();
   },
   /**

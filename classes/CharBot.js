@@ -4,6 +4,7 @@ const EventEmitter = require("events");
 const config = require("../config/main.json");
 const fs = require("fs");
 const PluginLoader = require("./PluginLoader");
+const ModuleLoader = require("./ModuleLoader");
 
 class CharBot extends EventEmitter {
   constructor() {
@@ -23,20 +24,31 @@ class CharBot extends EventEmitter {
      * @type {Object}
      */
     this.plugins = {};
-
     /**
      * Modules loaded in the core of the bot
      * @type {Object}
      */
     this.modules = {};
+
     fs.access(__dirname + `/../languages/${config.lang}.json`, fs.constants.R_OK, (err) => {
       if (err && !config.debug) return this.console.fatal("Wrong lang configuration! Check the docs!");
       if(err) return this.console.fatal(err);
     });
     Object.assign(this.lang, require(__dirname + `/../languages/${config.lang}.json`));
+
     this.console.log(this.lang.bot_banner_start, { version: version });
-    this.pluginLoad();
-    this.emit("ready")
+
+    this.moduleLoad();
+
+    this.on("modulesLoaded", () => {
+      this.pluginLoad();
+    });
+
+    this.on("pluginsLoaded", () => {
+      this.emit("ready");
+      this.console.log(this.lang.done);
+    });
+
     return this;
   }
   reloadLang() {
@@ -46,5 +58,9 @@ class CharBot extends EventEmitter {
   pluginLoad() {
     this.plugins = new PluginLoader(this).plugins;
   }
+  moduleLoad() {
+    this.modules = new ModuleLoader(this).modules;
+  }
 }
+
 module.exports = CharBot;
