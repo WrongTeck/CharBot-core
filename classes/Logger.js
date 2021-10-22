@@ -65,6 +65,7 @@ class Logger extends PlaceHolders {
    * Return the console
    */
   cons() {
+    process.stdout.write("\n> ");
     this.lastcons = term.inputField(
       {
         echo: true,
@@ -114,7 +115,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -135,7 +135,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -155,7 +154,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -175,7 +173,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -196,7 +193,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -217,7 +213,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -237,7 +232,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -258,7 +252,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }
@@ -279,7 +272,6 @@ class Logger extends PlaceHolders {
         )
       );
     }
-    process.stdout.write("\n> ");
     this.cons();
     this.last = true;
   }

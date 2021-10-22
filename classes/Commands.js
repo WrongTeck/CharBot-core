@@ -43,16 +43,6 @@ let Commands = {
     console.log(console.history.toString());
   },
   /**
-   * Reload console commands
-   * @param {Console} console 
-   */
-  reloadCommands(console) {
-    console.log(console.bot.lang.commands.reload_commands);
-    console.unregisterCommand();
-    console.registerCommand(require("./Commands").Commands);
-    // Here we should call the bot instance to load again all modules and plugins commands
-  },
-  /**
    * Show what commands are registered in the bot
    * @param {Console} console 
    */
@@ -66,8 +56,8 @@ let Commands = {
   help(console) {
     console.log("Commands list");
     console.lastcons.abort();
-    term("\b\b"); // deletes '>' char
-    term.table([
+    console.term("\b\b"); // deletes '>' char
+    console.term.table([
       ['COMMAND','DESCRIPTION'],
       ['^YclearLogs','Deletes the Chairbot\' log files'],
       ['^Yexit','Alias for "stop" command'],
@@ -86,7 +76,6 @@ let Commands = {
       width: 40,
       fit:true});
     console.cons();
-    term("> "); // adds '>' char
   },
   /**
    * Reload console commands
