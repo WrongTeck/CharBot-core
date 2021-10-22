@@ -1,4 +1,5 @@
 const fs = require('fs');
+const term = require('terminal-kit').terminal;
 const Console = require("./Console")
 let Commands = {
   /**
@@ -63,7 +64,29 @@ let Commands = {
    * @param {Console} console The console
    */
   help(console) {
-    console.log("Not completed yet!");
+    console.log("Commands list");
+    console.lastcons.abort();
+    term("\b\b"); // deletes '>' char
+    term.table([
+      ['COMMAND','DESCRIPTION'],
+      ['^YclearLogs','Deletes the Chairbot\' log files'],
+      ['^Yexit','Alias for "stop" command'],
+      ['^Yhelp','Shows this table about commands'],
+      ['^Yhistory',''],
+      ['^YreloadCommands',''],
+      ['^YreloadLang','Reloads the localization files'],
+      ['^Ystop','Should unload all plugins,\nthen modules and soft-stop the bot'],
+    ],
+    {
+      //textAttr: {bgColor: 'black'},
+      contentHasMarkup: true,
+      firstRowTextAttr: {bgColor: 'white', color: 'black'},
+      borderAttr: {color: 'yellow'},
+      borderChars: "heavy",
+      width: 40,
+      fit:true});
+    console.cons();
+    term("> "); // adds '>' char
   },
   /**
    * Reload console commands
