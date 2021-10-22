@@ -42,16 +42,6 @@ let Commands = {
     console.log(console.history.toString());
   },
   /**
-   * Reload console commands
-   * @param {Console} console 
-   */
-  reloadCommands(console) {
-    console.log(console.bot.lang.commands.reload_commands);
-    console.unregisterCommand();
-    console.registerCommand(require("./Commands").Commands);
-    // Here we should call the bot instance to load again all modules and plugins commands
-  },
-  /**
    * Show what commands are registered in the bot
    * @param {Console} console 
    */
@@ -63,7 +53,10 @@ let Commands = {
    * @param {Console} console The console
    */
   help(console) {
-    console.log("Not completed yet!");
+    //console.log("Not completed yet!");
+    console.lastcons.abort();
+    console.term.bgGray.red("\n\nHello\n");
+    console.cons();
   },
   /**
    * Reload console commands

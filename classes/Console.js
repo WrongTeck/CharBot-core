@@ -1,7 +1,18 @@
 const Logger = require("./Logger");
 const termkit = require("terminal-kit");
 const term = termkit.terminal;
-
+let BasicCommands = {
+    /**
+   * Reload console commands
+   * @param {Console} console 
+   */
+     reloadCommands(console) {
+      console.log(console.bot.lang.commands.reload_commands);
+      console.unregisterCommand();
+      console.registerCommand(require("./Commands").Commands);
+      // Here we should call the bot instance to load again all modules and plugins commands
+    },
+}
 class Console extends Logger {
   /**
    * Initialize a new Console instance
@@ -22,6 +33,7 @@ class Console extends Logger {
      * @type {Object}
      */
     this.commands = commands;
+    Object.assign(this.commands, BasicCommands);
     /**
      * History of the command typed in the current Console session
      * @type {Array<String>}
@@ -108,6 +120,8 @@ class Console extends Logger {
     } else {
       delete this.commands;
     }
+    this.commands = {};
+    Object.assign(this.commands, BasicCommands);
   }
   /**
    * Register one or more commands
@@ -121,6 +135,7 @@ class Console extends Logger {
       this.commands = commands;
       super.commands = this.commands;
     }
+    Object.assign(this.commands, BasicCommands);
   }
 }
 
