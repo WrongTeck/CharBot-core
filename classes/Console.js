@@ -20,7 +20,6 @@ class Console extends Logger {
    * @param {Object} charbot The bot instance
    */
   constructor(commands, charbot) {
-    term("> ");
     super(commands);
     super.executor = this.command;
     /**

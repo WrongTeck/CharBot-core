@@ -1,6 +1,5 @@
 const fs = require('fs');
-const term = require('terminal-kit').terminal;
-const Console = require("./Console")
+const Console = require("./Console");
 let Commands = {
   /**
    * Stop the bot
@@ -11,6 +10,7 @@ let Commands = {
     console.log(console.bot.lang.commands.shutdown_message);
     console.log("Bye!");
     process.stdout.clearLine();
+    console.term.grabInput(false);
     console.term.processExit(0);
   },
   /**
@@ -56,7 +56,7 @@ let Commands = {
   help(console) {
     console.log("Commands list");
     console.lastcons.abort();
-    console.term("\b\b"); // deletes '>' char
+    console.term("\b\b"); // deletes '> ' char
     console.term.table([
       ['COMMAND','DESCRIPTION'],
       ['^YclearLogs','Deletes the Chairbot\' log files'],

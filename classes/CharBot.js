@@ -37,7 +37,6 @@ class CharBot extends EventEmitter {
     Object.assign(this.lang, require(__dirname + `/../languages/${config.lang}.json`));
 
     this.console.log(this.lang.bot_banner_start, { version: version });
-
     this.moduleLoad();
 
     this.on("modulesLoaded", () => {
@@ -48,7 +47,6 @@ class CharBot extends EventEmitter {
       this.emit("ready");
       this.console.log(this.lang.done);
     });
-
     return this;
   }
   reloadLang() {

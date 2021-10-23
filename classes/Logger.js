@@ -30,9 +30,6 @@ class Logger extends PlaceHolders {
      */
     this.history = [];
     this.last = false;
-    process.stdin.on("data", () => {
-      this.last = false;
-    });
     return this;
   }
   /**
@@ -75,6 +72,7 @@ class Logger extends PlaceHolders {
       },
       (err, arg) => {
         if (err) return this.error(err);
+        this.last = false;
         this.file(arg, "INPUT");
         this.executor(arg);
       }
@@ -91,7 +89,6 @@ class Logger extends PlaceHolders {
     this.file(message, type);
     if (this.last) {
       this.lastcons.abort();
-      process.stdout.clearLine();
       process.stdout.moveCursor(-2, 0)
       data = ``;
     } else {
@@ -145,7 +142,7 @@ class Logger extends PlaceHolders {
    */
   error(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("ERROR", message);
     for (let i in message.split("\n")) {
       term.red(
         super.parse(
@@ -164,7 +161,7 @@ class Logger extends PlaceHolders {
    */
   grave(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("GRAVE", message);
     for (let i in message.split("\n")) {
       term.red(
         super.parse(
@@ -184,7 +181,7 @@ class Logger extends PlaceHolders {
    */
   ml(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("Module Loader", message);
     for (let i in message.split("\n")) {
       term.brightGreen(
         super.parse(
@@ -204,7 +201,7 @@ class Logger extends PlaceHolders {
    */
   pl(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("Plugin Loader", message);
     for (let i in message.split("\n")) {
       term.brightGreen(
         super.parse(
@@ -223,7 +220,7 @@ class Logger extends PlaceHolders {
    * @param {Object} placeholders Custom PlaceHolders
    */
   mu(message, placeholders) {
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("Module Unloader", message);
     for (let i in message.split("\n")) {
       term.brightRed(
         super.parse(
@@ -243,7 +240,7 @@ class Logger extends PlaceHolders {
    */
   pu(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("Plugin Unloader", message);
     for (let i in message.split("\n")) {
       term.brightRed(
         super.parse(
@@ -263,7 +260,7 @@ class Logger extends PlaceHolders {
    */
   fatal(message, placeholders) {
     message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    let [data, time] = this.prelog("FATAL", message);
     for (let i in message.split("\n")) {
       term.bgRed(
         super.parse(
