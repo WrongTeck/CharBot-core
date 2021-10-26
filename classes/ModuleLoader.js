@@ -54,6 +54,7 @@ class ModuleLoader {
       modulep = require(`../modules/${dir}/index.js`);
       name = dir;
     }
+    this.bot.console.pl(`Loading ${name} v${modulep.version}...`);
     if(modulep.modules) {
       modulep.modules.forEach((value, index, array) => {
         if(this.bot.modules[value]) {

@@ -65,7 +65,7 @@ let Commands = {
       ['^Yhistory',''],
       ['^YreloadCommands',''],
       ['^YreloadLang','Reloads the localization files'],
-      ['^Ystop','Should unload all plugins,\nthen modules and soft-stop the bot'],
+      ['^Ystop','Stops the bot'],
     ],
     {
       //textAttr: {bgColor: 'black'},
