@@ -86,6 +86,14 @@ let Commands = {
     console.log(console.bot.lang.commands.reloadLang_start);
     console.bot.reloadLang();
     console.log(console.bot.lang.commands.reloadLang_finish);
+  },
+  /**
+   * Clear the stdout
+   * @param {Console} console The console
+   */
+  clear(console) {
+    console.term.clear();
+    console.log("Cleared!");
   }
 }
 

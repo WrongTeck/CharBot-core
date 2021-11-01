@@ -55,7 +55,7 @@ class PluginLoader {
       name = dir;
     }
     this.bot.console.pl(`Loading ${name} v${plugin.version}...`);
-    if(plugin.modules && this.bot.modules) {
+    if(plugin.modules.lenght > 0 && this.bot.modules) {
       plugin.modules.forEach((value, index, array) => {
         if(this.bot.modules[value]) {
           let loaded;
@@ -73,8 +73,20 @@ class PluginLoader {
           this.bot.console.error(this.bot.lang.plugins.missed_module, {module: value, plugin: name});
         }
       })
-    } else {
+    } else if(plugin.modules > 0) {
       this.bot.console.error(this.bot.lang.plugins.missed_module, {module: "all", plugin: name});
+    } else {
+      let loaded;
+          if(plugin.main) {
+            loaded = new plugin.main(this.bot);
+            Object.assign(loaded, {"name": plugin.name, "version": plugin.version});
+          } else {
+            loaded = plugin;
+          }
+          if(plugin.commands) {
+            this.bot.console.registerCommand(plugin.commands);
+          }
+          Object.defineProperty(this.plugins, name, {writable: true, value: loaded});
     }
   }
 }

@@ -32,9 +32,10 @@ class ModuleLoader {
       if (err) return this.bot.console.fatal(this.bot.lang.modules.read_dir_err);
       files.forEach((dirent, i, array) => {
         if (dirent.isDirectory()) {
+          this.bot.console.warn(dirent.name);
           this.loadModules(dirent.name, "index.js");
         } else {
-          this.loadModules(".", dirent.name);
+          this.loadModules(false, dirent.name);
         }
       });
       this.bot.emit("modulesLoaded");
@@ -47,7 +48,8 @@ class ModuleLoader {
    */
   loadModules(dir, file) {
     let name, modulep;
-    if(dir == ".") {
+    if(dir == "modules" || file == "modules") return;
+    if(!dir) {
       modulep = require(`../modules/${file}`);
       name = file;
     } else {
@@ -55,7 +57,7 @@ class ModuleLoader {
       name = dir;
     }
     this.bot.console.pl(`Loading ${name} v${modulep.version}...`);
-    if(modulep.modules) {
+    if(modulep.modules.lenght > 0 && this.bot.modules) {
       modulep.modules.forEach((value, index, array) => {
         if(this.bot.modules[value]) {
           let loaded;
@@ -69,8 +71,20 @@ class ModuleLoader {
             this.bot.console.registerCommand(modulep.commands);
           }
           Object.defineProperty(this.modulep, name, {writable: true, value: loaded});
-        } else {
+        } else if(modulep.modules.lenght > 0){
           this.bot.console.error(this.bot.lang.modulep.missed_module, {module: value, name: name});
+        } else {
+          let loaded;
+          if(modulep.main) {
+            loaded = new modulep.main(this.bot);
+            Object.assign(loaded, {"name": modulep.name, "version": modulep.version});
+          } else {
+            loaded = modulep;
+          }
+          if(modulep.commands) {
+            this.bot.console.registerCommand(modulep.commands);
+          }
+          Object.defineProperty(this.modulep, name, {writable: true, value: loaded});
         }
       })
     }
