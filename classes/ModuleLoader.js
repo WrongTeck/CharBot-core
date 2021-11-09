@@ -32,7 +32,6 @@ class ModuleLoader {
       if (err) return this.bot.console.fatal(this.bot.lang.modules.read_dir_err);
       files.forEach((dirent, i, array) => {
         if (dirent.isDirectory()) {
-          this.bot.console.warn(dirent.name);
           this.loadModules(dirent.name, "index.js");
         } else {
           this.loadModules(false, dirent.name);

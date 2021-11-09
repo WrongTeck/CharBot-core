@@ -9,9 +9,12 @@ let Commands = {
     // Should unload all plugins, then modules and soft-stop the bot
     console.log(console.bot.lang.commands.shutdown_message);
     console.log("Bye!");
-    process.stdout.clearLine();
     console.term.grabInput(false);
-    console.term.processExit(0);
+    process.stdout.clearLine();
+    setTimeout(() => {
+      console.term.clear();
+      console.term.processExit(0);
+    }, 1300);
   },
   /**
    * Alias for stop 
