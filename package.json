@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx nodemon",
-    "start": "./start.sh",
+    "start": "node .",
     "stop": "./stop.sh",
     "ts": "tsc --watch"
   },

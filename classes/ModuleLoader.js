@@ -55,38 +55,36 @@ class ModuleLoader {
       modulep = require(`../modules/${dir}/index.js`);
       name = dir;
     }
-    this.bot.console.pl(`Loading ${name} v${modulep.version}...`);
-    if(modulep.modules.lenght > 0 && this.bot.modules) {
-      modulep.modules.forEach((value, index, array) => {
-        if(this.bot.modules[value]) {
-          let loaded;
-          if(modulep.main) {
-            loaded = new modulep.main(this.bot);
-            Object.assign(loaded, {"name": modulep.name, "version": modulep.version});
-          } else {
-            loaded = modulep;
+    this.bot.console.ml(`Loading ${name} v${modulep.version}...`);
+    if(modulep.modules && modulep.modules.length > 0) {
+      modulep.modules.forEach((module) => {
+        if(!this.bot.modules[name]) {
+          if(!this.loadDepend(module)) {
+            return this.bot.console.error(`Could not load module {name}`, { name: name });
           }
-          if(modulep.commands) {
-            this.bot.console.registerCommand(modulep.commands);
-          }
-          Object.defineProperty(this.modulep, name, {writable: true, value: loaded});
-        } else if(modulep.modules.lenght > 0){
-          this.bot.console.error(this.bot.lang.modulep.missed_module, {module: value, name: name});
-        } else {
-          let loaded;
-          if(modulep.main) {
-            loaded = new modulep.main(this.bot);
-            Object.assign(loaded, {"name": modulep.name, "version": modulep.version});
-          } else {
-            loaded = modulep;
-          }
-          if(modulep.commands) {
-            this.bot.console.registerCommand(modulep.commands);
-          }
-          Object.defineProperty(this.modulep, name, {writable: true, value: loaded});
         }
-      })
+      });
     }
+    if(modulep.main) {
+      this.bot.modules[name] = new modulep.main(this.bot);
+    }
+    if(modulep.commands) {
+      this.bot.console.registerCommand(modulep.commands);
+    }    
+  }
+  loadDepend(name) {
+    fs.readdir("./modules", { encoding: "utf-8" }, (err, files) => {
+      if(err) {
+        this.bot.console.error(err);
+        return false;
+      }
+      if(files.includes(name)) {
+        this.loadModules(name, "index.js");
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 }
 

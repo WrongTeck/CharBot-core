@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM node:16.9.0
-
-ENV NODE_ENV production
-WORKDIR /app
-COPY package.json ./
+FROM alpine:latest
+RUN apk add --no-cache nodejs
+COPY package.json .
+COPY package-lock.json .
 RUN npm install
-COPY . .
-CMD [ "node", "."]
+COPY * .
+CMD ["npm", "start"]

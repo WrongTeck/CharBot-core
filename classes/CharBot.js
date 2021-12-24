@@ -26,7 +26,7 @@ class CharBot extends EventEmitter {
     this.plugins = {};
     /**
      * Modules loaded in the core of the bot
-     * @type {Object}
+     * @type {Object<Object>}
      */
     this.modules = {};
 
