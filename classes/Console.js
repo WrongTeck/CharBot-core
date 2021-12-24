@@ -70,6 +70,7 @@ class Console extends Logger {
           this.commands.stop(this);
         } catch (e) {
           this.fatal("Something is broken! Hard exit...");
+          process.exit(1);
         }
         break;
     }

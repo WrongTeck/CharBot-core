@@ -5,6 +5,7 @@ const config = require("../config/main.json");
 const fs = require("fs");
 const PluginLoader = require("./PluginLoader");
 const ModuleLoader = require("./ModuleLoader");
+const ConfigLoader = require("./ConfigLoader");
 
 class CharBot extends EventEmitter {
   constructor() {
@@ -29,6 +30,14 @@ class CharBot extends EventEmitter {
      * @type {Object<Object>}
      */
     this.modules = {};
+    /**
+     * Configurations files
+     * @type {Object}
+     */
+    new ConfigLoader(this, (config) => {
+      this.config = config;
+      this.moduleLoad();
+    });
 
     fs.access(__dirname + `/../languages/${config.lang}.json`, fs.constants.R_OK, (err) => {
       if (err && !config.debug) return this.console.fatal("Wrong lang configuration! Check the docs!");
@@ -37,7 +46,6 @@ class CharBot extends EventEmitter {
     Object.assign(this.lang, require(__dirname + `/../languages/${config.lang}.json`));
 
     this.console.log(this.lang.bot_banner_start, { version: version });
-    this.moduleLoad();
 
     this.on("modulesLoaded", () => {
       this.pluginLoad();
