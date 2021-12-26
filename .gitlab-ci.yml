@@ -16,3 +16,19 @@ cache:
   paths:
     - node_modules/
 
+stages:
+  - test
+  - build
+  - deploy
+
+test: 
+  stage: test
+  script: npm i && npm run lint
+
+build:
+  stage: build
+  script: docker build . -t charbot:latest
+
+deploy:
+  stage: deploy
+  script: echo "Need to complete afterwards"
