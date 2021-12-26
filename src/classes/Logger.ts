@@ -50,7 +50,7 @@ export class Logger extends PlaceHolders {
       },
       (err, arg) => {
         if(err) return this.error(err);
-        this.last = true;
+        this.last = false;
         this.file(arg, "INPUT");
         this.executor(arg);
       }
