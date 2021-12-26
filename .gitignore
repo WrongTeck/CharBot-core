@@ -9,10 +9,6 @@ modules
 plugins
 .vscode
 target
-src/*/*.js
-src/*/*.d.ts
-src/*.js
-src/*.d.ts
 classes
 index.*
 languages
