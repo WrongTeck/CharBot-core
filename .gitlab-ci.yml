@@ -14,7 +14,11 @@ stages:
   - build
   - deploy
 
-test: 
+test_a:
+  stage: test
+  script: apk add nodejs npm
+
+test:
   stage: test
   script: npm i && npm run lint
 
