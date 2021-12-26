@@ -34,7 +34,7 @@ export class CharBot extends EventEmitter {
 }
 
 interface Configs {
-  [confName: string]: Configs & string & number & boolean,
+  [confName: string]: Configs & string,
 }
 
 interface Lang {
