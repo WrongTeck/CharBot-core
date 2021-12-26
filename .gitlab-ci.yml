@@ -14,6 +14,10 @@ stages:
   - build
   - deploy
 
+test_a: 
+  stage: test
+  script: export $PATH=$PATH:/usr/bin:/sbin
+
 test: 
   stage: test
   script: npm i && npm run lint
