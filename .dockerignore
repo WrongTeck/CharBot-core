@@ -1,0 +1,12 @@
+plugins/
+modules/
+logs/
+node_modules/
+test/
+.vscode/
+.git/
+.gitignore
+.editorconfig
+.eslintrc.js
+.eslintrc.json
+.gitattributes
