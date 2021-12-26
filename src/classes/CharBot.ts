@@ -1,17 +1,13 @@
 import EventEmitter from "events";
-import { access, constants } from "fs";
 import { ConfigLoader } from "./ConfigLoader";
 import CharConsole from "./Console";
 import ModuleLoader, { CharModules } from "./ModuleLoader";
 import PluginLoader, { CharPlugins } from "./PluginLoader";
 
-
-
-
 export class CharBot extends EventEmitter {
   console: CharConsole;
-  lang: any;
-  config: any;
+  lang: Lang;
+  config: Configs;
   plugins: CharPlugins;
   modules: CharModules;
   constructor() {
@@ -35,6 +31,14 @@ export class CharBot extends EventEmitter {
     this.lang = {};
     Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
   }
+}
+
+interface Configs {
+  [confName: string]: Configs & string & number & boolean,
+}
+
+interface Lang {
+  [langName: string]: Lang & string
 }
 
 export default CharBot;
