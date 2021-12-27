@@ -54,6 +54,7 @@ export class PluginLoader {
       plugin = require(`../plugins/${dir}/index.js`);
       name = dir;
     }
+    if(dir == "plugins" || file == "plugins") return;
     this.bot.console.pl(`Loading ${name} v${plugin.version}...`);
     if(plugin.modules.length > 0 && this.bot.modules) {
       plugin.modules.forEach((value, index, array) => {
