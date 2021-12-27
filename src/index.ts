@@ -4,7 +4,7 @@ import Logger from "./classes/Logger";
 import PlaceHolders from "./classes/PlaceHolders";
 import ModuleLoader from "./classes/ModuleLoader";
 import PluginLoader from "./classes/PluginLoader";
-
+import { Command, Commands, BasicCommands } from "./classes/Commands";
 try {
   var bot = new CharBot();
 } catch (error) {
@@ -17,5 +17,8 @@ export {
   PlaceHolders,
   Logger,
   PluginLoader,
-  ModuleLoader
+  ModuleLoader,
+  Command,
+  Commands,
+  BasicCommands
 }
