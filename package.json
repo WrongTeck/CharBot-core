@@ -1,17 +1,14 @@
 {
-  "name": "main",
-  "version": "2.0-ALPHA",
+  "name": "charbot",
+  "version": "3.0-ALPHA",
   "description": "The core of ChairBot",
-  "main": "index.js",
+  "types": "src/",
   "scripts": {
-    "test": "npx nodemon",
-    "start": "node .",
-    "stop": "./stop.sh",
     "ts": "tsc --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.wrongteck.ga:chairbot/core/main.git"
+    "url": "git@gitlab.wrongteck.ga:charbot/core/full.git"
   },
   "keywords": [
     "bot",
@@ -24,7 +21,7 @@
     "terminal-kit": "^2.1.8"
   },
   "devDependencies": {
-    "@types/node": "^17.0.4",
+    "@types/node": "^17.0.5",
     "@types/terminal-kit": "^1.28.4"
   }
 }

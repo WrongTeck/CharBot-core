@@ -9,10 +9,8 @@ modules
 plugins
 .vscode
 target
-classes/*.d.ts
 classes/*.js
 index.js
 languages
 config
 index.js
-index.d.ts
