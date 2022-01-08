@@ -4,7 +4,7 @@ export interface CharModule {
     name: string;
     version: string;
     modules?: Array<string>;
-    main?: ObjectConstructor;
+    main?: any;
     commands?: Commands;
 }
 export interface CharModules {
@@ -17,13 +17,24 @@ export declare class ModuleLoader {
     /**
      * Read the module folder
      */
-    readDir(): void;
+    private readDir;
     /**
      * Load a module
      * @param {String} dir The dir that contain the modules
      * @param {String} file The file that contain the main class
      */
     loadModules(dir: string, file: string): void;
-    loadDepend(name: string): boolean;
+    /**
+     * Tries to load the dependencies of a module
+     * @param name Name of the module
+     * @returns If its succeeds or not
+     */
+    private loadDepend;
+    /**
+     * Unload a module and eventual dependents modules
+     * @param name Name of the module to unload
+     * @returns Whatever or not if the module where unloaded
+     */
+    unloadModule(name: string): boolean;
 }
 export default ModuleLoader;

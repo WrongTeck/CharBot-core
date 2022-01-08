@@ -12,14 +12,7 @@ export interface Commands {
 export let BasicCommands = {
   stop(console: CharConsole) {
     // Should unload all plugins, then modules and soft-stop the bot
-    console.log(console.bot.lang.commands.shutdown_message);
-    console.log("Bye!");
-    console.term.grabInput(false);
-    process.stdout.clearLine(0);
-    setTimeout(() => {
-      console.term.clear();
-      console.term.processExit(0);
-    }, 1300);
+    console.bot.stop();
   },
   exit(console: CharConsole) {
     console.commands.stop(console);

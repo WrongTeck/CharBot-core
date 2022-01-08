@@ -4,7 +4,7 @@ export interface CharPlugin {
     name: string;
     version: string;
     modules?: Array<string>;
-    main?: ObjectConstructor;
+    main?: any;
     commands?: Commands;
 }
 export interface CharPlugins {

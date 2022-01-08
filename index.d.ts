@@ -5,4 +5,4 @@ import PlaceHolders from "./classes/PlaceHolders";
 import ModuleLoader from "./classes/ModuleLoader";
 import PluginLoader from "./classes/PluginLoader";
 import { Command, Commands, BasicCommands } from "./classes/Commands";
-export { CharBot, CharConsole, PlaceHolders, Logger, PluginLoader, ModuleLoader, Command, Commands, BasicCommands };
+export { CharBot, CharConsole, PlaceHolders, Logger, PluginLoader, ModuleLoader, Command, Commands, BasicCommands, };

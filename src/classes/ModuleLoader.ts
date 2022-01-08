@@ -6,7 +6,7 @@ export interface CharModule {
   name: string;
   version: string;
   modules?: Array<string>;
-  main?: ObjectConstructor;
+  main?: any;
   commands?: Commands;
 }
 
@@ -26,7 +26,7 @@ export class ModuleLoader {
   /**
    * Read the module folder
    */
-  readDir() {
+  private readDir() {
     this.bot.console.ml(this.bot.lang.modules.load_start);
     readdir(
       "./modules",
@@ -39,9 +39,9 @@ export class ModuleLoader {
           return this.bot.console.fatal(this.bot.lang.modules.read_dir_err);
         files.forEach((dirent, i, array) => {
           if (dirent.isDirectory()) {
-            this.loadModules(dirent.name, "index.js");
+            this.loadModule(dirent.name);
           } else {
-            this.loadModules(null, dirent.name);
+            this.bot.console.error("Cannot load {module} because is not a directory!", { "module": dirent.name });
           }
         });
         this.bot.emit("modulesLoaded");
@@ -53,16 +53,11 @@ export class ModuleLoader {
    * @param {String} dir The dir that contain the modules
    * @param {String} file The file that contain the main class
    */
-  loadModules(dir: string, file: string) {
+  public loadModule(dir: string) {
     let name, modulep;
-    if (dir == "modules" || file == "modules") return;
-    if (!dir) {
-      modulep = require(`../modules/${file}`);
-      name = file;
-    } else {
-      modulep = require(`../modules/${dir}/index.js`);
-      name = dir;
-    }
+    if (dir == "modules") return;
+    modulep = require(`../modules/${dir}/index.js`);
+    name = dir;
     this.bot.console.ml(`Loading ${name} v${modulep.version}...`);
     if (modulep.modules && modulep.modules.length > 0) {
       modulep.modules.forEach((module) => {
@@ -82,13 +77,54 @@ export class ModuleLoader {
       this.bot.console.registerCommand(modulep.commands);
     }
   }
-  loadDepend(name: string): boolean {
+  /**
+   * Tries to load the dependencies of a module
+   * @param name Name of the module
+   * @returns If its succeeds or not
+   */
+  private loadDepend(name: string): boolean {
     let modules: Array<string> = readdirSync("./modules", { encoding: "utf-8" });
     if (modules.includes(name)) {
-      this.loadModules(name, "index.js");
+      this.loadModule(name);
       return true;
     }
     return false;
+  }
+  /**
+   * Unload a module and eventual dependents modules
+   * @param name Name of the module to unload
+   * @returns Whatever or not if the module where unloaded
+   */
+  public unloadModule(name: string, force: boolean): boolean {
+    if(force) {
+      delete this.modules[name];
+      return true;
+    }
+    for (const charmodule in this.modules) {
+      if(this.modules[charmodule].modules)
+        for (const dependent in this.modules[charmodule].modules) {
+          if(dependent == name)
+            return false;
+        }
+      for (const charplugin in this.bot.plugins) {
+        if(this.bot.plugins[charplugin].modules)
+          for (const dependent in this.bot.plugins[charplugin].modules) {
+            if(dependent == name)
+              return false;
+          }
+      }
+    }
+  }
+  /**
+   * Return an array of the dependencies of a Modules
+   * @param name Name of the module
+   * @returns An array of modules name
+   */
+  public getDependencies(name: string): Array<string> {
+    if(!this.modules[name]) return [];
+    if(this.modules[name].modules && this.modules[name].modules.length > 0)
+      return this.modules[name].modules;
+    return [];
   }
 }
 

@@ -16,6 +16,7 @@
   "author": "WrongTeck",
   "license": "GPL-3.0",
   "dependencies": {
+    "eventemitter2": "^6.4.5",
     "moment": "^2.29.1",
     "terminal-kit": "^2.1.8"
   },

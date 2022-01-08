@@ -1,17 +1,23 @@
-import EventEmitter from "events";
+import { EventEmitter2 } from "eventemitter2";
 import { ConfigLoader } from "./ConfigLoader";
 import CharConsole from "./Console";
 import ModuleLoader, { CharModules } from "./ModuleLoader";
 import PluginLoader, { CharPlugins } from "./PluginLoader";
 
-export class CharBot extends EventEmitter {
+export class CharBot extends EventEmitter2 {
   console: CharConsole;
   lang: Lang;
   config: Configs;
   plugins: CharPlugins;
   modules: CharModules;
   constructor() {
-    super({ captureRejections: true });
+    super({ wildcard: true });
+    return this;
+  }
+  /**
+   * Starts the bot
+   */
+  start(): CharBot {
     this.console = new CharConsole(this);
     new ConfigLoader(this, (config) => {
       this.config = config;
@@ -27,9 +33,22 @@ export class CharBot extends EventEmitter {
     });
     return this;
   }
+
   reloadLang() {
     this.lang = {};
     Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
+  }
+  /**
+   * Stops the bot
+   */
+  stop() {
+    this.console.log(this.lang.commands.shutdown_message);
+    this.console.term.grabInput(false);
+    process.stdout.clearLine(0);
+    setTimeout(() => {
+      this.console.term.clear();
+      this.console.term.processExit(0);
+    }, 1300);
   }
 }
 

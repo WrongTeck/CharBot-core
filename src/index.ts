@@ -20,5 +20,5 @@ export {
   ModuleLoader,
   Command,
   Commands,
-  BasicCommands
+  BasicCommands,
 }
