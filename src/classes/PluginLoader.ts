@@ -15,7 +15,12 @@ export interface CharPlugins {
   [pluginName: string]: CharPlugin;
 }
 
-export class PluginLoader {
+export interface _PluginManager {
+  bot: CharBot;
+  [pluginName: string]: CharPlugin | any;
+}
+
+export class PluginLoader implements _PluginManager {
   bot: CharBot;
   plugins: CharPlugins;
   constructor(bot: CharBot) {
@@ -31,7 +36,7 @@ export class PluginLoader {
       withFileTypes: true
     }, (err, files) => {
       if (err) return this.bot.console.fatal(this.bot.lang.plugins.read_dir_err);
-      files.forEach((dirent, i, array) => {
+      files.forEach((dirent) => {
         if (dirent.isDirectory()) {
           this.loadPlugin(dirent.name);
         } else {
@@ -65,25 +70,25 @@ export class PluginLoader {
           if(plugin.commands) {
             this.bot.console.registerCommand(plugin.commands);
           }
-          Object.defineProperty(this.plugins, name, {writable: true, value: loaded});
+          Object.defineProperty(this.plugins, name, { writable: true, value: loaded });
         } else {
-          this.bot.console.error(this.bot.lang.plugins.missed_module, {module: value, plugin: name});
+          this.bot.console.error(this.bot.lang.plugins.missed_module, { module: value, plugin: name });
         }
       })
     } else if(plugin.modules.length > 0) {
-      this.bot.console.error(this.bot.lang.plugins.missed_module, {module: "all", plugin: name});
+      this.bot.console.error(this.bot.lang.plugins.missed_module, { module: "all", plugin: name });
     } else {
       let loaded;
           if(plugin.main) {
             loaded = new plugin.main(this.bot);
-            Object.assign(loaded, {"name": plugin.name, "version": plugin.version, "modules": plugin.modules, "commands": plugin.commands});
+            Object.assign(loaded, { "name": plugin.name, "version": plugin.version, "modules": plugin.modules, "commands": plugin.commands });
           } else {
             loaded = plugin;
           }
           if(plugin.commands) {
             this.bot.console.registerCommand(plugin.commands);
           }
-          Object.defineProperty(this.plugins, name, {writable: true, value: loaded});
+          Object.defineProperty(this.plugins, name, { writable: true, value: loaded });
     }
   }
   /**
@@ -100,6 +105,17 @@ export class PluginLoader {
     }
     if(!this.bot.plugins[name]) return false;
     //Incomplete, needs normal procedure
+  }
+  /**
+   * Get the dependencies of a plugin
+   * @param name The plugin name
+   * @return An array of module names
+   */
+  public getDependecies(name: string): Array<string> {
+    if(!this.bot.plugins[name] || !this.bot.plugins[name].modules) return [];
+    if(this.bot.plugins[name].modules.length > 0)
+      return this.bot.plugins[name].modules;
+    return [];
   }
 }
 

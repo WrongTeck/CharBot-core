@@ -3,7 +3,6 @@ import { ConfigLoader } from "./ConfigLoader";
 import CharConsole from "./Console";
 import ModuleLoader, { CharModules } from "./ModuleLoader";
 import PluginLoader, { CharPlugins } from "./PluginLoader";
-
 export class CharBot extends EventEmitter2 {
   console: CharConsole;
   lang: Lang;
@@ -22,6 +21,7 @@ export class CharBot extends EventEmitter2 {
     new ConfigLoader(this, (config) => {
       this.config = config;
       this.reloadLang();
+      this.console.log(this.lang.bot_banner_start);
       this.modules = new ModuleLoader(this).modules;
     });
     this.on("modulesLoaded", () => {
@@ -33,7 +33,9 @@ export class CharBot extends EventEmitter2 {
     });
     return this;
   }
-
+  /**
+   * Reload all languages files
+   */
   reloadLang() {
     this.lang = {};
     Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
@@ -47,7 +49,7 @@ export class CharBot extends EventEmitter2 {
     process.stdout.clearLine(0);
     setTimeout(() => {
       this.console.term.clear();
-      this.console.term.processExit(0);
+      process.exit(0);
     }, 1300);
   }
 }

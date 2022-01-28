@@ -5,11 +5,8 @@ import PlaceHolders from "./classes/PlaceHolders";
 import ModuleLoader from "./classes/ModuleLoader";
 import PluginLoader from "./classes/PluginLoader";
 import { Command, Commands, BasicCommands } from "./classes/Commands";
-try {
-  var bot = new CharBot();
-} catch (error) {
-  console.error(error);
-}
+
+new CharBot().start();
 
 export {
   CharBot,

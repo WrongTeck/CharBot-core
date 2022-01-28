@@ -15,3 +15,5 @@ languages
 config
 index.js
 yarn.lock
+dist/
+start
