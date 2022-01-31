@@ -10,7 +10,7 @@ export class CharConsole extends Logger {
   term: any;
   commands: Commands;
   constructor(charbot: CharBot) {
-    super();
+    super(charbot);
     super.executor = this.command;
     this.bot = charbot;
     this.commands = {};

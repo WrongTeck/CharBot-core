@@ -1,7 +1,7 @@
 import Logger from "./Logger"
 
 export interface PlaceHolder {
-  [propName: string]: string
+  [propName: string]: any
 }
 
 export class PlaceHolders {

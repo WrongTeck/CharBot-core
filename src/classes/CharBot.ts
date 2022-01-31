@@ -3,6 +3,7 @@ import { ConfigLoader } from "./ConfigLoader";
 import CharConsole from "./Console";
 import ModuleLoader, { CharModules } from "./ModuleLoader";
 import PluginLoader, { CharPlugins } from "./PluginLoader";
+const version = "0.1 - ALPHA";
 export class CharBot extends EventEmitter2 {
   console: CharConsole;
   lang: Lang;
@@ -21,7 +22,7 @@ export class CharBot extends EventEmitter2 {
     new ConfigLoader(this, (config) => {
       this.config = config;
       this.reloadLang();
-      this.console.log(this.lang.bot_banner_start);
+      this.console.log(this.lang.bot_banner_start, {version});
       this.modules = new ModuleLoader(this).modules;
     });
     this.on("modulesLoaded", () => {
@@ -45,8 +46,9 @@ export class CharBot extends EventEmitter2 {
    */
   stop() {
     this.console.log(this.lang.commands.shutdown_message);
-    this.console.term.grabInput(false);
+    this.console.lastCons.abort();
     process.stdout.clearLine(0);
+    process.stdout.clearLine(1);
     setTimeout(() => {
       this.console.term.clear();
       process.exit(0);

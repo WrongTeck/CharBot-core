@@ -3,6 +3,7 @@ import moment from "moment";
 import { appendFile, mkdir } from "fs";
 import { PlaceHolder, PlaceHolders } from "./PlaceHolders";
 import { Commands } from "./Commands";
+import { CharBot } from "..";
 
 export class Logger extends PlaceHolders {
   filename: string;
@@ -11,8 +12,10 @@ export class Logger extends PlaceHolders {
   history: Array<string>;
   last: boolean;
   lastCons: any;
-  constructor() {
+  bot: CharBot;
+  constructor(bot: CharBot) {
     super();
+    this.bot = bot;
     super.logger = this;
     if(!this.filename) {
       this.filename = moment().format("HH-mm-ss") + "-charbot";
@@ -191,6 +194,22 @@ export class Logger extends PlaceHolders {
           placeholders
         )
       );
+    }
+    this.cons();
+    this.last = true;
+  }
+  debug(message: string, placeholders?: PlaceHolder) {
+    if(this.bot.config.core.debug) {
+      message = message.toString();
+      let [data, time] = this.prelog("DEBUG", message);
+      for (let i in message.split("\n")) {
+        terminal.brightBlue(
+          super.parse(
+            `${data}[${time}] [DEBUG] ${message.split("\n")[i]}`,
+            placeholders
+          )
+        );
+      }
     }
     this.cons();
     this.last = true;

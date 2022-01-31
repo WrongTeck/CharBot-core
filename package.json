@@ -6,7 +6,7 @@
   "scripts": {
     "ts": "tsc --watch",
     "build":"bash ./build.sh",
-    "start":"./start",
+    "start":"node .",
     "types":"tsc --declaration true --emitDeclarationOnly true --outFile ./types.d.ts --watch",
     "update":"git pull && npm build"
   },
