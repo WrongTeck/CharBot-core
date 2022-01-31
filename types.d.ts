@@ -12,7 +12,7 @@ declare module "classes/ConfigLoader" {
 declare module "classes/PlaceHolders" {
     import Logger from "classes/Logger";
     export interface PlaceHolder {
-        [propName: string]: string;
+        [propName: string]: any;
     }
     export class PlaceHolders {
         logger: Logger;
@@ -60,6 +60,7 @@ declare module "classes/Commands" {
 declare module "classes/Logger" {
     import { PlaceHolder, PlaceHolders } from "classes/PlaceHolders";
     import { Commands } from "classes/Commands";
+    import { CharBot } from "index";
     export class Logger extends PlaceHolders {
         filename: string;
         commands: Commands;
@@ -67,7 +68,8 @@ declare module "classes/Logger" {
         history: Array<string>;
         last: boolean;
         lastCons: any;
-        constructor();
+        bot: CharBot;
+        constructor(bot: CharBot);
         addHistory(command: string): void;
         file(message: string, type: string): void;
         cons(): void;
@@ -81,6 +83,7 @@ declare module "classes/Logger" {
         mu(message: string, placeholders?: PlaceHolder): void;
         pu(message: string, placeholders?: PlaceHolder): void;
         fatal(message: string, placeholders?: PlaceHolder): void;
+        debug(message: string, placeholders?: PlaceHolder): void;
     }
     export default Logger;
 }
