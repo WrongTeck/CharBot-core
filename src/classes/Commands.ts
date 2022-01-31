@@ -10,13 +10,24 @@ export interface Commands {
 }
 
 export let BasicCommands = {
+  /**
+   * Strops the bot from the console
+   * @param console The console
+   */
   stop(console: CharConsole) {
-    // Should unload all plugins, then modules and soft-stop the bot
     console.bot.stop();
   },
+  /**
+   * Alias for stop
+   * @param console The console
+   */
   exit(console: CharConsole) {
     console.commands.stop(console);
   },
+  /**
+   * Clear the logs folder
+   * @param console The console
+   */
   clearLogs(console: CharConsole) {
     readdir("./logs", { encoding: "utf-8" }, (err, files) => {
       if (err) return console.error(console.bot.lang.commands.clear_logs_error);
@@ -65,7 +76,7 @@ export let BasicCommands = {
       width: 40,
       fit:true
     });
-    console.cons();
+    console.rearm();
   },
   /**
    * Reload console commands
@@ -82,6 +93,10 @@ export let BasicCommands = {
     console.term.clear();
     console.log("Cleared!");
   },
+  /**
+   * Reload all commands in CharBot
+   * @param console The console
+   */
   reloadCommands(console: CharConsole) {
     console.log(console.bot.lang.commands.reload_commands);
     console.unregisterCommand();

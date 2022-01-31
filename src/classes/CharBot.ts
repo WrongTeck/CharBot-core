@@ -1,8 +1,8 @@
 import { EventEmitter2 } from "eventemitter2";
-import { ConfigLoader } from "./ConfigLoader";
+import { ConfigManager } from "./ConfigManager";
 import CharConsole from "./Console";
-import ModuleLoader, { CharModules } from "./ModuleLoader";
-import PluginLoader, { CharPlugins } from "./PluginLoader";
+import ModuleManager, { CharModules } from "./ModuleManager";
+import PluginManager, { CharPlugins } from "./PluginManager";
 const version = "0.1 - ALPHA";
 export class CharBot extends EventEmitter2 {
   console: CharConsole;
@@ -10,6 +10,10 @@ export class CharBot extends EventEmitter2 {
   config: Configs;
   plugins: CharPlugins;
   modules: CharModules;
+  /**
+   * Initialize a new CharBot instance
+   * @returns The CharBot instance
+   */
   constructor() {
     super({ wildcard: true });
     return this;
@@ -19,14 +23,14 @@ export class CharBot extends EventEmitter2 {
    */
   start(): CharBot {
     this.console = new CharConsole(this);
-    new ConfigLoader(this, (config) => {
+    new ConfigManager(this, (config: Configs) => {
       this.config = config;
       this.reloadLang();
       this.console.log(this.lang.bot_banner_start, {version});
-      this.modules = new ModuleLoader(this).modules;
+      this.modules = new ModuleManager(this).modules;
     });
     this.on("modulesLoaded", () => {
-      this.plugins = new PluginLoader(this).plugins;
+      this.plugins = new PluginManager(this).plugins;
     });
     this.on("pluginsLoaded", () => {
       this.emit("ready");
@@ -38,6 +42,7 @@ export class CharBot extends EventEmitter2 {
    * Reload all languages files
    */
   reloadLang() {
+    this.emit("langReload")
     this.lang = {};
     Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
   }
@@ -46,13 +51,22 @@ export class CharBot extends EventEmitter2 {
    */
   stop() {
     this.console.log(this.lang.commands.shutdown_message);
+    this.emit("shutdown");
     this.console.lastCons.abort();
     process.stdout.clearLine(0);
     process.stdout.clearLine(1);
+    for(let charModule in this.modules) {
+      if(this.modules[charModule].unload)
+        this.modules[charModule].unload();
+    }
+    for(let charPlugin in this.plugins) {
+      if(this.plugins[charPlugin].unload)
+        this.plugins[charPlugin].unload();
+    }
     setTimeout(() => {
       this.console.term.clear();
       process.exit(0);
-    }, 1300);
+    }, 1000);
   }
 }
 

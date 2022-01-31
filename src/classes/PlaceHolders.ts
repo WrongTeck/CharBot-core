@@ -6,9 +6,19 @@ export interface PlaceHolder {
 
 export class PlaceHolders {
   logger: Logger;
+  /**
+   * Initialize a new PlaceHolder parser instance
+   * @returns The PlaceHolder parser
+   */
   constructor() {
     return this;
   }
+  /**
+   * Replace placeholders with their values, based on the passed PlaceHolder object
+   * @param data The unformatted string
+   * @param placeHolders The placeholder object to parse
+   * @returns The formatted string
+   */
   parse(data: string, placeHolders: PlaceHolder) {
     if(typeof data !== "string" || !data) return "No data or invalid data incoming in the PlaceHolder Parser!";
     if(!placeHolders) return data.toString();

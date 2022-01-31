@@ -15,12 +15,7 @@ export interface CharPlugins {
   [pluginName: string]: CharPlugin;
 }
 
-export interface _PluginManager {
-  bot: CharBot;
-  [pluginName: string]: CharPlugin | any;
-}
-
-export class PluginLoader implements _PluginManager {
+export class PluginManager {
   bot: CharBot;
   plugins: CharPlugins;
   constructor(bot: CharBot) {
@@ -29,6 +24,9 @@ export class PluginLoader implements _PluginManager {
     this.readDir();
     return this;
   }
+  /**
+   * Reads the plugin folder
+   */
   private readDir() {
     this.bot.console.pl(this.bot.lang.plugins.load_start);
     readdir("./plugins", {
@@ -63,7 +61,7 @@ export class PluginLoader implements _PluginManager {
           let loaded;
           if(plugin.main) {
             loaded = new plugin.main(this.bot);
-            Object.assign(loaded, {"name": plugin.name, "version": plugin.version});
+            Object.assign(loaded, {"name": plugin.name, "version": plugin.version });
           } else {
             loaded = plugin;
           }
@@ -97,14 +95,13 @@ export class PluginLoader implements _PluginManager {
    * @return If the unload succeeded or not
    */
   public unloadPlugin(name: string, force: boolean): boolean {
-    if(force && this.bot.plugins[name]) {
-      if(this.plugins[name].unload)
-        this.plugins[name].unload();
-      delete this.bot.plugins[name];
-      return true
-    }
     if(!this.bot.plugins[name]) return false;
-    //Incomplete, needs normal procedure
+    if(force) {
+      delete this.bot.plugins[name];
+      return true;
+    }
+    if(this.bot.plugins[name].unload)
+      this.bot.plugins[name].unload();
   }
   /**
    * Get the dependencies of a plugin
@@ -119,4 +116,4 @@ export class PluginLoader implements _PluginManager {
   }
 }
 
-export default PluginLoader;
+export default PluginManager;

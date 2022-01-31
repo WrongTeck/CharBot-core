@@ -9,6 +9,10 @@ export class CharConsole extends Logger {
   bot: CharBot;
   term: any;
   commands: Commands;
+  /**
+   * Initialize a new instance of the CharConsole
+   * @param charbot The instance that called the Console
+   */
   constructor(charbot: CharBot) {
     super(charbot);
     super.executor = this.command;
@@ -20,16 +24,14 @@ export class CharConsole extends Logger {
     this.term = term;
     term.grabInput(true);
     term.fullscreen(true);
-    term.on("key", (name: string, matches, data) => {
-      this.character(name);
-    });
+    term.on("key", this.key);
   }
-  character(name: string) {
+  /**
+   * Handle a key/combination of keys
+   * @param name The key name
+   */
+  private key(name: string, matches: string) {
     if(name.startsWith("CTRL") && name != "CTRL_C") return;
-    let admitted = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
-    if(admitted.includes(name)) return;
     if(name == "CTRL_C") {
         try {
           this.commands.stop(this);
@@ -39,6 +41,11 @@ export class CharConsole extends Logger {
         }
     }
   }
+  /**
+   * Handles commands inside CharBot
+   * @param last The last command typed
+   * @returns An error if any
+   */
   command(last: string) {
     if(!last) return this.enter();
     if(last.includes(" ")) {
@@ -56,6 +63,9 @@ export class CharConsole extends Logger {
       }
     }
   }
+  /**
+   * Create an input field for the CharBot console
+   */
   enter() {
     term.inputField({
       echo: true,
@@ -67,6 +77,12 @@ export class CharConsole extends Logger {
       this.executor(arg);
     });
   }
+  /**
+   * Unregister a command from the Console
+   * If no arguments is passed all commands will be unload
+   * except of the basic ones 
+   * @param name Command name
+   */
   unregisterCommand(name?: string) {
     if(name) {
       delete this.commands[name];
@@ -76,6 +92,10 @@ export class CharConsole extends Logger {
     this.commands = {};
     Object.assign(this.commands, BasicCommands);
   }
+  /**
+   * Register an Command object in the CharBot console
+   * @param commands Command object to register
+   */
   registerCommand(commands: Commands) {
     if(this.commands) {
       this.commands = Object.assign(this.commands, commands);

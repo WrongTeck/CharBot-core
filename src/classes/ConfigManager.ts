@@ -1,9 +1,15 @@
 import { readdir } from "fs";
 import CharBot from "./CharBot";
-
-export class ConfigLoader {
+// Needs a more modular rewrite
+export class ConfigManager {
   config: Object;
   bot: CharBot;
+  /**
+   * Initialize a new instance of the ConfigManager
+   * @param bot The CharBot instance that called it
+   * @param callback Returns when the configs are ready
+   * @returns The ConfigManager
+   */
   constructor(bot: CharBot, callback: Function) {
     this.bot = bot;
     this.bot.emit("loadingConfig", null);
@@ -12,6 +18,10 @@ export class ConfigLoader {
     });
     return this;
   }
+  /**
+   * Load all configs from the config folder
+   * @returns A promise with the config
+   */
   loadConfig() {
     let config = {
       reloadConfig: null,
@@ -37,12 +47,19 @@ export class ConfigLoader {
       });
     });
   }
+  /**
+   * Reloads configs in the bot
+   */
   reloadConfig() {
     this.bot.emit("reloadingConfig");
     this.config = {};
     this.loadConfig();
     this.bot.emit("configReloaded");
   }
+  /**
+   * Unloads a specific config from the bot
+   * @param name The config name
+   */
   unloadConfig(name) {
     this.bot.emit("unloadingConfig", name);
     delete this.bot.config[name];

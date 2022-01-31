@@ -8,15 +8,21 @@ export interface CharModule {
   modules?: Array<string>;
   main?: any;
   commands?: Commands;
+  [name: string]: any
 }
 
 export interface CharModules {
   [moduleName: string]: CharModule;
 }
 
-export class ModuleLoader {
+export class ModuleManager {
   modules: CharModules;
   bot: CharBot;
+  /**
+   * Initialize a new instance of the ModuleManager
+   * @param bot The instance of CharBot
+   * @returns The ModuleManager
+   */
   constructor(bot: CharBot) {
     this.modules = {};
     this.bot = bot;
@@ -50,17 +56,17 @@ export class ModuleLoader {
   }
   /**
    * Load a module
-   * @param {String} dir The dir that contain the modules
-   * @param {String} file The file that contain the main class
+   * @param dir The dir that contain the modules
+   * @param file The file that contain the main class
    */
   public loadModule(dir: string) {
-    let name, modulep;
+    let name, charModule;
     if (dir == "modules") return;
-    modulep = require(`../modules/${dir}/index.js`);
+    charModule = require(`../modules/${dir}/index.js`);
     name = dir;
-    this.bot.console.ml(`Loading ${name} v${modulep.version}...`);
-    if (modulep.modules && modulep.modules.length > 0) {
-      modulep.modules.forEach((module) => {
+    this.bot.console.ml(`Loading ${name} v${charModule.version}...`);
+    if (charModule.modules && charModule.modules.length > 0) {
+      charModule.modules.forEach((module) => {
         if (!this.bot.modules[name]) {
           if (!this.loadDepend(module)) {
             return this.bot.console.error(`Could not load module {name}`, {
@@ -70,11 +76,11 @@ export class ModuleLoader {
         }
       });
     }
-    if (modulep.main) {
-      this.bot.modules[name] = new modulep.main(this.bot);
+    if (charModule.main) {
+      this.bot.modules[name] = new charModule.main(this.bot);
     }
-    if (modulep.commands) {
-      this.bot.console.registerCommand(modulep.commands);
+    if (charModule.commands) {
+      this.bot.console.registerCommand(charModule.commands);
     }
   }
   /**
@@ -96,6 +102,7 @@ export class ModuleLoader {
    * @returns Whatever or not if the module where unloaded
    */
   public unloadModule(name: string, force: boolean): boolean {
+    if(!this.bot.modules[name]) return false;
     if(force) {
       delete this.modules[name];
       return true;
@@ -114,6 +121,8 @@ export class ModuleLoader {
           }
       }
     }
+    if(this.bot.modules[name].unload)
+      this.bot.modules[name].unload();
   }
   /**
    * Return an array of the dependencies of a Modules
@@ -128,4 +137,4 @@ export class ModuleLoader {
   }
 }
 
-export default ModuleLoader;
+export default ModuleManager;

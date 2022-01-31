@@ -13,6 +13,10 @@ export class Logger extends PlaceHolders {
   last: boolean;
   lastCons: any;
   bot: CharBot;
+  /**
+   * @param bot The CharBot instance that called the logger
+   * @returns A new Logger instance
+   */
   constructor(bot: CharBot) {
     super();
     this.bot = bot;
@@ -24,10 +28,19 @@ export class Logger extends PlaceHolders {
     this.last = false;
     return this;
   }
+  /**
+   * Append a command to the history of the typed commands
+   * @param command The command to append
+   */
   addHistory(command: string) {
     this.history.push(command);
   }
-  file(message: string, type: string) {
+  /**
+   * Append a message with its logging level to the log file
+   * @param message The message to log
+   * @param type The logging level
+   */
+  private file(message: string, type: string) {
     let data: string;
     if(type == "INPUT") {
       data = `> ${message}\n`;
@@ -42,7 +55,10 @@ export class Logger extends PlaceHolders {
       }
     });
   }
-  cons() {
+  /**
+   * Create a prompt for input
+   */
+  private cons() {
     process.stdout.write("\n> ");
     this.lastCons = terminal.inputField(
       {
@@ -59,7 +75,14 @@ export class Logger extends PlaceHolders {
       }
     );
   }
-  prelog(type: string, message: string) {
+  /**
+   * Does all the pre-logging stuff
+   * Write to the file and calculate the time 
+   * @param type The logging level
+   * @param message The message to log
+   * @returns Whatever or not to print a \n and the time
+   */
+  private prelog(type: string, message: string) {
     let data: string;
     const time = moment().format("HH:mm:ss");
     this.file(message, type);
@@ -73,6 +96,11 @@ export class Logger extends PlaceHolders {
     }
     return [data, time];
   }
+  /**
+   * Print a formatted message to the console with LOG level
+   * @param message The message to log
+   * @param placeholders An object with PlaceHolder data
+   */
   log(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("INFO", message);
@@ -87,6 +115,11 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Print a formatted message to console with WARN level
+   * @param message The message to print
+   * @param placeholders A PlaceHolder object
+   */
   warn(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("WARN", message);
@@ -101,6 +134,11 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Prints a formatted message to the console with ERROR level
+   * @param message The message to print
+   * @param placeholders A PlaceHolder object
+   */
   error(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("ERROR", message);
@@ -115,6 +153,11 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Print a message to the console with GRAVE level
+   * @param message The message to print
+   * @param placeholders A PlaceHolder object
+   */
   grave(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("GRAVE", message);
@@ -129,6 +172,12 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Prints a message to console with Module Loader level
+   * Should be used **ONLY** by the ModuleManager
+   * @param message The message to print
+   * @param placeholders PlaceHolder data
+   */
   ml(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("Module Loader", message);
@@ -143,6 +192,12 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Prints a formatted message to the console with Plugin Loader level
+   * Should be used **ONLY** by the PluginManager
+   * @param message The message to print
+   * @param placeholders PlaceHolder data
+   */
   pl(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("Plugin Loader", message);
@@ -157,6 +212,12 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Print a formatted message to the console with Module Unload level
+   * Should be used **ONLY** by the ModuleManager
+   * @param message The message to print
+   * @param placeholders PlaceHolder data
+   */
   mu(message: string, placeholders?: PlaceHolder) {
     let [data, time] = this.prelog("Module Unloader", message);
     for (let i in message.split("\n")) {
@@ -170,6 +231,12 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Prints a message to the console with Plugin Unload level
+   * Should be used **ONLY** by the PluginManager
+   * @param message The message to print
+   * @param placeholders PlaceHolder data
+   */
   pu(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("Plugin Unloader", message);
@@ -184,6 +251,12 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * Prints a message to the console with FATAL level
+   * **WARN**: This also will trigger the shutdown of the bot!
+   * @param message The message to print
+   * @param placeholders PlaceHolder data
+   */
   fatal(message: string, placeholders?: PlaceHolder) {
     message = message.toString();
     let [data, time] = this.prelog("FATAL", message);
@@ -198,6 +271,11 @@ export class Logger extends PlaceHolders {
     this.cons();
     this.last = true;
   }
+  /**
+   * If debug mode is enabled, prints a formatted message to the console with DEBUG level
+   * @param message The message to print
+   * @param placeholders PlaeHolder data
+   */
   debug(message: string, placeholders?: PlaceHolder) {
     if(this.bot.config.core.debug) {
       message = message.toString();
@@ -213,6 +291,14 @@ export class Logger extends PlaceHolders {
     }
     this.cons();
     this.last = true;
+  }
+  /**
+   * Reload the prompt
+   */
+  rearm() {
+    if(this.lastCons)
+      this.lastCons.abort();
+    this.cons();
   }
 }
 
