@@ -1,6 +1,6 @@
 {
   "name": "charbot",
-  "version": "3.0.1",
+  "version": "0.0.1",
   "description": "The core of ChairBot",
   "types": "./types.d.ts",
   "scripts": {

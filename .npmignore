@@ -1,0 +1,16 @@
+src/
+languages/
+classes/
+.dockerignore
+.jshintrc.json
+build.sh
+Dockerfile
+plugins
+modules
+.vscode
+config
+logs
+test
+.eslintrc.json
+index.js
+tsconfig.json
