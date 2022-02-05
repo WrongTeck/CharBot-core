@@ -1,8 +1,9 @@
 import { EventEmitter2 } from "eventemitter2";
 import { ConfigManager } from "./ConfigManager";
 import CharConsole from "./Console";
-import ModuleManager, { CharModules } from "./ModuleManager";
-import PluginManager, { CharPlugins } from "./PluginManager";
+import ModuleManager from "./ModuleManager";
+import PluginManager from "./PluginManager";
+import { Configs, Lang, CharModules, CharPlugins } from "../interfaces";
 const version = "0.1 - ALPHA";
 export class CharBot extends EventEmitter2 {
   console: CharConsole;
@@ -68,14 +69,6 @@ export class CharBot extends EventEmitter2 {
       process.exit(0);
     }, 1000);
   }
-}
-
-interface Configs {
-  [confName: string]: Configs & string,
-}
-
-interface Lang {
-  [langName: string]: Lang & string
 }
 
 export default CharBot;

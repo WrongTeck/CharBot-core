@@ -4,7 +4,8 @@ import Logger from "./classes/Logger";
 import PlaceHolders from "./classes/PlaceHolders";
 import ModuleLoader from "./classes/ModuleManager";
 import PluginLoader from "./classes/PluginManager";
-import { Command, Commands, BasicCommands } from "./classes/Commands";
+import { BasicCommands } from "./classes/Commands";
+import { Command, Commands } from "./interfaces";
 
 new CharBot().start();
 

@@ -2,7 +2,8 @@ import { Logger } from "./Logger";
 import { terminal } from "terminal-kit";
 import CharBot from "./CharBot";
 const term = terminal;
-import { Commands, BasicCommands } from "./Commands";
+import { BasicCommands } from "./Commands";
+import { Commands } from "../interfaces";
 
 export class CharConsole extends Logger {
   lastCommand: string;

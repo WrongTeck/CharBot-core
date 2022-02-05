@@ -1,8 +1,8 @@
 import { terminal } from "terminal-kit";
 import moment from "moment";
 import { appendFile, mkdir } from "fs";
-import { PlaceHolder, PlaceHolders } from "./PlaceHolders";
-import { Commands } from "./Commands";
+import PlaceHolders from "./PlaceHolders";
+import { Commands, PlaceHolder } from "../interfaces";
 import { CharBot } from "..";
 
 export class Logger extends PlaceHolders {

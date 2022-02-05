@@ -1,19 +1,6 @@
 import { readdir, readdirSync } from "fs";
 import CharBot from "./CharBot";
-import { Commands } from "./Commands";
-
-export interface CharModule {
-  name: string;
-  version: string;
-  modules?: Array<string>;
-  main?: any;
-  commands?: Commands;
-  [name: string]: any
-}
-
-export interface CharModules {
-  [moduleName: string]: CharModule;
-}
+import { CharModules } from "../interfaces";
 
 export class ModuleManager {
   modules: CharModules;

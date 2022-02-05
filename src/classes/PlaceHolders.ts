@@ -1,8 +1,5 @@
-import Logger from "./Logger"
-
-export interface PlaceHolder {
-  [propName: string]: any
-}
+import Logger from "./Logger";
+import { PlaceHolder } from '../interfaces';
 
 export class PlaceHolders {
   logger: Logger;

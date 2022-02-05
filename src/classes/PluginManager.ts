@@ -1,19 +1,6 @@
 import { readdir } from "fs";
 import CharBot from "./CharBot";
-import { Commands } from "./Commands";
-
-export interface CharPlugin {
-  name: string;
-  version: string;
-  modules?: Array<string>;
-  main?: any;
-  commands?: Commands;
-  [property: string]: any;
-}
-
-export interface CharPlugins {
-  [pluginName: string]: CharPlugin;
-}
+import { CharPlugins, CharPlugin } from "../interfaces";
 
 export class PluginManager {
   bot: CharBot;

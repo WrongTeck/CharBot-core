@@ -1,4 +1,5 @@
 import { readdir } from "fs";
+import { Configs } from "../interfaces";
 import CharBot from "./CharBot";
 // Needs a more modular rewrite
 export class ConfigManager {
@@ -60,7 +61,7 @@ export class ConfigManager {
    * Unloads a specific config from the bot
    * @param name The config name
    */
-  unloadConfig(name) {
+  unloadConfig(name: string) {
     this.bot.emit("unloadingConfig", name);
     delete this.bot.config[name];
     this.bot.emit("configUnloaded", name);

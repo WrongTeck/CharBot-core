@@ -1,14 +1,6 @@
 import { readdir, rm } from "fs";
 import CharConsole from "./Console";
 
-export interface Command {
-  (console: CharConsole, args?: Array<string>): null
-}
-
-export interface Commands {
-  [propName: string]: Command
-}
-
 export let BasicCommands = {
   /**
    * Strops the bot from the console
