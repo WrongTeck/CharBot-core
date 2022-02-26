@@ -1,5 +1,5 @@
-import CharBot from "./classes/CharBot";
-import CharConsole from "./classes/Console";
+import ChairWoom from "./classes/ChairWoom";
+import ChairConsole from "./classes/Console";
 import Logger from "./classes/Logger";
 import PlaceHolders from "./classes/PlaceHolders";
 import ModuleLoader from "./classes/ModuleManager";
@@ -7,11 +7,11 @@ import PluginLoader from "./classes/PluginManager";
 import { BasicCommands } from "./classes/Commands";
 import { Command, Commands } from "./interfaces";
 
-new CharBot().start();
+new ChairWoom().start();
 
 export {
-  CharBot,
-  CharConsole,
+  ChairWoom,
+  ChairConsole,
   PlaceHolders,
   Logger,
   PluginLoader,

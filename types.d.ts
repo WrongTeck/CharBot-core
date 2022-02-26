@@ -1,5 +1,5 @@
 declare module "interfaces" {
-    import { CharConsole } from "index";
+    import { ChairConsole } from "index";
     export interface Configs {
         [confName: string]: Configs & string;
     }
@@ -7,12 +7,12 @@ declare module "interfaces" {
         [langName: string]: Lang & string;
     }
     export interface Command {
-        (console: CharConsole, args?: Array<string>): void;
+        (console: ChairConsole, args?: Array<string>): void;
     }
     export interface Commands {
         [propName: string]: Command;
     }
-    export interface CharModule {
+    export interface ChairModule {
         name: string;
         version: string;
         modules?: Array<string>;
@@ -20,13 +20,13 @@ declare module "interfaces" {
         commands?: Commands;
         [name: string]: any;
     }
-    export interface CharModules {
-        [moduleName: string]: CharModule;
+    export interface ChairModules {
+        [moduleName: string]: ChairModule;
     }
     export interface PlaceHolder {
         [propName: string]: any;
     }
-    export interface CharPlugin {
+    export interface ChairPlugin {
         name: string;
         version: string;
         modules?: Array<string>;
@@ -34,16 +34,16 @@ declare module "interfaces" {
         commands?: Commands;
         [property: string]: any;
     }
-    export interface CharPlugins {
-        [pluginName: string]: CharPlugin;
+    export interface ChairPlugins {
+        [pluginName: string]: ChairPlugin;
     }
 }
 declare module "classes/ConfigManager" {
-    import CharBot from "classes/CharBot";
+    import ChairBot from "classes/ChairWoom";
     export class ConfigManager {
         config: Object;
-        bot: CharBot;
-        constructor(bot: CharBot, callback: Function);
+        bot: ChairBot;
+        constructor(bot: ChairBot, callback: Function);
         loadConfig(): Promise<unknown>;
         reloadConfig(): void;
         unloadConfig(name: string): void;
@@ -62,7 +62,7 @@ declare module "classes/PlaceHolders" {
 declare module "classes/Logger" {
     import PlaceHolders from "classes/PlaceHolders";
     import { Commands, PlaceHolder } from "interfaces";
-    import { CharBot } from "index";
+    import { ChairWoom } from "index";
     export class Logger extends PlaceHolders {
         filename: string;
         commands: Commands;
@@ -70,8 +70,8 @@ declare module "classes/Logger" {
         history: Array<string>;
         last: boolean;
         lastCons: any;
-        bot: CharBot;
-        constructor(bot: CharBot);
+        bot: ChairWoom;
+        constructor(bot: ChairWoom);
         addHistory(command: string): void;
         private file;
         private cons;
@@ -91,45 +91,45 @@ declare module "classes/Logger" {
     export default Logger;
 }
 declare module "classes/Commands" {
-    import CharConsole from "classes/Console";
+    import ChairConsole from "classes/Console";
     export let BasicCommands: {
-        stop(console: CharConsole): void;
-        exit(console: CharConsole): void;
-        clearLogs(console: CharConsole): void;
-        history(console: CharConsole): void;
+        stop(console: ChairConsole): void;
+        exit(console: ChairConsole): void;
+        clearLogs(console: ChairConsole): void;
+        history(console: ChairConsole): void;
         commands(console: any): void;
-        help(console: CharConsole): void;
-        reloadLang(console: CharConsole): void;
-        clear(console: CharConsole): void;
-        reloadCommands(console: CharConsole): void;
+        help(console: ChairConsole): void;
+        reloadLang(console: ChairConsole): void;
+        clear(console: ChairConsole): void;
+        reloadCommands(console: ChairConsole): void;
     };
     export default BasicCommands;
 }
 declare module "classes/Console" {
     import { Logger } from "classes/Logger";
-    import CharBot from "classes/CharBot";
+    import ChairBot from "classes/ChairWoom";
     import { Commands } from "interfaces";
-    export class CharConsole extends Logger {
+    export class ChairConsole extends Logger {
         lastCommand: string;
-        bot: CharBot;
+        bot: ChairBot;
         term: any;
         commands: Commands;
-        constructor(charbot: CharBot);
+        constructor(Chairbot: ChairBot);
         private key;
         command(last: string): void;
         enter(): void;
         unregisterCommand(name?: string): void;
         registerCommand(commands: Commands): void;
     }
-    export default CharConsole;
+    export default ChairConsole;
 }
 declare module "classes/ModuleManager" {
-    import CharBot from "classes/CharBot";
-    import { CharModules } from "interfaces";
+    import ChairBot from "classes/ChairWoom";
+    import { ChairModules } from "interfaces";
     export class ModuleManager {
-        modules: CharModules;
-        bot: CharBot;
-        constructor(bot: CharBot);
+        modules: ChairModules;
+        bot: ChairBot;
+        constructor(bot: ChairBot);
         private readDir;
         loadModule(dir: string): void;
         private loadDepend;
@@ -139,12 +139,12 @@ declare module "classes/ModuleManager" {
     export default ModuleManager;
 }
 declare module "classes/PluginManager" {
-    import CharBot from "classes/CharBot";
-    import { CharPlugins } from "interfaces";
+    import ChairBot from "classes/ChairWoom";
+    import { ChairPlugins } from "interfaces";
     export class PluginManager {
-        bot: CharBot;
-        plugins: CharPlugins;
-        constructor(bot: CharBot);
+        bot: ChairBot;
+        plugins: ChairPlugins;
+        constructor(bot: ChairBot);
         private readDir;
         loadPlugin(dir: string): void;
         unloadPlugin(name: string, force: boolean): boolean;
@@ -152,31 +152,31 @@ declare module "classes/PluginManager" {
     }
     export default PluginManager;
 }
-declare module "classes/CharBot" {
+declare module "classes/ChairWoom" {
     import { EventEmitter2 } from "eventemitter2";
-    import CharConsole from "classes/Console";
-    import { Configs, Lang, CharModules, CharPlugins } from "interfaces";
-    export class CharBot extends EventEmitter2 {
-        console: CharConsole;
+    import ChairConsole from "classes/Console";
+    import { Configs, Lang, ChairModules, ChairPlugins } from "interfaces";
+    export class ChairWoom extends EventEmitter2 {
+        console: ChairConsole;
         lang: Lang;
         config: Configs;
-        plugins: CharPlugins;
-        modules: CharModules;
+        plugins: ChairPlugins;
+        modules: ChairModules;
         constructor();
-        start(): CharBot;
+        start(): ChairWoom;
         reloadLang(): void;
         stop(): void;
     }
-    export default CharBot;
+    export default ChairWoom;
 }
 declare module "index" {
-    import CharBot from "classes/CharBot";
-    import CharConsole from "classes/Console";
+    import ChairWoom from "classes/ChairWoom";
+    import ChairConsole from "classes/Console";
     import Logger from "classes/Logger";
     import PlaceHolders from "classes/PlaceHolders";
     import ModuleLoader from "classes/ModuleManager";
     import PluginLoader from "classes/PluginManager";
     import { BasicCommands } from "classes/Commands";
     import { Command, Commands } from "interfaces";
-    export { CharBot, CharConsole, PlaceHolders, Logger, PluginLoader, ModuleLoader, Command, Commands, BasicCommands, };
+    export { ChairWoom, ChairConsole, PlaceHolders, Logger, PluginLoader, ModuleLoader, Command, Commands, BasicCommands, };
 }

@@ -1,16 +1,16 @@
 import { readdir, readdirSync } from "fs";
-import CharBot from "./CharBot";
-import { CharModules } from "../interfaces";
+import ChairBot from "./ChairWoom";
+import { ChairModules } from "../interfaces";
 
 export class ModuleManager {
-  modules: CharModules;
-  bot: CharBot;
+  modules: ChairModules;
+  bot: ChairBot;
   /**
    * Initialize a new instance of the ModuleManager
-   * @param bot The instance of CharBot
+   * @param bot The instance of ChairBot
    * @returns The ModuleManager
    */
-  constructor(bot: CharBot) {
+  constructor(bot: ChairBot) {
     this.modules = {};
     this.bot = bot;
     this.readDir();
@@ -47,13 +47,13 @@ export class ModuleManager {
    * @param file The file that contain the main class
    */
   public loadModule(dir: string) {
-    let name, charModule;
+    let name, ChairModule;
     if (dir == "modules") return;
-    charModule = require(`../modules/${dir}/index.js`);
+    ChairModule = require(`../modules/${dir}/index.js`);
     name = dir;
-    this.bot.console.ml(`Loading ${name} v${charModule.version}...`);
-    if (charModule.modules && charModule.modules.length > 0) {
-      charModule.modules.forEach((module) => {
+    this.bot.console.ml(`Loading ${name} v${ChairModule.version}...`);
+    if (ChairModule.modules && ChairModule.modules.length > 0) {
+      ChairModule.modules.forEach((module) => {
         if (!this.bot.modules[name]) {
           if (!this.loadDepend(module)) {
             return this.bot.console.error(`Could not load module {name}`, {
@@ -63,11 +63,11 @@ export class ModuleManager {
         }
       });
     }
-    if (charModule.main) {
-      this.bot.modules[name] = new charModule.main(this.bot);
+    if (ChairModule.main) {
+      this.bot.modules[name] = new ChairModule.main(this.bot);
     }
-    if (charModule.commands) {
-      this.bot.console.registerCommand(charModule.commands);
+    if (ChairModule.commands) {
+      this.bot.console.registerCommand(ChairModule.commands);
     }
   }
   /**
@@ -94,15 +94,15 @@ export class ModuleManager {
       delete this.modules[name];
       return true;
     }
-    for (const charmodule in this.modules) {
-      if(this.modules[charmodule].modules)
-        for (const dependent in this.modules[charmodule].modules) {
+    for (const Chairmodule in this.modules) {
+      if(this.modules[Chairmodule].modules)
+        for (const dependent in this.modules[Chairmodule].modules) {
           if(dependent == name)
             return false;
         }
-      for (const charplugin in this.bot.plugins) {
-        if(this.bot.plugins[charplugin].modules)
-          for (const dependent in this.bot.plugins[charplugin].modules) {
+      for (const Chairplugin in this.bot.plugins) {
+        if(this.bot.plugins[Chairplugin].modules)
+          for (const dependent in this.bot.plugins[Chairplugin].modules) {
             if(dependent == name)
               return false;
           }

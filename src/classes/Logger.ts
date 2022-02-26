@@ -3,7 +3,7 @@ import moment from "moment";
 import { appendFile, mkdir } from "fs";
 import PlaceHolders from "./PlaceHolders";
 import { Commands, PlaceHolder } from "../interfaces";
-import { CharBot } from "..";
+import { ChairWoom } from "..";
 
 export class Logger extends PlaceHolders {
   filename: string;
@@ -12,17 +12,17 @@ export class Logger extends PlaceHolders {
   history: Array<string>;
   last: boolean;
   lastCons: any;
-  bot: CharBot;
+  bot: ChairWoom;
   /**
-   * @param bot The CharBot instance that called the logger
+   * @param bot The ChairBot instance that called the logger
    * @returns A new Logger instance
    */
-  constructor(bot: CharBot) {
+  constructor(bot: ChairWoom) {
     super();
     this.bot = bot;
     super.logger = this;
     if(!this.filename) {
-      this.filename = moment().format("HH-mm-ss") + "-charbot";
+      this.filename = moment().format("HH-mm-ss") + "-Chairbot";
     }
     this.history = [];
     this.last = false;
@@ -274,7 +274,7 @@ export class Logger extends PlaceHolders {
   /**
    * If debug mode is enabled, prints a formatted message to the console with DEBUG level
    * @param message The message to print
-   * @param placeholders PlaeHolder data
+   * @param placeholders PlaceHolder data
    */
   debug(message: string, placeholders?: PlaceHolder) {
     if(this.bot.config.core.debug) {

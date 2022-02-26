@@ -1,26 +1,26 @@
 import { readdir, rm } from "fs";
-import CharConsole from "./Console";
+import ChairConsole from "./Console";
 
 export let BasicCommands = {
   /**
    * Strops the bot from the console
    * @param console The console
    */
-  stop(console: CharConsole) {
+  stop(console: ChairConsole) {
     console.bot.stop();
   },
   /**
    * Alias for stop
    * @param console The console
    */
-  exit(console: CharConsole) {
+  exit(console: ChairConsole) {
     console.commands.stop(console);
   },
   /**
    * Clear the logs folder
    * @param console The console
    */
-  clearLogs(console: CharConsole) {
+  clearLogs(console: ChairConsole) {
     readdir("./logs", { encoding: "utf-8" }, (err, files) => {
       if (err) return console.error(console.bot.lang.commands.clear_logs_error);
       files.forEach((value, index, array) => {
@@ -34,7 +34,7 @@ export let BasicCommands = {
   /**
    * Show all commands typed
    */
-  history(console: CharConsole) {
+  history(console: ChairConsole) {
     console.log(console.history.toString());
   },
   /**
@@ -46,10 +46,10 @@ export let BasicCommands = {
   /**
    * Print a quick help
    */
-  help(console: CharConsole) {
+  help(console: ChairConsole) {
     console.log("Commands list");
     console.lastCons.abort();
-    console.term("\b\b"); // deletes '> ' char
+    console.term("\b\b"); // deletes '> ' Chair
     console.term.table([
       ['COMMAND','DESCRIPTION'],
       ['^YclearLogs','Deletes the Chairbot\' log files'],
@@ -64,7 +64,7 @@ export let BasicCommands = {
       contentHasMarkup: true,
       firstRowTextAttr: {bgColor: 'white', color: 'black'},
       borderAttr: {color: 'yellow'},
-      borderChars: "heavy",
+      borderChairs: "heavy",
       width: 40,
       fit:true
     });
@@ -73,7 +73,7 @@ export let BasicCommands = {
   /**
    * Reload console commands
    */
-  reloadLang(console: CharConsole) {
+  reloadLang(console: ChairConsole) {
     console.log(console.bot.lang.commands.reloadLang_start);
     console.bot.reloadLang();
     console.log(console.bot.lang.commands.reloadLang_finish);
@@ -81,15 +81,15 @@ export let BasicCommands = {
   /**
    * Clear the stdout
    */
-  clear(console: CharConsole) {
+  clear(console: ChairConsole) {
     console.term.clear();
     console.log("Cleared!");
   },
   /**
-   * Reload all commands in CharBot
+   * Reload all commands in ChairBot
    * @param console The console
    */
-  reloadCommands(console: CharConsole) {
+  reloadCommands(console: ChairConsole) {
     console.log(console.bot.lang.commands.reload_commands);
     console.unregisterCommand();
     console.registerCommand(this);

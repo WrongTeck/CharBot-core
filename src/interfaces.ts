@@ -1,4 +1,4 @@
-import { CharConsole } from ".";
+import { ChairConsole } from ".";
 
 export interface Configs {
   [confName: string]: Configs & string,
@@ -9,14 +9,14 @@ export interface Lang {
 }
 
 export interface Command {
-  (console: CharConsole, args?: Array<string>): void
+  (console: ChairConsole, args?: Array<string>): void
 }
 
 export interface Commands {
   [propName: string]: Command
 }
 
-export interface CharModule {
+export interface ChairModule {
   name: string;
   version: string;
   modules?: Array<string>;
@@ -25,15 +25,15 @@ export interface CharModule {
   [name: string]: any
 }
 
-export interface CharModules {
-  [moduleName: string]: CharModule;
+export interface ChairModules {
+  [moduleName: string]: ChairModule;
 }
 
 export interface PlaceHolder {
   [propName: string]: any
 }
 
-export interface CharPlugin {
+export interface ChairPlugin {
   name: string;
   version: string;
   modules?: Array<string>;
@@ -42,6 +42,6 @@ export interface CharPlugin {
   [property: string]: any;
 }
 
-export interface CharPlugins {
-  [pluginName: string]: CharPlugin;
+export interface ChairPlugins {
+  [pluginName: string]: ChairPlugin;
 }

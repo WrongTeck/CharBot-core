@@ -1,11 +1,11 @@
 import { readdir } from "fs";
-import CharBot from "./CharBot";
-import { CharPlugins, CharPlugin } from "../interfaces";
+import ChairBot from "./ChairWoom";
+import { ChairPlugins, ChairPlugin } from "../interfaces";
 
 export class PluginManager {
-  bot: CharBot;
-  plugins: CharPlugins;
-  constructor(bot: CharBot) {
+  bot: ChairBot;
+  plugins: ChairPlugins;
+  constructor(bot: ChairBot) {
     this.bot = bot;
     this.plugins = {};
     this.readDir();
@@ -37,7 +37,7 @@ export class PluginManager {
    * @param {String} file The file that contain the main class
    */
   public loadPlugin(dir: string) {
-    let name: string, plugin: CharPlugin;
+    let name: string, plugin: ChairPlugin;
     if(dir == "plugins") return;
     plugin = require(`../plugins/${dir}/index.js`);
     name = dir;
@@ -77,7 +77,7 @@ export class PluginManager {
     }
   }
   /**
-   * Unloads a plugin from CharBot
+   * Unloads a plugin from ChairBot
    * @param name The name of the plugin
    * @return If the unload succeeded or not
    */

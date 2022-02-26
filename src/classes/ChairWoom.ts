@@ -1,19 +1,19 @@
 import { EventEmitter2 } from "eventemitter2";
 import { ConfigManager } from "./ConfigManager";
-import CharConsole from "./Console";
+import ChairConsole from "./Console";
 import ModuleManager from "./ModuleManager";
 import PluginManager from "./PluginManager";
-import { Configs, Lang, CharModules, CharPlugins } from "../interfaces";
+import { Configs, Lang, ChairModules, ChairPlugins } from "../interfaces";
 const version = "0.1 - ALPHA";
-export class CharBot extends EventEmitter2 {
-  console: CharConsole;
+export class ChairWoom extends EventEmitter2 {
+  console: ChairConsole;
   lang: Lang;
   config: Configs;
-  plugins: CharPlugins;
-  modules: CharModules;
+  plugins: ChairPlugins;
+  modules: ChairModules;
   /**
-   * Initialize a new CharBot instance
-   * @returns The CharBot instance
+   * Initialize a new ChairWoom instance
+   * @returns The ChairWoom instance
    */
   constructor() {
     super({ wildcard: true });
@@ -22,8 +22,8 @@ export class CharBot extends EventEmitter2 {
   /**
    * Starts the bot
    */
-  start(): CharBot {
-    this.console = new CharConsole(this);
+  start(): ChairWoom {
+    this.console = new ChairConsole(this);
     new ConfigManager(this, (config: Configs) => {
       this.config = config;
       this.reloadLang();
@@ -56,13 +56,13 @@ export class CharBot extends EventEmitter2 {
     this.console.lastCons.abort();
     process.stdout.clearLine(0);
     process.stdout.clearLine(1);
-    for(let charModule in this.modules) {
-      if(this.modules[charModule].unload)
-        this.modules[charModule].unload();
+    for(let ChairModule in this.modules) {
+      if(this.modules[ChairModule].unload)
+        this.modules[ChairModule].unload();
     }
-    for(let charPlugin in this.plugins) {
-      if(this.plugins[charPlugin].unload)
-        this.plugins[charPlugin].unload();
+    for(let ChairPlugin in this.plugins) {
+      if(this.plugins[ChairPlugin].unload)
+        this.plugins[ChairPlugin].unload();
     }
     setTimeout(() => {
       this.console.term.clear();
@@ -71,4 +71,4 @@ export class CharBot extends EventEmitter2 {
   }
 }
 
-export default CharBot;
+export default ChairWoom;

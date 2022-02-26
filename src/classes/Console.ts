@@ -1,23 +1,23 @@
 import { Logger } from "./Logger";
 import { terminal } from "terminal-kit";
-import CharBot from "./CharBot";
+import ChairBot from "./ChairWoom";
 const term = terminal;
 import { BasicCommands } from "./Commands";
 import { Commands } from "../interfaces";
 
-export class CharConsole extends Logger {
+export class ChairConsole extends Logger {
   lastCommand: string;
-  bot: CharBot;
+  bot: ChairBot;
   term: any;
   commands: Commands;
   /**
-   * Initialize a new instance of the CharConsole
-   * @param charbot The instance that called the Console
+   * Initialize a new instance of the ChairConsole
+   * @param Chairbot The instance that called the Console
    */
-  constructor(charbot: CharBot) {
-    super(charbot);
+  constructor(Chairbot: ChairBot) {
+    super(Chairbot);
     super.executor = this.command;
-    this.bot = charbot;
+    this.bot = Chairbot;
     this.commands = {};
     Object.assign(this.commands, BasicCommands);
     this.history = [];
@@ -43,7 +43,7 @@ export class CharConsole extends Logger {
     }
   }
   /**
-   * Handles commands inside CharBot
+   * Handles commands inside ChairBot
    * @param last The last command typed
    * @returns An error if any
    */
@@ -65,7 +65,7 @@ export class CharConsole extends Logger {
     }
   }
   /**
-   * Create an input field for the CharBot console
+   * Create an input field for the ChairBot console
    */
   enter() {
     term.inputField({
@@ -94,7 +94,7 @@ export class CharConsole extends Logger {
     Object.assign(this.commands, BasicCommands);
   }
   /**
-   * Register an Command object in the CharBot console
+   * Register an Command object in the ChairBot console
    * @param commands Command object to register
    */
   registerCommand(commands: Commands) {
@@ -109,4 +109,4 @@ export class CharConsole extends Logger {
   }
 }
 
-export default CharConsole;
+export default ChairConsole;
