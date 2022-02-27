@@ -1,17 +1,17 @@
 import { readdir } from "fs";
 import { Configs } from "../interfaces";
-import ChairBot from "./ChairWoom";
+import ChairWoom from "./ChairWoom";
 // Needs a more modular rewrite
 export class ConfigManager {
   config: Object;
-  bot: ChairBot;
+  bot: ChairWoom;
   /**
    * Initialize a new instance of the ConfigManager
    * @param bot The ChairBot instance that called it
    * @param callback Returns when the configs are ready
    * @returns The ConfigManager
    */
-  constructor(bot: ChairBot, callback: Function) {
+  constructor(bot: ChairWoom, callback: Function) {
     this.bot = bot;
     this.bot.emit("loadingConfig", null);
     this.loadConfig().then((config) => {

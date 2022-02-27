@@ -1,11 +1,11 @@
 import { readdir } from "fs";
-import ChairBot from "./ChairWoom";
+import ChairWoom from "./ChairWoom";
 import { ChairPlugins, ChairPlugin } from "../interfaces";
 
 export class PluginManager {
-  bot: ChairBot;
+  bot: ChairWoom;
   plugins: ChairPlugins;
-  constructor(bot: ChairBot) {
+  constructor(bot: ChairWoom) {
     this.bot = bot;
     this.plugins = {};
     this.readDir();
@@ -77,7 +77,7 @@ export class PluginManager {
     }
   }
   /**
-   * Unloads a plugin from ChairBot
+   * Unloads a plugin from ChairWoom
    * @param name The name of the plugin
    * @return If the unload succeeded or not
    */

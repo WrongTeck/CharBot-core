@@ -1,16 +1,16 @@
 import { readdir, readdirSync } from "fs";
-import ChairBot from "./ChairWoom";
+import ChairWoom from "./ChairWoom";
 import { ChairModules } from "../interfaces";
 
 export class ModuleManager {
   modules: ChairModules;
-  bot: ChairBot;
+  bot: ChairWoom;
   /**
    * Initialize a new instance of the ModuleManager
-   * @param bot The instance of ChairBot
+   * @param bot The instance of ChairWoom
    * @returns The ModuleManager
    */
-  constructor(bot: ChairBot) {
+  constructor(bot: ChairWoom) {
     this.modules = {};
     this.bot = bot;
     this.readDir();
