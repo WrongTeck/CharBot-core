@@ -1,8 +1,8 @@
 {
   "name": "chairwoom",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Types for ChairWoom",
-  "types": "./types.d.ts",
+  "types": "./types/index.d.ts",
   "scripts": {
     "ts": "tsc --watch",
     "build":"bash ./build.sh",

@@ -3,10 +3,8 @@ import ChairWoom from "./ChairWoom";
 import { ChairPlugins, ChairPlugin } from "../interfaces";
 
 export class PluginManager {
-  bot: ChairWoom;
   plugins: ChairPlugins;
-  constructor(bot: ChairWoom) {
-    this.bot = bot;
+  constructor(private bot: ChairWoom) {
     this.plugins = {};
     this.readDir();
     return this;
@@ -16,6 +14,7 @@ export class PluginManager {
    */
   private readDir() {
     this.bot.console.pl(this.bot.lang.plugins.load_start);
+    this.bot.emit("core.plugins.start");
     readdir("./plugins", {
       encoding: "utf-8",
       withFileTypes: true
@@ -25,10 +24,11 @@ export class PluginManager {
         if (dirent.isDirectory()) {
           this.loadPlugin(dirent.name);
         } else {
+          this.bot.emit("core.plugins.error", dirent.name);
           this.bot.console.error("Cannot load {plugin} because is not a directory!", { "plugin": dirent.name })
         }
       });
-      this.bot.emit("pluginsLoaded");
+      this.bot.emit("core.plugins.loaded");
     });
   }
   /**
@@ -38,6 +38,7 @@ export class PluginManager {
    */
   public loadPlugin(dir: string) {
     let name: string, plugin: ChairPlugin;
+    this.bot.emit("core.plguins.load", dir);
     if(dir == "plugins") return;
     plugin = require(`../plugins/${dir}/index.js`);
     name = dir;
@@ -75,6 +76,7 @@ export class PluginManager {
           }
           Object.defineProperty(this.plugins, name, { writable: true, value: loaded });
     }
+    this.bot.emit("core.plugins.loaded", dir);
   }
   /**
    * Unloads a plugin from ChairWoom
@@ -82,13 +84,16 @@ export class PluginManager {
    * @return If the unload succeeded or not
    */
   public unloadPlugin(name: string, force: boolean): boolean {
+    this.bot.emit("core.plugins.unload", name);
     if(!this.bot.plugins[name]) return false;
     if(force) {
       delete this.bot.plugins[name];
+      this.bot.emit("core.plugins.unloaded", name);
       return true;
     }
     if(this.bot.plugins[name].unload)
       this.bot.plugins[name].unload();
+    this.bot.emit("core.plugins.unloaded", name);
   }
   /**
    * Get the dependencies of a plugin

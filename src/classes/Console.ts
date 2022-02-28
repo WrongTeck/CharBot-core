@@ -7,17 +7,15 @@ import { Commands } from "../interfaces";
 
 export class ChairConsole extends Logger {
   lastCommand: string;
-  bot: ChairWoom;
   term: any;
   commands: Commands;
   /**
    * Initialize a new instance of the ChairConsole
    * @param Chairbot The instance that called the Console
    */
-  constructor(Chairbot: ChairWoom) {
-    super(Chairbot);
+  constructor(public bot: ChairWoom) {
+    super(bot);
     super.executor = this.command;
-    this.bot = Chairbot;
     this.commands = {};
     Object.assign(this.commands, BasicCommands);
     this.history = [];
@@ -85,6 +83,7 @@ export class ChairConsole extends Logger {
    * @param name Command name
    */
   unregisterCommand(name?: string) {
+    this.bot.emit("core.console.unregister", name);
     if(name) {
       delete this.commands[name];
     } else {
@@ -98,6 +97,7 @@ export class ChairConsole extends Logger {
    * @param commands Command object to register
    */
   registerCommand(commands: Commands) {
+    this.bot.emit("core.console.register", Object.keys(commands));
     if(this.commands) {
       this.commands = Object.assign(this.commands, commands);
       super.commands = this.commands;

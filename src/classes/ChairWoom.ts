@@ -23,6 +23,7 @@ export class ChairWoom extends EventEmitter2 {
    * Starts the bot
    */
   start(): ChairWoom {
+    this.emit("core.start");
     this.console = new ChairConsole(this);
     new ConfigManager(this, (config: Configs) => {
       this.config = config;
@@ -30,11 +31,11 @@ export class ChairWoom extends EventEmitter2 {
       this.console.log(this.lang.bot_banner_start, {version});
       this.modules = new ModuleManager(this).modules;
     });
-    this.on("modulesLoaded", () => {
+    this.on("core.modules.finish", () => {
       this.plugins = new PluginManager(this).plugins;
     });
-    this.on("pluginsLoaded", () => {
-      this.emit("ready");
+    this.on("core.plugins.finish", () => {
+      this.emit("core.finish");
       this.console.log(this.lang.done);
     });
     return this;
@@ -43,7 +44,7 @@ export class ChairWoom extends EventEmitter2 {
    * Reload all languages files
    */
   reloadLang() {
-    this.emit("langReload")
+    this.emit("core.lang.reload");
     this.lang = {};
     Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
   }
@@ -52,7 +53,7 @@ export class ChairWoom extends EventEmitter2 {
    */
   stop() {
     this.console.log(this.lang.commands.shutdown_message);
-    this.emit("shutdown");
+    this.emit("core.shutdown");
     this.console.lastCons.abort();
     process.stdout.clearLine(0);
     process.stdout.clearLine(1);

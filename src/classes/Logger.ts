@@ -12,14 +12,12 @@ export class Logger extends PlaceHolders {
   history: Array<string>;
   last: boolean;
   lastCons: any;
-  bot: ChairWoom;
   /**
    * @param bot The ChairBot instance that called the logger
    * @returns A new Logger instance
    */
-  constructor(bot: ChairWoom) {
+  constructor(public bot: ChairWoom) {
     super();
-    this.bot = bot;
     super.logger = this;
     if(!this.filename) {
       this.filename = moment().format("HH-mm-ss") + "-Chairbot";
@@ -105,11 +103,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("INFO", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.log", parsedMessage)
       terminal.white(
-        super.parse(
-          data +`[${time}] [INFO] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [INFO] ${parsedMessage}`
       );
     }
     this.cons();
@@ -124,11 +124,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("WARN", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.warn", parsedMessage)
       terminal.yellow(
-        super.parse(
-          `${data}[${time}] [WARN] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [WARN] ${parsedMessage}`
       );
     }
     this.cons();
@@ -143,11 +145,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("ERROR", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.error", parsedMessage)
       terminal.red(
-        super.parse(
-          `${data}[${time}] [ERROR] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [ERROR] ${parsedMessage}`
       );
     }
     this.cons();
@@ -162,11 +166,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("GRAVE", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.grave", parsedMessage)
       terminal.red(
-        super.parse(
-          `${data}[${time}] [GRAVE] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [GRAVE] ${parsedMessage}`
       );
     }
     this.cons();
@@ -182,11 +188,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("Module Loader", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.moduleLoader", parsedMessage)
       terminal.brightGreen(
-        super.parse(
-          `${data}[${time}] [Module Loader] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [Module Loader] ${parsedMessage}`
       );
     }
     this.cons();
@@ -202,11 +210,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("Plugin Loader", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.pluginLoader", parsedMessage)
       terminal.brightGreen(
-        super.parse(
-          `${data}[${time}] [Plugin Loader] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [Plugin Loader] ${parsedMessage}`
       );
     }
     this.cons();
@@ -221,11 +231,13 @@ export class Logger extends PlaceHolders {
   mu(message: string, placeholders?: PlaceHolder) {
     let [data, time] = this.prelog("Module Unloader", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.moduleUnloader", parsedMessage)
       terminal.brightRed(
-        super.parse(
-          `${data}[${time}] [Module Unloader] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [Module Unloader] ${parsedMessage}`
       );
     }
     this.cons();
@@ -241,11 +253,13 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("Plugin Unloader", message);
     for (let i in message.split("\n")) {
-      terminal.brightRed(
-        super.parse(
-          `${data}[${time}] [Plugin Unloader] ${message.split("\n")[i]}`,
-          placeholders
-        )
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.pluginUnloader", parsedMessage)
+      terminal.white(
+        data + `[${time}] [Plugin Unloader] ${parsedMessage}`
       );
     }
     this.cons();
@@ -261,15 +275,16 @@ export class Logger extends PlaceHolders {
     message = message.toString();
     let [data, time] = this.prelog("FATAL", message);
     for (let i in message.split("\n")) {
+      let parsedMessage = super.parse(
+        message.split("\n")[i],
+        placeholders
+      );
+      this.bot.emit("core.logger.fatal", parsedMessage)
       terminal.bgRed(
-        super.parse(
-          `${data}[${time}] [FATAL] ${message.split("\n")[i]}`,
-          placeholders
-        )
+        data + `[${time}] [FATAL] ${parsedMessage}`
       );
     }
-    this.cons();
-    this.last = true;
+    this.bot.stop();
   }
   /**
    * If debug mode is enabled, prints a formatted message to the console with DEBUG level
@@ -281,11 +296,13 @@ export class Logger extends PlaceHolders {
       message = message.toString();
       let [data, time] = this.prelog("DEBUG", message);
       for (let i in message.split("\n")) {
+        let parsedMessage = super.parse(
+          message.split("\n")[i],
+          placeholders
+        );
+        this.bot.emit("core.logger.debug", parsedMessage)
         terminal.brightBlue(
-          super.parse(
-            `${data}[${time}] [DEBUG] ${message.split("\n")[i]}`,
-            placeholders
-          )
+          data + `[${time}] [DEBUG] ${parsedMessage}`
         );
       }
     }

@@ -4,15 +4,13 @@ import { ChairModules } from "../interfaces";
 
 export class ModuleManager {
   modules: ChairModules;
-  bot: ChairWoom;
   /**
    * Initialize a new instance of the ModuleManager
    * @param bot The instance of ChairWoom
    * @returns The ModuleManager
    */
-  constructor(bot: ChairWoom) {
+  constructor(private bot: ChairWoom) {
     this.modules = {};
-    this.bot = bot;
     this.readDir();
     return this;
   }
@@ -21,6 +19,7 @@ export class ModuleManager {
    */
   private readDir() {
     this.bot.console.ml(this.bot.lang.modules.load_start);
+    this.bot.emit("core.modules.start");
     readdir(
       "./modules",
       {
@@ -37,7 +36,7 @@ export class ModuleManager {
             this.bot.console.error("Cannot load {module} because is not a directory!", { "module": dirent.name });
           }
         });
-        this.bot.emit("modulesLoaded");
+        this.bot.emit("core.modules.finish");
       }
     );
   }
@@ -47,6 +46,7 @@ export class ModuleManager {
    * @param file The file that contain the main class
    */
   public loadModule(dir: string) {
+    this.bot.emit("core.modules.load", dir);
     let name, ChairModule;
     if (dir == "modules") return;
     ChairModule = require(`../modules/${dir}/index.js`);
@@ -55,7 +55,8 @@ export class ModuleManager {
     if (ChairModule.modules && ChairModule.modules.length > 0) {
       ChairModule.modules.forEach((module) => {
         if (!this.bot.modules[name]) {
-          if (!this.loadDepend(module)) {
+          if (!this.loadDepend(ChairModule)) {
+            this.bot.emit("core.modules.error", dir);
             return this.bot.console.error(`Could not load module {name}`, {
               name: name,
             });
@@ -69,6 +70,7 @@ export class ModuleManager {
     if (ChairModule.commands) {
       this.bot.console.registerCommand(ChairModule.commands);
     }
+    this.bot.emit("core.modules.loaded", dir);
   }
   /**
    * Tries to load the dependencies of a module
@@ -89,6 +91,7 @@ export class ModuleManager {
    * @returns Whatever or not if the module where unloaded
    */
   public unloadModule(name: string, force: boolean): boolean {
+    this.bot.emit("core.modules.unload", name);
     if(!this.bot.modules[name]) return false;
     if(force) {
       delete this.modules[name];
@@ -110,6 +113,7 @@ export class ModuleManager {
     }
     if(this.bot.modules[name].unload)
       this.bot.modules[name].unload();
+    this.bot.emit("core.modules.unloaded", name);
   }
   /**
    * Return an array of the dependencies of a Modules
