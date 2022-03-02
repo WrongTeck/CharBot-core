@@ -94,6 +94,17 @@ export let BasicCommands = {
     console.unregisterCommand();
     console.registerCommand(this);
   },
+  /**
+   * With this command you can manage all repository related things
+   * @param console The console
+   * @param args The arguments if any
+   */
+  repo(console: ChairConsole, args: string[]) {
+    if(args.length == 0) {
+      return console.log("Print the help message");
+    }
+    return console.log("You typed an arg!");
+  }
 }
 
 export default BasicCommands;

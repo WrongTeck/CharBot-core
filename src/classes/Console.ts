@@ -33,9 +33,9 @@ export class ChairConsole extends Logger {
     if(name.startsWith("CTRL") && name != "CTRL_C") return;
     if(name == "CTRL_C") {
         try {
-          this.commands.stop(this);
+          this.commands.stop(this, []);
         } catch (e) {
-          this.fatal("Something is broken! Hard exit...");
+          super.fatal("Something is broken! Hard exit...");
           process.exit(1);
         }
     }
@@ -58,7 +58,7 @@ export class ChairConsole extends Logger {
       if(!Object.keys(this.commands).includes(last)) {
         return this.error(this.bot.lang.commands.invalid_command, { command: last.split(" ")[0] });
       } else if(typeof Object.values(this.commands)[Object.keys(this.commands).indexOf(last)] == "function") {
-        Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this);
+        Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this, []);
       }
     }
   }

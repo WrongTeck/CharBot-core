@@ -28,7 +28,7 @@ export class PluginManager {
           this.bot.console.error("Cannot load {plugin} because is not a directory!", { "plugin": dirent.name })
         }
       });
-      this.bot.emit("core.plugins.loaded");
+      this.bot.emit("core.plugins.finish");
     });
   }
   /**

@@ -54,7 +54,7 @@ export class ModuleManager {
     this.bot.console.ml(`Loading ${name} v${ChairModule.version}...`);
     if (ChairModule.modules && ChairModule.modules.length > 0) {
       ChairModule.modules.forEach((module) => {
-        if (!this.bot.modules[name]) {
+        if (!this.modules[name]) {
           if (!this.loadDepend(ChairModule)) {
             this.bot.emit("core.modules.error", dir);
             return this.bot.console.error(`Could not load module {name}`, {
@@ -65,11 +65,12 @@ export class ModuleManager {
       });
     }
     if (ChairModule.main) {
-      this.bot.modules[name] = new ChairModule.main(this.bot);
+      this.modules[name] = new ChairModule.main(this.bot);
     }
     if (ChairModule.commands) {
       this.bot.console.registerCommand(ChairModule.commands);
     }
+    this.bot.console.ml("Loaded {name}", { name });
     this.bot.emit("core.modules.loaded", dir);
   }
   /**
@@ -90,11 +91,12 @@ export class ModuleManager {
    * @param name Name of the module to unload
    * @returns Whatever or not if the module where unloaded
    */
-  public unloadModule(name: string, force: boolean): boolean {
+  public unloadModule(name: string, force?: boolean): boolean {
     this.bot.emit("core.modules.unload", name);
     if(!this.bot.modules[name]) return false;
     if(force) {
       delete this.modules[name];
+      this.bot.console.mu(this.bot.lang.module.unload);
       return true;
     }
     for (const Chairmodule in this.modules) {
@@ -111,8 +113,10 @@ export class ModuleManager {
           }
       }
     }
+    this.bot.console.log(name);
     if(this.bot.modules[name].unload)
       this.bot.modules[name].unload();
+    this.bot.console.mu(this.bot.lang.module.unload);
     this.bot.emit("core.modules.unloaded", name);
   }
   /**

@@ -14,12 +14,14 @@
     "read_dir_err": "Failed to read the Plugin Directory!",
     "missed_module": "Cannot load {plugin}, because {module} is missed",
     "load_start":"Loading plugins...",
-    "load_finish":"All plugins were loaded!"
+    "load_finish":"All plugins were loaded!",
+    "unload":"Unloaded {name}"
   },
   "modules": {
     "load_start": "Loading modules...",
     "load_finish": "All modules were loaded!",
     "read_dir_err": "Failed to read the Modules Directory!",
-    "missed_module": "Cannot load {name}, because depends on {module}, but it's missed"
+    "missed_module": "Cannot load {name}, because depends on {module}, but it's missed",
+    "unload":"Unloaded {name}"
   }
 }

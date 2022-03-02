@@ -81,14 +81,13 @@ export class Logger extends PlaceHolders {
    * @returns Whatever or not to print a \n and the time
    */
   private prelog(type: string, message: string) {
-    let data: string;
+    let data: string = "";
     const time = moment().format("HH:mm:ss");
     this.file(message, type);
     if(this.last) {
       this.lastCons.abort();
       process.stdout.clearLine(0);
       process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
-      data = "";
     } else {
       data = "\n";
     }
@@ -100,9 +99,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders An object with PlaceHolder data
    */
   log(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("INFO", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("INFO", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -121,9 +120,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   warn(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("WARN", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("WARN", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -142,9 +141,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   error(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("ERROR", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("ERROR", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -163,9 +162,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   grave(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("GRAVE", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("GRAVE", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -185,9 +184,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   ml(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("Module Loader", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("Module Loader", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -207,9 +206,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   pl(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("Plugin Loader", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("Plugin Loader", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -229,8 +228,8 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   mu(message: string, placeholders?: PlaceHolder) {
-    let [data, time] = this.prelog("Module Unloader", message);
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("Module Unloader", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -250,9 +249,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   pu(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("Plugin Unloader", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("Plugin Unloader", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -272,9 +271,9 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   fatal(message: string, placeholders?: PlaceHolder) {
-    message = message.toString();
-    let [data, time] = this.prelog("FATAL", message);
+    message = new String(message).toString();
     for (let i in message.split("\n")) {
+      let [data, time] = this.prelog("FATAL", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
@@ -293,9 +292,9 @@ export class Logger extends PlaceHolders {
    */
   debug(message: string, placeholders?: PlaceHolder) {
     if(this.bot.config.core.debug) {
-      message = message.toString();
-      let [data, time] = this.prelog("DEBUG", message);
+      message = new String(message).toString();
       for (let i in message.split("\n")) {
+        let [data, time] = this.prelog("DEBUG", message);
         let parsedMessage = super.parse(
           message.split("\n")[i],
           placeholders

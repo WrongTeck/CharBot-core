@@ -3,14 +3,18 @@ import { ConfigManager } from "./ConfigManager";
 import ChairConsole from "./Console";
 import ModuleManager from "./ModuleManager";
 import PluginManager from "./PluginManager";
-import { Configs, Lang, ChairModules, ChairPlugins } from "../interfaces";
+import { Configs, Lang } from "../interfaces";
+import RepoManager from "./RepoManager";
+import EventManager from "./EventManager";
 const version = "0.1 - ALPHA";
 export class ChairWoom extends EventEmitter2 {
   console: ChairConsole;
   lang: Lang;
   config: Configs;
-  plugins: ChairPlugins;
-  modules: ChairModules;
+  plugins: PluginManager;
+  modules: ModuleManager;
+  repo: RepoManager;
+  eventManager: EventManager;
   /**
    * Initialize a new ChairWoom instance
    * @returns The ChairWoom instance
@@ -25,17 +29,20 @@ export class ChairWoom extends EventEmitter2 {
   start(): ChairWoom {
     this.emit("core.start");
     this.console = new ChairConsole(this);
+    this.eventManager = new EventManager(this);
     new ConfigManager(this, (config: Configs) => {
       this.config = config;
       this.reloadLang();
       this.console.log(this.lang.bot_banner_start, {version});
-      this.modules = new ModuleManager(this).modules;
+      this.modules = new ModuleManager(this);
     });
     this.on("core.modules.finish", () => {
-      this.plugins = new PluginManager(this).plugins;
+      this.plugins = new PluginManager(this);
     });
     this.on("core.plugins.finish", () => {
+      this.repo = new RepoManager(this);
       this.emit("core.finish");
+      this.eventManager.registerEvents();
       this.console.log(this.lang.done);
     });
     return this;
@@ -54,17 +61,15 @@ export class ChairWoom extends EventEmitter2 {
   stop() {
     this.console.log(this.lang.commands.shutdown_message);
     this.emit("core.shutdown");
+    for(let ChairModule in this.modules.modules) {
+      this.modules.unloadModule(ChairModule, true);
+    }
+    for(let ChairPlugin in this.plugins.plugins) {
+      this.plugins.unloadPlugin(ChairPlugin, true);
+    }
     this.console.lastCons.abort();
     process.stdout.clearLine(0);
     process.stdout.clearLine(1);
-    for(let ChairModule in this.modules) {
-      if(this.modules[ChairModule].unload)
-        this.modules[ChairModule].unload();
-    }
-    for(let ChairPlugin in this.plugins) {
-      if(this.plugins[ChairPlugin].unload)
-        this.plugins[ChairPlugin].unload();
-    }
     setTimeout(() => {
       this.console.term.clear();
       process.exit(0);
