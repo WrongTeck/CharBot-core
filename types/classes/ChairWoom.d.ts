@@ -1,28 +1,21 @@
 import { EventEmitter2 } from "eventemitter2";
 import ChairConsole from "./Console";
-import { Configs, Lang, ChairModules, ChairPlugins } from "../interfaces";
+import ModuleManager from "./ModuleManager";
+import PluginManager from "./PluginManager";
+import { Configs, Lang } from "../interfaces";
+import RepoManager from "./RepoManager";
+import EventManager from "./EventManager";
 export declare class ChairWoom extends EventEmitter2 {
     console: ChairConsole;
     lang: Lang;
     config: Configs;
-    plugins: ChairPlugins;
-    modules: ChairModules;
-    /**
-     * Initialize a new ChairWoom instance
-     * @returns The ChairWoom instance
-     */
+    plugins: PluginManager;
+    modules: ModuleManager;
+    repo: RepoManager;
+    eventManager: EventManager;
     constructor();
-    /**
-     * Starts the bot
-     */
     start(): ChairWoom;
-    /**
-     * Reload all languages files
-     */
     reloadLang(): void;
-    /**
-     * Stops the bot
-     */
     stop(): void;
 }
 export default ChairWoom;
