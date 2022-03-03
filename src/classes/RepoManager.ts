@@ -20,17 +20,17 @@ export default class RepoManager {
     readFile("./cache/modules.json", (err, data) => {
       if(err)
         hashes.modules = "";
-      hashes.modules = crypto.createHash("sha256").update(data).digest("base64");
+      hashes.modules = crypto.createHash("sha256").update(data).digest("hex");
     });
     readFile("./cache/plugins.json", (err, data) => {
       if(err)
         hashes.plugins = "";
-      hashes.plugins = crypto.createHash("sha256").update(data).digest("base64");
+      hashes.plugins = crypto.createHash("sha256").update(data).digest("hex");
     });
     readFile("./cache/core.json", (err, data) => {
       if(err)
         hashes.core = "";
-      hashes.core = crypto.createHash("sha256").update(data).digest("base64");
+      hashes.core = crypto.createHash("sha256").update(data).digest("hex");
     });
     axios.get(this.bot.config.core.repo.url + "/updates").then((value) => {
       let data: HashUpdate = JSON.parse(value.data);

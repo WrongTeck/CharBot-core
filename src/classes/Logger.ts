@@ -12,6 +12,7 @@ export class Logger extends PlaceHolders {
   history: Array<string>;
   last: boolean;
   lastCons: any;
+  private inUse: boolean = false;
   /**
    * @param bot The ChairBot instance that called the logger
    * @returns A new Logger instance
@@ -93,26 +94,38 @@ export class Logger extends PlaceHolders {
     }
     return [data, time];
   }
+  
+  private printer(message: string, placeholders: PlaceHolder, type: string, color: string) {
+    let interval = setInterval(() => {
+      if(this.inUse)
+        return;
+      this.inUse = true;
+      message = new String(message).toString();
+      for (let i in message.split("\n")) {
+        let [data, time] = this.prelog(type, message);
+        let parsedMessage = super.parse(
+          message.split("\n")[i],
+          placeholders
+        );
+        this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage)
+        terminal[color](
+          data + `[${time}] [${type}] ${parsedMessage}`
+        );
+      }
+      clearInterval(interval);
+      this.rearm();
+      this.last = true;
+      this.inUse = false;
+    }, 100);
+  }
+
   /**
    * Print a formatted message to the console with LOG level
    * @param message The message to log
    * @param placeholders An object with PlaceHolder data
    */
   log(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("INFO", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.log", parsedMessage)
-      terminal.white(
-        data + `[${time}] [INFO] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "INFO", "white");
   }
   /**
    * Print a formatted message to console with WARN level
@@ -120,20 +133,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   warn(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("WARN", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.warn", parsedMessage)
-      terminal.yellow(
-        data + `[${time}] [WARN] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "WARN", "yellow");
   }
   /**
    * Prints a formatted message to the console with ERROR level
@@ -141,20 +141,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   error(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("ERROR", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.error", parsedMessage)
-      terminal.red(
-        data + `[${time}] [ERROR] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "ERROR", "red");
   }
   /**
    * Print a message to the console with GRAVE level
@@ -162,20 +149,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders A PlaceHolder object
    */
   grave(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("GRAVE", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.grave", parsedMessage)
-      terminal.red(
-        data + `[${time}] [GRAVE] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "GRAVE", "red");
   }
   /**
    * Prints a message to console with Module Loader level
@@ -184,20 +158,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   ml(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("Module Loader", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.moduleLoader", parsedMessage)
-      terminal.brightGreen(
-        data + `[${time}] [Module Loader] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "ModuleLoader", "brightGreen");
   }
   /**
    * Prints a formatted message to the console with Plugin Loader level
@@ -206,20 +167,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   pl(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("Plugin Loader", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.pluginLoader", parsedMessage)
-      terminal.brightGreen(
-        data + `[${time}] [Plugin Loader] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "PluginLoader", "brightGreen");
   }
   /**
    * Print a formatted message to the console with Module Unload level
@@ -228,19 +176,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   mu(message: string, placeholders?: PlaceHolder) {
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("Module Unloader", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.moduleUnloader", parsedMessage)
-      terminal.brightRed(
-        data + `[${time}] [Module Unloader] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "ModuleUnloader", "brightRed");
   }
   /**
    * Prints a message to the console with Plugin Unload level
@@ -249,20 +185,8 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   pu(message: string, placeholders?: PlaceHolder) {
-    message = new String(message).toString();
-    for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("Plugin Unloader", message);
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      this.bot.emit("core.logger.pluginUnloader", parsedMessage)
-      terminal.white(
-        data + `[${time}] [Plugin Unloader] ${parsedMessage}`
-      );
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "PluginUnloader", "brightRed");
+
   }
   /**
    * Prints a message to the console with FATAL level
@@ -283,7 +207,9 @@ export class Logger extends PlaceHolders {
         data + `[${time}] [FATAL] ${parsedMessage}`
       );
     }
-    this.bot.stop();
+    setTimeout(() => {
+      this.bot.stop();
+    }, 500);
   }
   /**
    * If debug mode is enabled, prints a formatted message to the console with DEBUG level
@@ -291,22 +217,7 @@ export class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   debug(message: string, placeholders?: PlaceHolder) {
-    if(this.bot.config.core.debug) {
-      message = new String(message).toString();
-      for (let i in message.split("\n")) {
-        let [data, time] = this.prelog("DEBUG", message);
-        let parsedMessage = super.parse(
-          message.split("\n")[i],
-          placeholders
-        );
-        this.bot.emit("core.logger.debug", parsedMessage)
-        terminal.brightBlue(
-          data + `[${time}] [DEBUG] ${parsedMessage}`
-        );
-      }
-    }
-    this.cons();
-    this.last = true;
+    this.printer(message, placeholders, "DEBUG", "brightBlue");
   }
   /**
    * Reload the prompt
