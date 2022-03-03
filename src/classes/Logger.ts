@@ -12,6 +12,7 @@ export class Logger extends PlaceHolders {
   history: Array<string>;
   last: boolean;
   lastCons: any;
+  private isShuttingDown: boolean = false;
   private inUse: boolean = false;
   /**
    * @param bot The ChairBot instance that called the logger
@@ -21,10 +22,13 @@ export class Logger extends PlaceHolders {
     super();
     super.logger = this;
     if(!this.filename) {
-      this.filename = moment().format("HH-mm-ss") + "-Chairbot";
+      this.filename = moment().format("HH-mm-ss") + "-ChairWoom";
     }
     this.history = [];
     this.last = false;
+    this.bot.on("core.shutdown", () => {
+      this.isShuttingDown = true;
+    });
     return this;
   }
   /**
@@ -86,9 +90,12 @@ export class Logger extends PlaceHolders {
     const time = moment().format("HH:mm:ss");
     this.file(message, type);
     if(this.last) {
-      this.lastCons.abort();
-      process.stdout.clearLine(0);
-      process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
+      if(!this.isShuttingDown) {
+        this.lastCons.abort();
+        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
+      } else {
+        data = "\n";
+      }
     } else {
       data = "\n";
     }
@@ -116,7 +123,7 @@ export class Logger extends PlaceHolders {
       this.rearm();
       this.last = true;
       this.inUse = false;
-    }, 100);
+    }, 10);
   }
 
   /**
@@ -225,6 +232,7 @@ export class Logger extends PlaceHolders {
   rearm() {
     if(this.lastCons)
       this.lastCons.abort();
+    if(this.isShuttingDown) return;
     this.cons();
   }
 }

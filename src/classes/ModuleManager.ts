@@ -113,7 +113,6 @@ export class ModuleManager {
           }
       }
     }
-    this.bot.console.log(name);
     if(this.bot.modules[name].unload)
       this.bot.modules[name].unload();
     this.bot.console.mu(this.bot.lang.module.unload);
