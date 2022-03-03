@@ -45,3 +45,10 @@ export interface ChairPlugin {
 export interface ChairPlugins {
   [pluginName: string]: ChairPlugin;
 }
+
+
+export interface HashUpdate {
+  core: string;
+  modules: string;
+  plugins: string;
+}

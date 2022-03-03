@@ -23,5 +23,9 @@
     "read_dir_err": "Failed to read the Modules Directory!",
     "missed_module": "Cannot load {name}, because depends on {module}, but it's missed",
     "unload":"Unloaded {name}"
+  },
+  "repo": {
+    "error": "Cannot fetch {name} from the remote server\nError: {e}",
+    "error_write": "Cannot write {name} to the chache folder!"
   }
 }

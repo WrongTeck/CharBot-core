@@ -43,6 +43,7 @@ export class ChairWoom extends EventEmitter2 {
       this.repo = new RepoManager(this);
       this.emit("core.finish");
       this.eventManager.registerEvents();
+      this.repo = new RepoManager(this);
       this.console.log(this.lang.done);
     });
     return this;
