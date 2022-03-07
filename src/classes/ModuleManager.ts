@@ -3,6 +3,9 @@ import ChairWoom from "./ChairWoom";
 import { ChairModules } from "../interfaces";
 
 export class ModuleManager {
+  /**
+   * The modules loaded in the bot
+   */
   modules: ChairModules;
   /**
    * Initialize a new instance of the ModuleManager
@@ -18,7 +21,7 @@ export class ModuleManager {
    * Read the module folder
    */
   private readDir() {
-    this.bot.console.ml(this.bot.lang.modules.load_start);
+    this.bot.console.ml(this.bot.lang.files.core.modules.load_start);
     this.bot.emit("core.modules.start");
     readdir(
       "./modules",
@@ -28,7 +31,7 @@ export class ModuleManager {
       },
       (err, files) => {
         if (err)
-          return this.bot.console.fatal(this.bot.lang.modules.read_dir_err);
+          return this.bot.console.fatal(this.bot.lang.files.core.modules.read_dir_err);
         files.forEach((dirent, i, array) => {
           if (dirent.isDirectory()) {
             this.loadModule(dirent.name);
@@ -96,7 +99,7 @@ export class ModuleManager {
     if(!this.bot.modules[name]) return false;
     if(force) {
       delete this.modules[name];
-      this.bot.console.mu(this.bot.lang.module.unload);
+      this.bot.console.mu(this.bot.lang.files.core.module.unload);
       return true;
     }
     for (const Chairmodule in this.modules) {
@@ -115,7 +118,7 @@ export class ModuleManager {
     }
     if(this.bot.modules[name].unload)
       this.bot.modules[name].unload();
-    this.bot.console.mu(this.bot.lang.module.unload);
+    this.bot.console.mu(this.bot.lang.files.core.module.unload);
     this.bot.emit("core.modules.unloaded", name);
   }
   /**

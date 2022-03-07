@@ -3,17 +3,44 @@ import { ConfigManager } from "./ConfigManager";
 import ChairConsole from "./Console";
 import ModuleManager from "./ModuleManager";
 import PluginManager from "./PluginManager";
-import { Configs, Lang } from "../interfaces";
+import { Configs } from "../interfaces";
 import RepoManager from "./RepoManager";
 import EventManager from "./EventManager";
+import LangManager from "./LangManager";
 const version = "0.1 - ALPHA";
+
+/**
+ * The main class of ChairWoom were all begins
+ */
 export class ChairWoom extends EventEmitter2 {
+  /**
+   * The console to execute commands and print messages
+   */
   console: ChairConsole;
-  lang: Lang;
+  /**
+   * The lang files
+   */
+  lang: LangManager;
+  /**
+   * The config files
+   */
   config: Configs;
+  /**
+   * The PluginManager with its plugins
+   */
   plugins: PluginManager;
+  /**
+   * The ModuleManager with it modules
+   */
   modules: ModuleManager;
+  /**
+   * The repo manager, to update, download and upgrade
+   * modules, plugins and the core
+   */
   repo: RepoManager;
+  /**
+   * The EventManager to manage all events in the bot
+   */
   eventManager: EventManager;
   /**
    * Initialize a new ChairWoom instance
@@ -32,9 +59,13 @@ export class ChairWoom extends EventEmitter2 {
     this.eventManager = new EventManager(this);
     new ConfigManager(this, (config: Configs) => {
       this.config = config;
-      this.reloadLang();
-      this.console.log(this.lang.bot_banner_start, {version});
-      this.modules = new ModuleManager(this);
+      this.lang = new LangManager(this);
+      this.lang.setLang(this.config.core.lang).then(() => {
+        this.console.log(this.lang.files.core.bot_banner_start, {version});
+        this.modules = new ModuleManager(this);
+      }).catch((err) => {
+        this.console.fatal(err);
+      })
     });
     this.on("core.modules.finish", () => {
       this.plugins = new PluginManager(this);
@@ -44,23 +75,15 @@ export class ChairWoom extends EventEmitter2 {
       this.emit("core.finish");
       this.eventManager.registerEvents();
       this.repo = new RepoManager(this);
-      this.console.log(this.lang.done);
+      this.console.log(this.lang.files.core.done);
     });
     return this;
-  }
-  /**
-   * Reload all languages files
-   */
-  reloadLang() {
-    this.emit("core.lang.reload");
-    this.lang = {};
-    Object.assign(this.lang, require(__dirname + `/../languages/${this.config.core.lang}.json`));
   }
   /**
    * Stops the bot
    */
   stop() {
-    this.console.log(this.lang.commands.shutdown_message);
+    this.console.log(this.lang.files.core.commands.shutdown_message);
     this.emit("core.shutdown");
     for(let ChairModule in this.modules.modules) {
       this.modules.unloadModule(ChairModule, false);

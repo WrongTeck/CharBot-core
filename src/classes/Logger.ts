@@ -6,13 +6,37 @@ import { Commands, PlaceHolder } from "../interfaces";
 import { ChairWoom } from "..";
 
 export class Logger extends PlaceHolders {
-  filename: string;
+  /**
+   * The filename of the log
+   */
+  private filename: string;
+  /**
+   * Commands that are registered
+   */
   commands: Commands;
+  /**
+   * An executor for the commands
+   */
   executor: Function;
+  /**
+   * History of commands typed
+   */
   history: Array<string>;
+  /**
+   * Whatever or not if the console is already active 
+   */
   last: boolean;
+  /**
+   * The last active console if any
+   */
   lastCons: any;
+  /**
+   * Whatever or not if the "core.shutdown" has been fired
+   */
   private isShuttingDown: boolean = false;
+  /**
+   * If the console is printing a message
+   */
   private inUse: boolean = false;
   /**
    * @param bot The ChairBot instance that called the logger
@@ -44,6 +68,7 @@ export class Logger extends PlaceHolders {
    * @param type The logging level
    */
   private file(message: string, type: string) {
+    if(!this.bot.config.core.logging) return;
     let data: string;
     if(type == "INPUT") {
       data = `> ${message}\n`;
@@ -101,7 +126,13 @@ export class Logger extends PlaceHolders {
     }
     return [data, time];
   }
-  
+  /**
+   * Print something to the stdout with the given options
+   * @param message The message to print
+   * @param placeholders PlaceHolders
+   * @param type Logging level
+   * @param color The color to apply at the terminal
+   */
   private printer(message: string, placeholders: PlaceHolder, type: string, color: string) {
     let interval = setInterval(() => {
       if(this.inUse)
@@ -109,11 +140,11 @@ export class Logger extends PlaceHolders {
       this.inUse = true;
       message = new String(message).toString();
       for (let i in message.split("\n")) {
-        let [data, time] = this.prelog(type, message);
         let parsedMessage = super.parse(
           message.split("\n")[i],
           placeholders
         );
+        let [data, time] = this.prelog(type, parsedMessage);
         this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage)
         terminal[color](
           data + `[${time}] [${type}] ${parsedMessage}`
@@ -204,14 +235,12 @@ export class Logger extends PlaceHolders {
   fatal(message: string, placeholders?: PlaceHolder) {
     message = new String(message).toString();
     for (let i in message.split("\n")) {
-      let [data, time] = this.prelog("FATAL", message);
       let parsedMessage = super.parse(
         message.split("\n")[i],
         placeholders
       );
-      this.bot.emit("core.logger.fatal", parsedMessage)
       terminal.bgRed(
-        data + `[${time}] [FATAL] ${parsedMessage}`
+        `\n[FATAL] ${parsedMessage}`
       );
     }
     setTimeout(() => {
@@ -230,8 +259,9 @@ export class Logger extends PlaceHolders {
    * Reload the prompt
    */
   rearm() {
-    if(this.lastCons)
+    if(this.lastCons) {
       this.lastCons.abort();
+    }
     if(this.isShuttingDown) return;
     this.cons();
   }

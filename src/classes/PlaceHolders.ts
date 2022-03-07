@@ -2,6 +2,9 @@ import Logger from "./Logger";
 import { PlaceHolder } from '../interfaces';
 
 export class PlaceHolders {
+  /**
+   * The logger instance
+   */
   logger: Logger;
   /**
    * Initialize a new PlaceHolder parser instance

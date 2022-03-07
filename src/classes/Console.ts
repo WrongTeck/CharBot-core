@@ -2,12 +2,20 @@ import { Logger } from "./Logger";
 import { terminal } from "terminal-kit";
 import ChairWoom from "./ChairWoom";
 const term = terminal;
-import { BasicCommands } from "./Commands";
 import { Commands } from "../interfaces";
 
 export class ChairConsole extends Logger {
+  /**
+   * The last command typed in the console
+   */
   lastCommand: string;
+  /**
+   * The terminal manger (terminal-kit)
+   */
   term: any;
+  /**
+   * The commands that are loaded in the bot
+   */
   commands: Commands;
   /**
    * Initialize a new instance of the ChairConsole
@@ -17,7 +25,7 @@ export class ChairConsole extends Logger {
     super(bot);
     super.executor = this.command;
     this.commands = {};
-    Object.assign(this.commands, BasicCommands);
+    this.registerCommand({});
     this.history = [];
     this.lastCommand = "";
     this.term = term;
@@ -33,7 +41,7 @@ export class ChairConsole extends Logger {
     if(name.startsWith("CTRL") && name != "CTRL_C") return;
     if(name == "CTRL_C") {
         try {
-          this.commands.stop(this, []);
+          this.bot.stop();
         } catch (e) {
           super.fatal("Something is broken! Hard exit...");
           process.exit(1);
@@ -50,13 +58,13 @@ export class ChairConsole extends Logger {
     if(last.includes(" ")) {
       this.addHistory(last);
       if(!Object.keys(this.commands).includes(last.split(" ")[0])) {
-        return this.error(this.bot.lang.commands.invalid_command, { command: last.split(" ")[0] });
+        return this.error(this.bot.lang.files.core.commands.invalid_command, { command: last.split(" ")[0] });
       }
       Object.values(this.commands)[Object.keys(this.commands).indexOf(last.split(" ")[0])](this, last.split(" "));
     } else {
       this.addHistory(last);
       if(!Object.keys(this.commands).includes(last)) {
-        return this.error(this.bot.lang.commands.invalid_command, { command: last.split(" ")[0] });
+        return this.error(this.bot.lang.files.core.commands.invalid_command, { command: last.split(" ")[0] });
       } else if(typeof Object.values(this.commands)[Object.keys(this.commands).indexOf(last)] == "function") {
         Object.values(this.commands)[Object.keys(this.commands).indexOf(last)](this, []);
       }
@@ -90,6 +98,7 @@ export class ChairConsole extends Logger {
       delete this.commands;
     }
     this.commands = {};
+    const { BasicCommands } = require("./Commands");
     Object.assign(this.commands, BasicCommands);
   }
   /**
@@ -105,6 +114,7 @@ export class ChairConsole extends Logger {
       this.commands = commands;
       super.commands = this.commands;
     }
+    const { BasicCommands } = require("./Commands");
     Object.assign(this.commands, BasicCommands);
   }
 }

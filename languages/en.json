@@ -8,7 +8,8 @@
     "clear_logs_success": "Cleared logs!",
     "reload_commands": "Reloading commands...",
     "reloadLang_start": "Reloading all langs...",
-    "reloadLang_finish": "All lang files were reloaded!"
+    "reloadLang_finish": "All lang files were reloaded!",
+    "reload_help": "Usage 'reload <arg>'\nValid args are:\n - commands\n - lang\n - module\n - plugin"
   },
   "plugins": {
     "read_dir_err": "Failed to read the Plugin Directory!",
@@ -26,6 +27,9 @@
   },
   "repo": {
     "error": "Cannot fetch {name} from the remote server\nError: {e}",
-    "error_write": "Cannot write {name} to the chache folder!"
+    "error_write": "Cannot write {name} to the chache folder!",
+    "upgrade": {
+      "invalid_type": "Invlid type of packages {type}"
+    }
   }
 }

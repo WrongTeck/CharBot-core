@@ -3,7 +3,15 @@ import ChairWoom from "./ChairWoom";
 import { ChairPlugins, ChairPlugin } from "../interfaces";
 
 export class PluginManager {
+  /**
+   * Plugins loaded
+   */
   plugins: ChairPlugins;
+  /**
+   * Initialize a new instance of the PluginManager
+   * @param bot The ChairWoom instance
+   * @returns The plugin manager
+   */
   constructor(private bot: ChairWoom) {
     this.plugins = {};
     this.readDir();
@@ -13,13 +21,13 @@ export class PluginManager {
    * Reads the plugin folder
    */
   private readDir() {
-    this.bot.console.pl(this.bot.lang.plugins.load_start);
+    this.bot.console.pl(this.bot.lang.files.core.plugins.load_start);
     this.bot.emit("core.plugins.start");
     readdir("./plugins", {
       encoding: "utf-8",
       withFileTypes: true
     }, (err, files) => {
-      if (err) return this.bot.console.fatal(this.bot.lang.plugins.read_dir_err);
+      if (err) return this.bot.console.fatal(this.bot.lang.files.core.read_dir_err);
       files.forEach((dirent) => {
         if (dirent.isDirectory()) {
           this.loadPlugin(dirent.name);
@@ -58,11 +66,11 @@ export class PluginManager {
           }
           Object.defineProperty(this.plugins, name, { writable: true, value: loaded });
         } else {
-          this.bot.console.error(this.bot.lang.plugins.missed_module, { module: value, plugin: name });
+          this.bot.console.error(this.bot.lang.files.core.plugins.missed_module, { module: value, plugin: name });
         }
       })
     } else if(plugin.modules.length > 0) {
-      this.bot.console.error(this.bot.lang.plugins.missed_module, { module: "all", plugin: name });
+      this.bot.console.error(this.bot.lang.files.core.plugins.missed_module, { module: "all", plugin: name });
     } else {
       let loaded;
           if(plugin.main) {

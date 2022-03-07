@@ -18,65 +18,91 @@ export let BasicCommands = {
   },
   /**
    * Clear the logs folder
-   * @param console The console
+   * @param c The console
    */
-  clearLogs(console: ChairConsole) {
+  clearLogs(c: ChairConsole) {
     readdir("./logs", { encoding: "utf-8" }, (err, files) => {
-      if (err) return console.error(console.bot.lang.commands.clear_logs_error);
+      if (err) return c.error(c.bot.lang.files.core.commands.clear_logs_error);
       files.forEach((value, index, array) => {
         rm("./logs/"+value, { force: true }, (err1) => {
-          if (err1) return console.log("Cannot remove logs!");
+          if (err1) return c.error("Cannot remove logs!");
         });
       });
     });
-    console.log(console.bot.lang.commands.clear_logs_success);
+    console.log(c.bot.lang.files.core.commands.clear_logs_success);
   },
   /**
    * Show all commands typed
    */
-  history(console: ChairConsole) {
-    console.log(console.history.toString());
+  history(c: ChairConsole) {
+    console.log(c.history.toString());
   },
   /**
    * Show what commands are registered in the bot
    */
-  commands(console) {
-    console.log(Object.keys(console.commands));
+  commands(c: ChairConsole) {
+    console.log(Object.keys(c.commands));
   },
   /**
    * Print a quick help
    */
   help(console: ChairConsole) {
-    console.log("Commands list");
-    console.lastCons.abort();
-    console.term("\b\b"); // deletes '> ' Chair
-    console.term.table([
-      ['COMMAND','DESCRIPTION'],
-      ['^YclearLogs','Deletes the Chairbot\' log files'],
-      ['^Yexit','Alias for "stop" command'],
-      ['^Yhelp','Shows this table about commands'],
-      ['^Yhistory',''],
-      ['^YreloadCommands',''],
-      ['^YreloadLang','Reloads the localization files'],
-      ['^Ystop','Stops the bot'],
-    ],
-    {
-      contentHasMarkup: true,
-      firstRowTextAttr: {bgColor: 'white', color: 'black'},
-      borderAttr: {color: 'yellow'},
-      borderChairs: "heavy",
-      width: 40,
-      fit:true
-    });
-    console.rearm();
+    console.log("Commands list:");
+    setTimeout(() => {
+      console.lastCons.abort();
+      process.stdout.moveCursor(-2, 0);
+      console.term.table([
+        ['COMMAND','DESCRIPTION'],
+        ['^YclearLogs','Deletes the Chairbot\' log files'],
+        ['^Yexit','Alias for "stop" command'],
+        ['^Yhelp','Shows this table about commands'],
+        ['^Yhistory',''],
+        ['^YreloadCommands',''],
+        ['^YreloadLang','Reloads the localization files'],
+        ['^Ystop','Stops the bot'],
+      ],
+      {
+        contentHasMarkup: true,
+        firstRowTextAttr: {bgColor: 'white', color: 'black'},
+        borderAttr: {color: 'yellow'},
+        borderChairs: "heavy",
+        width: 40,
+        fit:true
+      });
+      console.rearm();
+    }, 100);
   },
   /**
-   * Reload console commands
+   * Reload all, modules, plugins or the lang files
+   * @param c The console
+   * @param args Arguments of the command
    */
-  reloadLang(console: ChairConsole) {
-    console.log(console.bot.lang.commands.reloadLang_start);
-    console.bot.reloadLang();
-    console.log(console.bot.lang.commands.reloadLang_finish);
+  reload(c: ChairConsole, args: string[]) {
+    if(args.length == 0)
+      return c.log(c.bot.lang.files.core.commands.reload_help);
+    switch(args[0]) {
+      case "commands":
+        c.log(c.bot.lang.files.core.commands.reload_commands);
+        c.unregisterCommand();
+        c.registerCommand(this);
+        break;
+      case "lang":
+        c.log(c.bot.lang.files.core.reloadLang_start);
+        for(const name in c.bot.lang.files) {
+          if(name == "core") {
+            c.bot.lang.setLang(this.bot.config.core.lang);
+            continue;
+          }
+          let type: string = c.bot.lang.files[name].type;
+          c.bot.lang.unloadLang(name);
+          c.bot.lang.loadLang(type, name);
+        }
+        c.log(c.bot.lang.files.core.reloadLang_finish);
+        break;
+      case "modules":
+        break;
+
+    }
   },
   /**
    * Clear the stdout
@@ -84,15 +110,6 @@ export let BasicCommands = {
   clear(console: ChairConsole) {
     console.term.clear();
     console.log("Cleared!");
-  },
-  /**
-   * Reload all commands in ChairBot
-   * @param console The console
-   */
-  reloadCommands(console: ChairConsole) {
-    console.log(console.bot.lang.commands.reload_commands);
-    console.unregisterCommand();
-    console.registerCommand(this);
   },
   /**
    * With this command you can manage all repository related things
@@ -103,7 +120,13 @@ export let BasicCommands = {
     if(args.length == 0) {
       return console.log("Print the help message");
     }
-    return console.log("You typed an arg!");
+    switch(args[1]) {
+      case "upgrade":
+        console.bot.repo.upgrade(args[2], args[3], args[4]);
+        break;
+      default:
+        console.log("Invalid subcommand!");
+    }
   }
 }
 

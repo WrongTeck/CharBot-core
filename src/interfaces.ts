@@ -5,7 +5,7 @@ export interface Configs {
 }
 
 export interface Lang {
-  [langName: string]: Lang & string
+  [langName: string]: Lang & string;
 }
 
 export interface Command {

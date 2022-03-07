@@ -1,8 +1,13 @@
 import { readdir } from "fs";
 import { Configs } from "../interfaces";
 import ChairWoom from "./ChairWoom";
-// Needs a more modular rewrite
+/**
+ * Loads and inject the config file in the main class
+ */
 export class ConfigManager {
+  /**
+   * The config files
+   */
   config: Object;
   /**
    * Initialize a new instance of the ConfigManager
