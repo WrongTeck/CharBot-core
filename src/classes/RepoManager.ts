@@ -11,7 +11,7 @@ export default class RepoManager {
    * @returns The repository manager
    */
   constructor(private bot: ChairWoom) {
-    stat("./cache", (err, stats) => {
+    stat("./cache", (err) => {
       if(err)
         mkdir("./cache", (e) => {
           console.log(e);

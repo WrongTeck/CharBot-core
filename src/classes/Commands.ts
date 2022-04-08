@@ -80,7 +80,7 @@ export let BasicCommands = {
   reload(c: ChairConsole, args: string[]) {
     if(args.length == 0)
       return c.log(c.bot.lang.files.core.commands.reload_help);
-    switch(args[0]) {
+    switch(args[1]) {
       case "commands":
         c.log(c.bot.lang.files.core.commands.reload_commands);
         c.unregisterCommand();
@@ -101,7 +101,8 @@ export let BasicCommands = {
         break;
       case "modules":
         break;
-
+      default:
+        c.error("Unknown command {arg}", {arg: args[0]});
     }
   },
   /**

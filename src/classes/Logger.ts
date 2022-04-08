@@ -145,14 +145,15 @@ export class Logger extends PlaceHolders {
           placeholders
         );
         let [data, time] = this.prelog(type, parsedMessage);
-        this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage)
         terminal[color](
           data + `[${time}] [${type}] ${parsedMessage}`
         );
+        this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage);
+        this.last = false;
       }
       clearInterval(interval);
-      this.rearm();
       this.last = true;
+      this.rearm();
       this.inUse = false;
     }, 10);
   }
