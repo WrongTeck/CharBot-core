@@ -1,6 +1,8 @@
 import Logger from "./Logger";
 import { PlaceHolder } from '../interfaces';
 
+
+//The error messages are english only to prevent empty error messages
 export class PlaceHolders {
   /**
    * The logger instance
@@ -20,9 +22,15 @@ export class PlaceHolders {
    * @returns The formatted string
    */
   parse(data: string, placeHolders: PlaceHolder) {
-    if(typeof data !== "string" || !data) return "No data or invalid data incoming in the PlaceHolder Parser!";
+    if(typeof data !== "string" || !data) {
+      this.logger.grave("No data or invalid data incoming in the PlaceHolder Parser!");
+      return data;
+    }
     if(!placeHolders) return data.toString();
-    if(typeof placeHolders !== "object") return "Invalid PlaceHolder Object!";
+    if(typeof placeHolders !== "object") {
+      this.logger.grave("Invalid PlaceHolder Object!");
+      return data;
+    }
     let keys: Array<string> = Object.keys(placeHolders);
     let values: Array<string> = Object.values(placeHolders);
     for(const key in keys) {

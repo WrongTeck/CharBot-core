@@ -5,7 +5,7 @@ import PlaceHolders from "./PlaceHolders";
 import { Commands, PlaceHolder } from "../interfaces";
 import { ChairWoom } from "..";
 
-export class Logger extends PlaceHolders {
+export default class Logger extends PlaceHolders {
   /**
    * The filename of the log
    */
@@ -267,5 +267,3 @@ export class Logger extends PlaceHolders {
     this.cons();
   }
 }
-
-export default Logger;

@@ -1,4 +1,4 @@
-import { Logger } from "./Logger";
+import Logger from "./Logger";
 import { terminal } from "terminal-kit";
 import ChairWoom from "./ChairWoom";
 const term = terminal;
@@ -37,13 +37,13 @@ export class ChairConsole extends Logger {
    * Handle a key/combination of keys
    * @param name The key name
    */
-  private key(name: string, matches: string) {
+  private key(name: string) {
     if(name.startsWith("CTRL") && name != "CTRL_C") return;
     if(name == "CTRL_C") {
         try {
           this.bot.stop();
         } catch (e) {
-          super.fatal("Something is broken! Hard exit...");
+          super.fatal("Something is broken! Hard exit...\n");
           process.exit(1);
         }
     }
