@@ -19,3 +19,4 @@ dist/
 start
 interfaces.js
 old/
+tsconfig.tsbuildinfo
