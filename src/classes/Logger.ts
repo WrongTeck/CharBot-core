@@ -23,9 +23,10 @@ export default class Logger extends PlaceHolders {
    */
   history: Array<string>;
   /**
-   * Whatever or not if the console is already active 
+   * Working on redoing this!
+   * Whatever or not if the console is already active
    */
-  last: boolean;
+  last: boolean = false;
   /**
    * The last active console if any
    */
@@ -45,11 +46,10 @@ export default class Logger extends PlaceHolders {
   constructor(public bot: ChairWoom) {
     super();
     super.logger = this;
-    if(!this.filename) {
+    if (!this.filename) {
       this.filename = moment().format("HH-mm-ss") + "-ChairWoom";
     }
     this.history = [];
-    this.last = false;
     this.bot.on("core.shutdown", () => {
       this.isShuttingDown = true;
     });
@@ -68,17 +68,17 @@ export default class Logger extends PlaceHolders {
    * @param type The logging level
    */
   private file(message: string, type: string) {
-    if(!this.bot.config.core.logging) return;
+    if (!this.bot.config.core.logging) return;
     let data: string;
-    if(type == "INPUT") {
+    if (type == "INPUT") {
       data = `> ${message}\n`;
     } else {
       data = `[${moment().format("HH-mm-ss")}] [${type}] ${message}\n`;
     }
     appendFile(`./logs/${this.filename}.log`, data, (err) => {
-      if(err) {
+      if (err) {
         mkdir("./logs", (err1) => {
-          if(err1) console.log(err1);
+          if (err1) console.log(err1);
         });
       }
     });
@@ -96,8 +96,8 @@ export default class Logger extends PlaceHolders {
         history: this.history,
       },
       (err, arg) => {
-        if(err) return this.error(err);
-        this.last = false;
+        if (err) return this.error(err);
+        process.stdout.moveCursor(-process.stdout.getWindowSize()[0],1);
         this.file(arg, "INPUT");
         this.executor(arg);
       }
@@ -105,26 +105,31 @@ export default class Logger extends PlaceHolders {
   }
   /**
    * Does all the pre-logging stuff
-   * Write to the file and calculate the time 
+   * Write to the file and calculate the time
    * @param type The logging level
    * @param message The message to log
-   * @returns Whatever or not to print a \n and the time
+   * @returns The time to use in the terminal
    */
-  private prelog(type: string, message: string) {
-    let data: string = "";
+  private prelog(type: string, message: string): string {
     const time = moment().format("HH:mm:ss");
     this.file(message, type);
-    if(this.last) {
+    if(this.lastCons) {
       if(!this.isShuttingDown) {
         this.lastCons.abort();
         process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
-      } else {
-        data = "\n";
       }
     } else {
-      data = "\n";
+      process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
     }
-    return [data, time];
+    /*if (type == "INPUT")
+      process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
+    if (typeof this.lastCons != "undefined") {
+        this.lastCons.abort();
+        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
+      } else {
+        process.stdout.moveCursor(0, 1);
+      }*/
+    return time;
   }
   /**
    * Print something to the stdout with the given options
@@ -133,26 +138,23 @@ export default class Logger extends PlaceHolders {
    * @param type Logging level
    * @param color The color to apply at the terminal
    */
-  private printer(message: string, placeholders: PlaceHolder, type: string, color: string) {
+  private printer(
+    message: string,
+    placeholders: PlaceHolder,
+    type: string,
+    color: string
+  ) {
     let interval = setInterval(() => {
-      if(this.inUse)
-        return;
+      if (this.inUse) return;
       this.inUse = true;
       message = new String(message).toString();
       for (let i in message.split("\n")) {
-        let parsedMessage = super.parse(
-          message.split("\n")[i],
-          placeholders
-        );
-        let [data, time] = this.prelog(type, parsedMessage);
-        terminal[color](
-          data + `[${time}] [${type}] ${parsedMessage}`
-        );
+        let parsedMessage = super.parse(message.split("\n")[i], placeholders);
+        let time = this.prelog(type, parsedMessage);
+        terminal[color](`[${time}] [${type}] ${parsedMessage}`);
         this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage);
-        this.last = false;
       }
       clearInterval(interval);
-      this.last = true;
       this.rearm();
       this.inUse = false;
     }, 10);
@@ -225,7 +227,6 @@ export default class Logger extends PlaceHolders {
    */
   pu(message: string, placeholders?: PlaceHolder) {
     this.printer(message, placeholders, "PluginUnloader", "brightRed");
-
   }
   /**
    * Prints a message to the console with FATAL level
@@ -236,13 +237,8 @@ export default class Logger extends PlaceHolders {
   fatal(message: string, placeholders?: PlaceHolder) {
     message = new String(message).toString();
     for (let i in message.split("\n")) {
-      let parsedMessage = super.parse(
-        message.split("\n")[i],
-        placeholders
-      );
-      terminal.bgRed(
-        `\n[FATAL] ${parsedMessage}`
-      );
+      let parsedMessage = super.parse(message.split("\n")[i], placeholders);
+      terminal.bgRed(`\n[FATAL] ${parsedMessage}`);
     }
     setTimeout(() => {
       this.bot.stop();
@@ -260,10 +256,10 @@ export default class Logger extends PlaceHolders {
    * Reload the prompt
    */
   rearm() {
-    if(this.lastCons) {
+    if (this.lastCons) {
       this.lastCons.abort();
     }
-    if(this.isShuttingDown) return;
+    if (this.isShuttingDown) return;
     this.cons();
   }
 }

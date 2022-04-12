@@ -23,13 +23,13 @@ export let BasicCommands = {
   clearLogs(c: ChairConsole) {
     readdir("./logs", { encoding: "utf-8" }, (err, files) => {
       if (err) return c.error(c.bot.lang.files.core.commands.clear_logs_error);
-      files.forEach((value, index, array) => {
+      files.forEach((value) => {
         rm("./logs/"+value, { force: true }, (err1) => {
           if (err1) return c.error("Cannot remove logs!");
         });
       });
     });
-    console.log(c.bot.lang.files.core.commands.clear_logs_success);
+    c.log(c.bot.lang.files.core.commands.clear_logs_success);
   },
   /**
    * Show all commands typed

@@ -1,6 +1,6 @@
 import { ChairPlugins } from "../interfaces";
 import ChairWoom from "./ChairWoom";
-import { readdir, access, mkdir } from "fs";
+import { readdir, mkdir } from "fs";
 
 export default class PluginManager {
   /**
@@ -14,8 +14,8 @@ export default class PluginManager {
    */
   constructor(private bot: ChairWoom) {
     this.plugins = {};
-    readdir(`./plugins`, { encoding: "utf-8", withFileTypes: true }, (err, files) => {
-      if(err) {
+    readdir(`./plugins`, { encoding: "utf-8", withFileTypes: true }, (errDir) => {
+      if(errDir) {
         this.bot.console.log("Seems that there's no plugin directory!\nCreating one...");
         mkdir("./plugins", (err) => {
           if(err) {
