@@ -97,7 +97,7 @@ export default class Logger extends PlaceHolders {
       },
       (err, arg) => {
         if (err) return this.error(err);
-        process.stdout.moveCursor(-process.stdout.getWindowSize()[0],1);
+        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
         this.file(arg, "INPUT");
         this.executor(arg);
       }
@@ -118,8 +118,6 @@ export default class Logger extends PlaceHolders {
         this.lastCons.abort();
         process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
       }
-    } else {
-      process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
     }
     /*if (type == "INPUT")
       process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
@@ -147,13 +145,18 @@ export default class Logger extends PlaceHolders {
     let interval = setInterval(() => {
       if (this.inUse) return;
       this.inUse = true;
+      let multiline = message.includes("\n");
       message = new String(message).toString();
-      for (let i in message.split("\n")) {
-        let parsedMessage = super.parse(message.split("\n")[i], placeholders);
+      for (let string of message.split("\n")) {
+        let parsedMessage = super.parse(string, placeholders);
         let time = this.prelog(type, parsedMessage);
         terminal[color](`[${time}] [${type}] ${parsedMessage}`);
         this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage);
+        if(multiline)
+          process.stdout.moveCursor(0, 1);
       }
+      if(multiline)
+        process.stdout.moveCursor(0, -1);
       clearInterval(interval);
       this.rearm();
       this.inUse = false;
