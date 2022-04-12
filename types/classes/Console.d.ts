@@ -1,4 +1,4 @@
-import { Logger } from "./Logger";
+import Logger from "./Logger";
 import ChairWoom from "./ChairWoom";
 import { Commands } from "../interfaces";
 export declare class ChairConsole extends Logger {

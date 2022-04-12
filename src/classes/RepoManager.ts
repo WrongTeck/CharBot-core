@@ -25,11 +25,6 @@ export default class RepoManager {
    */
   public getUpdates() {
     let hashes: Partial<HashUpdate> = {};
-    readFile("./cache/modules.json", (err, data) => {
-      if(err)
-        hashes.modules = "";
-      hashes.modules = crypto.createHash("sha256").update(data).digest("hex");
-    });
     readFile("./cache/plugins.json", (err, data) => {
       if(err)
         hashes.plugins = "";
@@ -42,8 +37,6 @@ export default class RepoManager {
     });
     axios.get(this.bot.config.core.repo.url + "/updates").then((value) => {
       let data: HashUpdate = JSON.parse(value.data);
-      if(hashes.modules != data.modules)
-        this.fetchModules();
       if(hashes.plugins != data.plugins)
         this.fetchPlugins();
       if(hashes.core != data.core)
@@ -51,21 +44,6 @@ export default class RepoManager {
     }).catch((err) => {
       this.bot.console.error("Error while fetching the repositories! Error:\n"+err);
     })
-  }
-
-
-  /**
-   * Fetch module updates
-   */
-  public fetchModules() {
-    axios.get(this.bot.config.core.repo.url + "/modules").then((res) => {
-      writeFile("./cache/modules.json", res.data, (err) => {
-        if(err)
-          this.bot.console.error(this.bot.lang.files.core.repo.error_write, { name: "modules" });
-      });
-    }).catch((reason) => {
-      this.bot.console.error(this.bot.lang.files.core.repo.error, {name: "modules", e: reason});
-    });
   }
 
   /**

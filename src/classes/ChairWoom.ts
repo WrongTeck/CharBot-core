@@ -1,7 +1,6 @@
 import { EventEmitter2 } from "eventemitter2";
 import { ConfigManager } from "./ConfigManager";
 import ChairConsole from "./Console";
-import ModuleManager from "./ModuleManager";
 import PluginManager from "./PluginManager";
 import { Configs } from "../interfaces";
 import RepoManager from "./RepoManager";
@@ -29,10 +28,6 @@ export class ChairWoom extends EventEmitter2 {
    * The PluginManager with its plugins
    */
   plugins: PluginManager;
-  /**
-   * The ModuleManager with it modules
-   */
-  modules: ModuleManager;
   /**
    * The repo manager, to update, download and upgrade
    * modules, plugins and the core
@@ -62,14 +57,12 @@ export class ChairWoom extends EventEmitter2 {
       this.lang = new LangManager(this);
       this.lang.setLang(this.config.core.lang).then(() => {
         this.console.log(this.lang.files.core.bot_banner_start, {version});
-        this.modules = new ModuleManager(this);
+        this.plugins = new PluginManager(this);
       }).catch((err) => {
         this.console.fatal(err);
       })
     });
-    this.on("core.modules.finish", () => {
-      this.plugins = new PluginManager(this);
-    });
+
     this.on("core.plugins.finish", () => {
       this.repo = new RepoManager(this);
       this.emit("core.finish");
@@ -77,6 +70,7 @@ export class ChairWoom extends EventEmitter2 {
       this.repo = new RepoManager(this);
       this.console.log(this.lang.files.core.done);
     });
+
     return this;
   }
   /**
@@ -85,9 +79,6 @@ export class ChairWoom extends EventEmitter2 {
   stop() {
     this.console.log(this.lang.files.core.commands.shutdown_message);
     this.emit("core.shutdown");
-    for(let ChairModule in this.modules.modules) {
-      this.modules.unloadModule(ChairModule, false);
-    }
     for(let ChairPlugin in this.plugins.plugins) {
       this.plugins.unloadPlugin(ChairPlugin, false);
     }

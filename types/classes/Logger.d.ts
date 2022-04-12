@@ -1,19 +1,22 @@
 import PlaceHolders from "./PlaceHolders";
 import { Commands, PlaceHolder } from "../interfaces";
 import { ChairWoom } from "..";
-export declare class Logger extends PlaceHolders {
+export default class Logger extends PlaceHolders {
     bot: ChairWoom;
-    filename: string;
+    private filename;
     commands: Commands;
     executor: Function;
     history: Array<string>;
     last: boolean;
     lastCons: any;
+    private isShuttingDown;
+    private inUse;
     constructor(bot: ChairWoom);
     addHistory(command: string): void;
     private file;
     private cons;
     private prelog;
+    private printer;
     log(message: string, placeholders?: PlaceHolder): void;
     warn(message: string, placeholders?: PlaceHolder): void;
     error(message: string, placeholders?: PlaceHolder): void;
@@ -26,4 +29,3 @@ export declare class Logger extends PlaceHolders {
     debug(message: string, placeholders?: PlaceHolder): void;
     rearm(): void;
 }
-export default Logger;

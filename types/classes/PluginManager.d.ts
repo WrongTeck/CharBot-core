@@ -1,12 +1,13 @@
-import ChairWoom from "./ChairWoom";
 import { ChairPlugins } from "../interfaces";
-export declare class PluginManager {
+import ChairWoom from "./ChairWoom";
+export default class PluginManager {
     private bot;
     plugins: ChairPlugins;
     constructor(bot: ChairWoom);
-    private readDir;
-    loadPlugin(dir: string): void;
-    unloadPlugin(name: string, force: boolean): boolean;
-    getDependecies(name: string): Array<string>;
+    loadPlugin(name: string, options?: any): void;
+    private preLoadCheck;
+    unloadPlugin(name: string, options?: any): void;
+    private preUnloadCheck;
+    getPluginList(): Array<string>;
+    toString(): string;
 }
-export default PluginManager;

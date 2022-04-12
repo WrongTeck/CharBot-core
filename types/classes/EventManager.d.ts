@@ -11,7 +11,6 @@ export default class EventManager {
     private bot;
     inUse: boolean;
     notInitialized: boolean;
-    registeredEvents: string[];
     registeredListeners: RegisteredEventsOP;
     listenersNumber: ListenerNumberOP;
     constructor(bot: ChairWoom);
