@@ -6,7 +6,7 @@ import { Configs } from "../interfaces";
 import RepoManager from "./RepoManager";
 import EventManager from "./EventManager";
 import LangManager from "./LangManager";
-const version = "0.1 - ALPHA";
+const version = "0.1.4 - ALPHA";
 
 /**
  * The main class of ChairWoom were all begins
@@ -57,6 +57,7 @@ export class ChairWoom extends EventEmitter2 {
       this.lang = new LangManager(this);
       this.lang.setLang(this.config.core.lang).then(() => {
         this.console.log(this.lang.files.core.bot_banner_start, {version});
+        this.console.pl(this.lang.files.core.plugins.load_start);
         this.plugins = new PluginManager(this);
       }).catch((err) => {
         this.console.fatal(err);
