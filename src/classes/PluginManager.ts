@@ -18,11 +18,13 @@ export default class PluginManager {
    */
   constructor(private bot: ChairWoom) {
     this.plugins = {};
+    // Reads the plugins directory
     readdir(
       `./plugins`,
       { encoding: "utf-8", withFileTypes: true },
       (errDir, files) => {
         if (errDir) {
+          // Tries to create directory of the plugins
           this.bot.console.log(
             "Seems that there's no plugin directory!\nCreating one..."
           );
@@ -31,12 +33,14 @@ export default class PluginManager {
               this.bot.console.error(
                 "There was an error while trying to create the plugin directory!"
               );
+              // If the directory is not accessible stops the bot
               this.bot.stop();
             } else {
               this.bot.console.log("Directory created successfully!");
             }
           });
         } else {
+          // Everything fine, proceeds to parse the directory content
           this.directoryParser(files);
         }
       }
@@ -49,8 +53,10 @@ export default class PluginManager {
    * @param files The directories to read
    */
   private directoryParser(files: Dirent[]): void {
+    // Makes the dirent globals
     this.toLoad = files;
-    for (let dirent of files) {
+    for (let dirent of this.toLoad) {
+      // Runs pre-load checks to control that everything is OK
       let result: boolean | string[] = this.preLoadCheck(dirent);
       if (!result) {
         this.bot.console.error("Could not load the plugin {name}", {
@@ -58,6 +64,9 @@ export default class PluginManager {
         });
         continue;
       }
+      // Remove the element from the array
+      this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
+      // Effectively loads the plugin in the bot
       this.loadPlugin(dirent.name);
     }
   }
@@ -67,41 +76,84 @@ export default class PluginManager {
    * @param name The plugin directory name
    * @param options Options to use while loading the plugin
    */
-  public loadPlugin(name: string, options?: any) {
-    // Working on it
+  public loadPlugin(name: string, _options?: any) {
+    let plugin = require(`../plugins/${name}/index.js`);
+    this.plugins[name] = {name, version: "ALPHA"};
+    if(plugin.main)
+      new plugin.main(this.bot);
   }
 
   /**
    * Check that the given directory is readable
    * and that the is a valid entrypoint file in it
-   * @param name The plugin directory name
+   * @param dirent The plugin directory name
    * @param options Options to use
    */
-  private preLoadCheck(dirent: Dirent, options?: any): boolean | string[] {
+  private preLoadCheck(
+    dirent: Dirent | string,
+    _options?: any
+  ): boolean | string[] {
+    if (typeof dirent == "string") {
+      // Builds a dummy Dirent Object
+      dirent = {
+        name: dirent,
+        isDirectory: () => {
+          return true;
+        },
+        isFIFO() {
+          return false;
+        },
+        isBlockDevice() {
+          return false;
+        },
+        isFile() {
+          return !this.isDirectory();
+        },
+        isSocket() {
+          return false;
+        },
+        isCharacterDevice() {
+          return false;
+        },
+        isSymbolicLink() {
+          return false;
+        },
+      };
+    }
+    // Checks that the plugin name is a Directory (Single files are no longer supported)
     if (!dirent.isDirectory()) {
       this.bot.console.error("The {name} is not a directory!", {
         name: dirent.name,
       });
       return false;
     }
+    // Check the permission on the entrypoint file
     try {
       accessSync(`./plugins/${dirent.name}/index.js`, constants.R_OK);
     } catch (e) {
+      // Throws an error if the check fail
       this.bot.console.error(
         "Cannot access the entrypoint of {name}\nDoes it exists?",
         { name: dirent.name }
       );
       return false;
     }
-    let preload: ChairPlugin = require(`./plugins/${dirent.name}/index.js`);
+    // Pre-loads a plugin to check its dependecies
+    let preload: ChairPlugin = require(`../plugins/${dirent.name}/index.js`);
+    // Checks that the plugin has valid exports
     if (
       !preload.name ||
       !preload.version ||
       !(preload.main || preload.commands)
-    )
+    ) {
+      this.bot.console.error("The plugin {name} has not valid entries!", {
+        name: dirent.name,
+      });
       return false;
+    }
+    // Checks that the dependency field is an Object
     if (typeof preload.dependecies == "object") {
-      let dependecies: string[] | false = this.loadDependecies(preload);
+      let dependecies: boolean = this.loadDependecies(preload);
       if (!dependecies) {
         this.bot.console.error(
           "Could not load all dependecies for the plugin {name}",
@@ -118,7 +170,7 @@ export default class PluginManager {
    * @param name The plugin name
    * @param options Options to use while unloading the plugin
    */
-  public unloadPlugin(name: string, options?: any) {
+  public unloadPlugin(name: string, _options?: any) {
     // Working on it
   }
   /**
@@ -128,7 +180,7 @@ export default class PluginManager {
    * @param name The plugin name
    * @param option Options to use instead of the default one
    */
-  private preUnloadCheck(name: string, options?: any) {
+  private preUnloadCheck(name: string, _options?: any) {
     // Working on it
   }
 
@@ -137,11 +189,38 @@ export default class PluginManager {
    * @param name Plugin name
    * @returns Which dependecies where loaded
    */
-  private loadDependecies(preloaded: ChairPlugin): string[] | false {
-    let loaded: string[] = [];
+  private loadDependecies(preloaded: ChairPlugin): boolean {
+    // Tries to load every dependency
     for (let dependency of preloaded.dependecies) {
+      // Finds the Dirent record if any
+      let dirent = this.toLoad.find((dir) => {
+        if(dir.name == dependency)
+          return true;
+      });
+      // Check if it has found it in the plugins to load
+      if (typeof dirent != "undefined") {
+        // Remove the plugin form the ones to be loaded
+        this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
+        let result: boolean | string[] = this.preLoadCheck(dirent);
+        if (!result) {
+          this.bot.console.error("Could not load the plugin {name}", {
+            name: dependency,
+          });
+          return false;
+        }
+        // Loads the plugin
+        this.loadPlugin(dependency);
+        // Check if the plugin is already loaded
+      } else if (Object.keys(this.plugins).includes(dependency)) {
+        // IF already loaded skips to the next one
+        continue;
+      } else {
+        // At this point there's no other option to return a failure status
+        return false;
+      }
     }
-    return false;
+    // If this point is reached means everything fine!
+    return true;
   }
   /**
    * Get the current plugins loaded in the bot
