@@ -45,7 +45,6 @@ export default class Logger extends PlaceHolders {
    */
   constructor(public bot: ChairWoom) {
     super();
-    super.logger = this;
     if (!this.filename) {
       this.filename = moment().format("HH-mm-ss") + "-ChairWoom";
     }
@@ -114,19 +113,11 @@ export default class Logger extends PlaceHolders {
     const time = moment().format("HH:mm:ss");
     this.file(message, type);
     if(this.lastCons) {
-      if(!this.isShuttingDown) {
         this.lastCons.abort();
         process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
-      }
     }
-    /*if (type == "INPUT")
+    if(this.isShuttingDown)
       process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
-    if (typeof this.lastCons != "undefined") {
-        this.lastCons.abort();
-        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
-      } else {
-        process.stdout.moveCursor(0, 1);
-      }*/
     return time;
   }
   /**
@@ -253,7 +244,8 @@ export default class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   debug(message: string, placeholders?: PlaceHolder) {
-    this.printer(message, placeholders, "DEBUG", "brightBlue");
+    if(this.bot.config.core.debug)
+      this.printer(message, placeholders, "DEBUG", "brightBlue");
   }
   /**
    * Reload the prompt

@@ -1,6 +1,7 @@
 import { ChairPlugin, ChairPlugins } from "../interfaces";
 import ChairWoom from "./ChairWoom";
 import { readdir, mkdir, Dirent, accessSync, constants } from "fs";
+import { type } from "os";
 
 export default class PluginManager {
   /**
@@ -69,6 +70,7 @@ export default class PluginManager {
       // Effectively loads the plugin in the bot
       this.loadPlugin(dirent.name);
     }
+    this.bot.emit("core.plugins.finish");
   }
 
   /**
@@ -77,10 +79,15 @@ export default class PluginManager {
    * @param options Options to use while loading the plugin
    */
   public loadPlugin(name: string, _options?: any) {
+    this.plugins[name] = {name, version: ""};
     let plugin = require(`../plugins/${name}/index.js`);
-    this.plugins[name] = {name, version: "ALPHA"};
     if(plugin.main)
-      new plugin.main(this.bot);
+      this.plugins[name] = new plugin.main(this.bot);
+    if(plugin.commands) {
+      this.bot.console.registerCommand(plugin.commands);
+    }
+    Object.assign(this.plugins[name], plugin);
+    
   }
 
   /**
@@ -170,8 +177,27 @@ export default class PluginManager {
    * @param name The plugin name
    * @param options Options to use while unloading the plugin
    */
-  public unloadPlugin(name: string, _options?: any) {
-    // Working on it
+  public unloadPlugin(name: string, options?: any) {
+    if(!this.preUnloadCheck(name, options)) {
+      this.bot.console.grave("Cannot unload {name}!", { name });
+      return;
+    }
+    if(typeof this.plugins[name].unload == "function")
+      try {
+        this.plugins[name].unload();
+      } catch (e) {
+        this.bot.console.error("Error while unloading {name}!\n{e}", { name, e });
+        return;
+      }
+    if(typeof this.bot.eventManager.registeredPluginsEvents[name] == "object")
+      for(let event of this.bot.eventManager.registeredPluginsEvents[name]) {
+        this.bot.eventManager.removeEventListener(name, event);
+      }
+    if(typeof this.plugins[name].commands == "object")
+      for(let command of Object.keys(this.plugins[name].commands))
+        this.bot.console.unregisterCommand(command);
+    delete this.plugins[name];
+    this.bot.console.pu("Unloaded {name}", { name });
   }
   /**
    * Checks that there is no depended plugin from the one
@@ -180,8 +206,21 @@ export default class PluginManager {
    * @param name The plugin name
    * @param option Options to use instead of the default one
    */
-  private preUnloadCheck(name: string, _options?: any) {
-    // Working on it
+  private preUnloadCheck(name: string, options?: any): boolean {
+    if(typeof options == "object")
+      options = {};
+    if(options.force) {
+      return true;
+    }
+    for(let plugin of Object.keys(this.plugins)) {
+      let cond = typeof this.plugins.dependecies == "object" && this.plugins[plugin].dependecies.includes(name);
+      if( cond && !options.unloadDependecies)
+        return false;
+      else if(cond){
+        this.unloadPlugin(name);
+      }
+    }
+    return true;
   }
 
   /**

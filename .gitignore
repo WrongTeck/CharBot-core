@@ -20,3 +20,4 @@ start
 interfaces.js
 old/
 tsconfig.tsbuildinfo
+test.sh

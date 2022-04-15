@@ -12,6 +12,7 @@ const version = "0.1.4 - ALPHA";
  * The main class of ChairWoom were all begins
  */
 export class ChairWoom extends EventEmitter2 {
+  private heartbeat: any;
   /**
    * The console to execute commands and print messages
    */
@@ -27,7 +28,7 @@ export class ChairWoom extends EventEmitter2 {
   /**
    * The PluginManager with its plugins
    */
-  plugins: PluginManager;
+  pm: PluginManager;
   /**
    * The repo manager, to update, download and upgrade
    * modules, plugins and the core
@@ -49,6 +50,12 @@ export class ChairWoom extends EventEmitter2 {
    * Starts the bot
    */
   start(): ChairWoom {
+    let cycle = 0;
+    this.heartbeat = setInterval(() => {
+      this.emit("core.heartbeat", cycle);
+      this.console.debug("heartbeat {time} {cycle}", { time: new Date().toLocaleString(), cycle });
+      cycle++;
+    }, 1000);
     this.emit("core.start");
     this.console = new ChairConsole(this);
     this.eventManager = new EventManager(this);
@@ -58,7 +65,7 @@ export class ChairWoom extends EventEmitter2 {
       this.lang.setLang(this.config.core.lang).then(() => {
         this.console.log(this.lang.files.core.bot_banner_start, {version});
         this.console.pl(this.lang.files.core.plugins.load_start);
-        this.plugins = new PluginManager(this);
+        this.pm = new PluginManager(this);
       }).catch((err) => {
         this.console.fatal(err);
       })
@@ -71,17 +78,17 @@ export class ChairWoom extends EventEmitter2 {
       this.repo = new RepoManager(this);
       this.console.log(this.lang.files.core.done);
     });
-
     return this;
   }
   /**
    * Stops the bot
    */
   stop() {
+    clearInterval(this.heartbeat);
     this.console.log(this.lang.files.core.commands.shutdown_message);
     this.emit("core.shutdown");
-    for(let ChairPlugin in this.plugins.plugins) {
-      this.plugins.unloadPlugin(ChairPlugin, false);
+    for(let ChairPlugin in this.pm.plugins) {
+      this.pm.unloadPlugin(ChairPlugin, { unloadDependecies: true });
     }
     this.console.lastCons.abort();
     process.stdout.clearLine(0);

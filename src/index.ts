@@ -6,8 +6,11 @@ import PluginLoader from "./classes/PluginManager";
 import { BasicCommands } from "./classes/Commands";
 import { Command, Commands } from "./interfaces";
 
-new ChairWoom().start();
+let bot = new ChairWoom().start();
 
+process.on('SIGINT', () => {
+  bot.console.log("UAGLIONME")
+});
 export {
   ChairWoom,
   ChairConsole,

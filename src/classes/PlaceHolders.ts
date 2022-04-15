@@ -5,10 +5,6 @@ import { PlaceHolder } from '../interfaces';
 //The error messages are english only to prevent empty error messages
 export class PlaceHolders {
   /**
-   * The logger instance
-   */
-  logger: Logger;
-  /**
    * Initialize a new PlaceHolder parser instance
    * @returns The PlaceHolder parser
    */
@@ -23,12 +19,12 @@ export class PlaceHolders {
    */
   parse(data: string, placeHolders: PlaceHolder) {
     if(typeof data !== "string" || !data) {
-      this.logger.grave("No data or invalid data incoming in the PlaceHolder Parser!");
+      //throw new Error("No data or invalid data incoming in the PlaceHolder Parser!");
       return data;
     }
     if(!placeHolders) return data.toString();
     if(typeof placeHolders !== "object") {
-      this.logger.grave("Invalid PlaceHolder Object!");
+      //console.error("Invalid PlaceHolder Object!");
       return data;
     }
     let keys: Array<string> = Object.keys(placeHolders);
@@ -37,7 +33,7 @@ export class PlaceHolders {
       try {
         data = data.replace(`{${keys[key]}}`, values[key]);
       } catch (e) {
-        this.logger.error(e);
+        console.error(e);
       }
     }
     return data.toString();
