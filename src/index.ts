@@ -7,10 +7,6 @@ import { BasicCommands } from "./classes/Commands";
 import { Command, Commands } from "./interfaces";
 
 let bot = new ChairWoom().start();
-
-process.on('SIGINT', () => {
-  bot.console.log("UAGLIONME")
-});
 export {
   ChairWoom,
   ChairConsole,

@@ -1,5 +1,5 @@
 import Logger from "./Logger";
-import { terminal } from "terminal-kit";
+import { Terminal, terminal } from "terminal-kit";
 import ChairWoom from "./ChairWoom";
 const term = terminal;
 import { Commands } from "../interfaces";
@@ -12,7 +12,7 @@ export class ChairConsole extends Logger {
   /**
    * The terminal manger (terminal-kit)
    */
-  term: any;
+  term: Terminal;
   /**
    * The commands that are loaded in the bot
    */
@@ -33,29 +33,28 @@ export class ChairConsole extends Logger {
     this.history = [];
     this.lastCommand = "";
     this.term = term;
-    term.grabInput(true);
     term.fullscreen(true);
-    term.on("key", this.key);
-  }
-  /**
-   * Handle a key/combination of keys
-   * @param name The key name
-   */
-  private key(name: string) {
-    if (name == "CTRL_C") {
-      //this.log(this.bot.lang.files.core.commands.shutdown_message);
-      this.bot.emit("core.1shutdown");
-      for(let ChairPlugin in this.bot.pm.plugins) {
-        this.bot.pm.unloadPlugin(ChairPlugin, { unloadDependecies: true });
+    this.term.grabInput({
+      mouse: "button",
+      safe: false
+    });
+    this.term.on("key", (name: string) => {
+      switch(name) {
+        case "BACKSPACE":
+          this.buffer = this.buffer.substring(0, this.buffer.length-1);
+          break;
+        case "CTRL_C":
+          this.bot.stop();
+          break;
+        case "Enter":
+          this.buffer = "";
+          break;
+        default:
+          if(name.match("^[a-zA-Z0-9]$"))
+            this.buffer = this.buffer.concat(name);
+          break;
       }
-      this.lastCons.abort();
-      process.stdout.clearLine(0);
-      process.stdout.clearLine(1);
-      setTimeout(() => {
-        this.term.clear();
-        process.exit(0);
-      }, 1500);
-    }
+    });
   }
   /**
    * Handles commands inside ChairWoom
@@ -96,18 +95,8 @@ export class ChairConsole extends Logger {
    * Create an input field for the ChairWoom console
    */
   enter() {
-    term.inputField(
-      {
-        echo: true,
-        autoCompleteHint: true,
-        autoComplete: Object.keys(this.commands),
-        history: this.history,
-      },
-      (err, arg) => {
-        if (err) return this.error(err);
-        this.executor(arg);
-      }
-    );
+    process.stdout.moveCursor(-process.stdout.getWindowSize()[0], -2);
+    this.rearm();
   }
   /**
    * Unregister a command from the Console

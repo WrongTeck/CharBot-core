@@ -7,6 +7,10 @@ import { ChairWoom } from "..";
 
 export default class Logger extends PlaceHolders {
   /**
+   * Keys pressed but nto followed by an enter
+   */
+  buffer: string = "";
+  /**
    * The filename of the log
    */
   private filename: string;
@@ -89,6 +93,7 @@ export default class Logger extends PlaceHolders {
     process.stdout.write("\n> ");
     this.lastCons = terminal.inputField(
       {
+        default: this.buffer,
         echo: true,
         autoCompleteHint: true,
         autoComplete: Object.keys(this.commands),

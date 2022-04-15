@@ -1,7 +1,6 @@
 import { ChairPlugin, ChairPlugins } from "../interfaces";
 import ChairWoom from "./ChairWoom";
 import { readdir, mkdir, Dirent, accessSync, constants } from "fs";
-import { type } from "os";
 
 export default class PluginManager {
   /**
