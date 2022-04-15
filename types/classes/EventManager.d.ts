@@ -1,18 +1,14 @@
 import { ChairWoom } from "..";
-interface RegisteredEventsOP {
-    [pluginName: string]: {
-        [eventName: string]: number;
-    };
-}
-interface ListenerNumberOP {
-    [eventName: string]: number;
+interface PluginsEvents {
+    [plugin: string]: string[];
 }
 export default class EventManager {
     private bot;
-    inUse: boolean;
-    notInitialized: boolean;
-    registeredListeners: RegisteredEventsOP;
-    listenersNumber: ListenerNumberOP;
+    private inUse;
+    private notInitialized;
+    private registeredListeners;
+    private listenersNumber;
+    registeredPluginsEvents: PluginsEvents;
     constructor(bot: ChairWoom);
     addEventListener(name: string, eventName: string): Promise<void>;
     removeEventListener(name: string, eventName: string): void;

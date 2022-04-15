@@ -1,7 +1,8 @@
+import { Configs } from "../interfaces";
 import ChairWoom from "./ChairWoom";
 export declare class ConfigManager {
     private bot;
-    config: Object;
+    config: Configs;
     constructor(bot: ChairWoom, callback: Function);
     loadConfig(): Promise<unknown>;
     reloadConfig(): void;

@@ -13,6 +13,7 @@ interface ListenerNumberOP {
 interface PluginsEvents {
   [plugin: string]: string[]
 }
+
 export default class EventManager {
   /**
    * If the eventManager is processing some register

@@ -128,7 +128,7 @@ export default class PluginManager {
     }
     // Checks that the plugin name is a Directory (Single files are no longer supported)
     if (!dirent.isDirectory()) {
-      this.bot.console.error("The {name} is not a directory!", {
+      this.bot.console.error(this.bot.lang.files.core.plugins.not_dir, {
         name: dirent.name,
       });
       return false;
@@ -139,7 +139,7 @@ export default class PluginManager {
     } catch (e) {
       // Throws an error if the check fail
       this.bot.console.error(
-        "Cannot access the entrypoint of {name}\nDoes it exists?",
+        this.bot.lang.files.core.plugins.access_fail,
         { name: dirent.name }
       );
       return false;
@@ -152,7 +152,7 @@ export default class PluginManager {
       !preload.version ||
       !(preload.main || preload.commands)
     ) {
-      this.bot.console.error("The plugin {name} has not valid entries!", {
+      this.bot.console.error(this.bot.lang.files.core.plugins.invalid_exports, {
         name: dirent.name,
       });
       return false;
@@ -162,7 +162,7 @@ export default class PluginManager {
       let dependecies: boolean = this.loadDependecies(preload);
       if (!dependecies) {
         this.bot.console.error(
-          "Could not load all dependecies for the plugin {name}",
+          this.bot.lang.files.core.plugins.unmet_dependency,
           { name: dirent.name }
         );
         return false;
@@ -185,7 +185,7 @@ export default class PluginManager {
       try {
         this.plugins[name].unload();
       } catch (e) {
-        this.bot.console.error("Error while unloading {name}!\n{e}", { name, e });
+        this.bot.console.error(this.bot.lang.files.core.plugins.error_unload, { name, e });
         return;
       }
     if(typeof this.bot.eventManager.registeredPluginsEvents[name] == "object")
@@ -196,7 +196,7 @@ export default class PluginManager {
       for(let command of Object.keys(this.plugins[name].commands))
         this.bot.console.unregisterCommand(command);
     delete this.plugins[name];
-    this.bot.console.pu("Unloaded {name}", { name });
+    this.bot.console.pu(this.bot.lang.files.core.plugins.unload, { name });
   }
   /**
    * Checks that there is no depended plugin from the one
@@ -241,7 +241,7 @@ export default class PluginManager {
         this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
         let result: boolean | string[] = this.preLoadCheck(dirent);
         if (!result) {
-          this.bot.console.error("Could not load the plugin {name}", {
+          this.bot.console.error(this.bot.lang.files.core.plugins.cannot_load, {
             name: dependency,
           });
           return false;

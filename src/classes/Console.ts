@@ -46,7 +46,7 @@ export class ChairConsole extends Logger {
         case "CTRL_C":
           this.bot.stop();
           break;
-        case "Enter":
+        case "ENTER":
           this.buffer = "";
           break;
         default:

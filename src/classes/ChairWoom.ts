@@ -84,9 +84,9 @@ export class ChairWoom extends EventEmitter2 {
    * Stops the bot
    */
   stop() {
+    this.emit("core.shutdown");
     clearInterval(this.heartbeat);
     this.console.log(this.lang.files.core.commands.shutdown_message);
-    this.emit("core.shutdown");
     for(let ChairPlugin in this.pm.plugins) {
       this.pm.unloadPlugin(ChairPlugin, { unloadDependecies: true });
     }

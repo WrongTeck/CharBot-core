@@ -3,6 +3,7 @@ import { Commands, PlaceHolder } from "../interfaces";
 import { ChairWoom } from "..";
 export default class Logger extends PlaceHolders {
     bot: ChairWoom;
+    buffer: string;
     private filename;
     commands: Commands;
     executor: Function;

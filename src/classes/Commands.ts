@@ -25,7 +25,7 @@ export let BasicCommands = {
       if (err) return c.error(c.bot.lang.files.core.commands.clear_logs_error);
       files.forEach((value) => {
         rm("./logs/"+value, { force: true }, (err1) => {
-          if (err1) return c.error("Cannot remove logs!");
+          if (err1) return c.error(c.bot.lang.files.core.commands.clear_logs_fail);
         });
       });
     });

@@ -1,13 +1,14 @@
 import Logger from "./Logger";
+import { Terminal } from "terminal-kit";
 import ChairWoom from "./ChairWoom";
 import { Commands } from "../interfaces";
 export declare class ChairConsole extends Logger {
     bot: ChairWoom;
     lastCommand: string;
-    term: any;
+    term: Terminal;
     commands: Commands;
+    stops: number;
     constructor(bot: ChairWoom);
-    private key;
     command(last: string): void;
     enter(): void;
     unregisterCommand(name?: string): void;

@@ -6,10 +6,11 @@ import RepoManager from "./RepoManager";
 import EventManager from "./EventManager";
 import LangManager from "./LangManager";
 export declare class ChairWoom extends EventEmitter2 {
+    private heartbeat;
     console: ChairConsole;
     lang: LangManager;
     config: Configs;
-    plugins: PluginManager;
+    pm: PluginManager;
     repo: RepoManager;
     eventManager: EventManager;
     constructor();

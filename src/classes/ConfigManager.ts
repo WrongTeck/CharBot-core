@@ -8,7 +8,7 @@ export class ConfigManager {
   /**
    * The config files
    */
-  config: Object;
+  config: Configs;
   /**
    * Initialize a new instance of the ConfigManager
    * @param bot The ChairWoom instance that called it

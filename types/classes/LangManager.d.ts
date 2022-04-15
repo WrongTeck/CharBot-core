@@ -1,6 +1,6 @@
 import { Lang } from "../interfaces";
 import { ChairWoom } from "..";
-export declare type TypeFrom = "module" | "plugin" | "core" | string;
+export declare type TypeFrom = "plugin" | "core" | string;
 export default class LangManager {
     private bot;
     files: Lang;

@@ -2,7 +2,7 @@ import { Lang } from "../interfaces";
 import { access, readFile } from "fs";
 import { ChairWoom } from "..";
 
-export type TypeFrom = "module" | "plugin" | "core" | string;
+export type TypeFrom = "plugin" | "core" | string;
 
 export default class LangManager {
   /**
@@ -22,7 +22,7 @@ export default class LangManager {
    * from the core
    * If the file for that lang will not be found,
    * it will fallback to English
-   * @param from The name of the plugin/module
+   * @param from The name of the plugin
    * @param type The type
    */
   loadLang(type: TypeFrom, from: string): Promise<Lang> {
@@ -33,7 +33,7 @@ export default class LangManager {
           `./${type}/${from}/lang/${this.codeName}.json`,
           { encoding: "utf-8" },
           (errRead, data) => {
-            if (err) {
+            if (errRead) {
               this.bot.console.error(
                 `Cannot load ${from} lang files!`
               );
@@ -55,7 +55,7 @@ export default class LangManager {
 
   /**
    * Unload a specific lang file from the bot
-   * @param from The name of the plugin/module
+   * @param from The name of the  /module
    * @param type The type
    */
   unloadLang(from: string) {
