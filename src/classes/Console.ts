@@ -33,7 +33,7 @@ export class ChairConsole extends Logger {
     this.history = [];
     this.lastCommand = "";
     this.term = term;
-    term.fullscreen(true);
+    //term.fullscreen(true);
     this.term.grabInput({
       mouse: "button",
       safe: false

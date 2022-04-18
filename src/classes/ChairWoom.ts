@@ -86,6 +86,7 @@ export class ChairWoom extends EventEmitter2 {
   stop() {
     this.emit("core.shutdown");
     clearInterval(this.heartbeat);
+    process.stdout.moveCursor(0, -2);
     this.console.log(this.lang.files.core.commands.shutdown_message);
     for(let ChairPlugin in this.pm.plugins) {
       this.pm.unloadPlugin(ChairPlugin, { unloadDependecies: true });
@@ -94,7 +95,8 @@ export class ChairWoom extends EventEmitter2 {
     process.stdout.clearLine(0);
     process.stdout.clearLine(1);
     setTimeout(() => {
-      this.console.term.clear();
+      console.log("\n");
+      process.stdout.moveCursor(0, -1);
       process.exit(0);
     }, 1500);
   }
