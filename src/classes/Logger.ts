@@ -1,9 +1,20 @@
 import { terminal } from "terminal-kit";
-import moment from "moment";
 import { appendFile, mkdir } from "fs";
 import PlaceHolders from "./PlaceHolders";
 import { Commands, PlaceHolder } from "../interfaces";
 import { ChairWoom } from "..";
+
+function formatTime(): string {
+  let date = new Date();
+  var hours: any = date.getHours(), minutes: any = date.getMinutes(), seconds: any = date.getSeconds();
+  if(hours < 10)
+    hours = `0${hours}`;
+  if(minutes < 10)
+    minutes = `0${minutes}`;
+  if(seconds < 10)
+    seconds = `0${seconds}`;
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 export default class Logger extends PlaceHolders {
   /**
@@ -50,7 +61,7 @@ export default class Logger extends PlaceHolders {
   constructor(public bot: ChairWoom) {
     super();
     if (!this.filename) {
-      this.filename = moment().format("HH-mm-ss") + "-ChairWoom";
+      this.filename = formatTime() + "-ChairWoom";
     }
     this.history = [];
     this.bot.on("core.shutdown", () => {
@@ -76,7 +87,7 @@ export default class Logger extends PlaceHolders {
     if (type == "INPUT") {
       data = `> ${message}\n`;
     } else {
-      data = `[${moment().format("HH-mm-ss")}] [${type}] ${message}\n`;
+      data = `[${formatTime()} ${type}] ${message}\n`;
     }
     appendFile(`./logs/${this.filename}.log`, data, (err) => {
       if (err) {
@@ -115,8 +126,10 @@ export default class Logger extends PlaceHolders {
    * @returns The time to use in the terminal
    */
   private prelog(type: string, message: string): string {
-    const time = moment().format("HH:mm:ss");
+    const time = formatTime();
     this.file(message, type);
+    console.log("\n");
+    process.stdout.moveCursor(0, -2);
     if(this.lastCons) {
         this.lastCons.abort();
         process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
@@ -146,7 +159,7 @@ export default class Logger extends PlaceHolders {
       for (let string of message.split("\n")) {
         let parsedMessage = super.parse(string, placeholders);
         let time = this.prelog(type, parsedMessage);
-        terminal[color](`[${time}] [${type}] ${parsedMessage}`);
+        terminal[color](`[${time} ${type}] ${parsedMessage}`);
         this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage);
         if(multiline)
           process.stdout.moveCursor(0, 1);

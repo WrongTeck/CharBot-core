@@ -44,7 +44,13 @@ export class ChairConsole extends Logger {
           this.buffer = this.buffer.substring(0, this.buffer.length-1);
           break;
         case "CTRL_C":
-          this.bot.stop();
+          console.log("\n");
+          try {
+            this.bot.stop();
+          } catch(e) {
+            this.fatal("Something is broken!");
+            process.exit(1);
+          }
           break;
         case "ENTER":
           this.buffer = "";

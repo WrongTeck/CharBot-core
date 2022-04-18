@@ -25,7 +25,6 @@
   "dependencies": {
     "axios": "^0.26.0",
     "eventemitter2": "^6.4.5",
-    "moment": "^2.29.1",
     "terminal-kit": "^2.1.8"
   },
   "devDependencies": {
