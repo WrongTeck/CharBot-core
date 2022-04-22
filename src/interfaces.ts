@@ -1,4 +1,4 @@
-import { ChairConsole } from ".";
+import { ChairConsole } from "./classes/console/Console";
 
 export interface Configs {
   [confName: string]: Configs & string,

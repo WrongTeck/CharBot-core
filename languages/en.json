@@ -28,9 +28,10 @@
   },
   "repo": {
     "error": "Cannot fetch {name} from the remote server\nError: {e}",
-    "error_write": "Cannot write {name} to the chache folder!",
+    "error_write": "Cannot write {name} to the cache folder!",
     "upgrade": {
-      "invalid_type": "Invlid type of packages {type}"
+      "invalid_type": "Invlid type of packages {type}",
+      "all_name_ignored": "When upgrading all, the name is ignored"
     }
   }
 }

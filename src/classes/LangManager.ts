@@ -1,6 +1,6 @@
 import { Lang } from "../interfaces";
 import { access, readFile } from "fs";
-import { ChairWoom } from "..";
+import { ChairWoom } from "./ChairWoom";
 
 export type TypeFrom = "plugin" | "core" | string;
 

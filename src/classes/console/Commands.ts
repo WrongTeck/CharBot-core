@@ -123,7 +123,7 @@ export let BasicCommands = {
     }
     switch(args[1]) {
       case "upgrade":
-        console.bot.repo.upgrade(args[2], args[3], args[4]);
+        console.bot.repo.upgrade(args[2], args[3]);
         break;
       default:
         console.log("Invalid subcommand!");

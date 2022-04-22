@@ -1,8 +1,8 @@
 import { terminal } from "terminal-kit";
 import { appendFile, mkdir } from "fs";
 import PlaceHolders from "./PlaceHolders";
-import { Commands, PlaceHolder } from "../interfaces";
-import { ChairWoom } from "..";
+import { Commands, PlaceHolder } from "../../interfaces";
+import { ChairWoom } from "../ChairWoom";
 
 function formatTime(): string {
   let date = new Date();

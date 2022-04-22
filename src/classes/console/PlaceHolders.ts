@@ -1,4 +1,4 @@
-import { PlaceHolder } from '../interfaces';
+import { PlaceHolder } from '../../interfaces';
 
 
 //The error messages are english only to prevent empty error messages

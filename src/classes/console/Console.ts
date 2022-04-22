@@ -1,8 +1,8 @@
 import Logger from "./Logger";
 import { Terminal, terminal } from "terminal-kit";
-import ChairWoom from "./ChairWoom";
+import ChairWoom from "../ChairWoom";
 const term = terminal;
-import { Commands } from "../interfaces";
+import { Commands } from "../../interfaces";
 
 export class ChairConsole extends Logger {
   /**
