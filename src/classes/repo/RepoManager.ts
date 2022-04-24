@@ -18,7 +18,12 @@ export default class RepoManager {
           console.log(e);
         });
     });
-
+    let interval = setInterval(() => {
+      this.pollPlugins();
+    }, 10000);
+    this.bot.on("core.shutdown", () => {
+      clearInterval(interval);
+    });
     return this;
   }
 
@@ -135,8 +140,8 @@ export default class RepoManager {
           this.bot.console.debug("Error while loading {name}", {name: value.name});
         }
       });
-      writeFile("./cache/installed.json", JSON.stringify(installed), (err) => {
-        if(err)
+      writeFile("./cache/installed.json", JSON.stringify(installed), (errWrite) => {
+        if(errWrite)
           return;
       }); 
     });

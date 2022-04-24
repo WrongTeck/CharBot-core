@@ -9,7 +9,7 @@ modules
 plugins
 .vscode
 target
-classes/*.js
+classes/*/**.js
 index.js
 languages
 config
