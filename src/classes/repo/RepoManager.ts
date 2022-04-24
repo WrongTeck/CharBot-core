@@ -3,6 +3,7 @@ import axios from "axios";
 import { stat, mkdir, writeFile, readFile, readdir } from "fs";
 import { HashUpdate } from "../../interfaces";
 import { createHash } from "crypto";
+import Upgrade from "./Upgrade";
 
 export default class RepoManager {
   /**
@@ -85,20 +86,26 @@ export default class RepoManager {
    * @param name Name of the package to update
    * @param version Specific version to upgrade/downgrade
    */
-  public upgrade(type: "plugins" | "core" | "all" | string, name?: string) {
+  public upgrade(type?: "plugins" | "core" | "all" | string, name?: string) {
     switch(type) {
       case "all":
           if(name)
             this.bot.console.log(this.bot.lang.files.core.repo.upgrade.all_name_ignored);
-          
+          new Upgrade(this.bot).upgradeAll();
         break;
 
       case "plugins":
-
+        if(name)
+          new Upgrade(this.bot).package(name, "plugin");
+        else
+          new Upgrade(this.bot).upgradeAll("plugin");
         break;
 
       case "core":
-
+        if (name)
+          new Upgrade(this.bot).package(name, "plugin");
+        else
+          new Upgrade(this.bot).upgradeAll("core");
         break;
       
       default:

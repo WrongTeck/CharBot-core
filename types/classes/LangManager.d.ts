@@ -1,5 +1,5 @@
 import { Lang } from "../interfaces";
-import { ChairWoom } from "..";
+import { ChairWoom } from "./ChairWoom";
 export declare type TypeFrom = "plugin" | "core" | string;
 export default class LangManager {
     private bot;

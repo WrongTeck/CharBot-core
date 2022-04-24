@@ -21,3 +21,4 @@ interfaces.js
 old/
 tsconfig.tsbuildinfo
 test.sh
+dump.txt

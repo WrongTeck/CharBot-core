@@ -1,4 +1,4 @@
-import { ChairWoom } from "..";
+import { ChairWoom } from "./ChairWoom";
 interface PluginsEvents {
     [plugin: string]: string[];
 }
