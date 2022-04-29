@@ -26,6 +26,10 @@ export class ChairWoom extends EventEmitter2 {
    */
   config: Configs;
   /**
+   * 
+   */
+  cm: ConfigManager;
+  /**
    * The PluginManager with its plugins
    */
   pm: PluginManager;
@@ -59,8 +63,8 @@ export class ChairWoom extends EventEmitter2 {
     this.emit("core.start");
     this.console = new ChairConsole(this);
     this.eventManager = new EventManager(this);
-    new ConfigManager(this, (config: Configs) => {
-      this.config = config;
+    this.cm = new ConfigManager(this, (configs) => {
+      this.config = configs;
       this.lang = new LangManager(this);
       this.lang.setLang(this.config.core.lang).then(() => {
         this.console.log(this.lang.files.core.bot_banner_start, {version});

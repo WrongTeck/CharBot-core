@@ -26,6 +26,7 @@ export interface ChairPlugin {
   modules?: Array<string>;
   main?: any;
   commands?: Commands;
+  dependecies?: string[];
   [property: string]: any;
 }
 

@@ -35,13 +35,13 @@ export let BasicCommands = {
    * Show all commands typed
    */
   history(c: ChairConsole) {
-    console.log(c.history.toString());
+    c.log(c.history.toString());
   },
   /**
    * Show what commands are registered in the bot
    */
   commands(c: ChairConsole) {
-    console.log(Object.keys(c.commands));
+    c.log(Object.keys(c.commands).toString());
   },
   /**
    * Print a quick help
@@ -63,11 +63,11 @@ export let BasicCommands = {
       ],
       {
         contentHasMarkup: true,
-        firstRowTextAttr: {bgColor: 'white', color: 'black'},
-        borderAttr: {color: 'yellow'},
+        firstRowTextAttr: { bgColor: 'white', color: 'black' },
+        borderAttr: { color: 'yellow' },
         borderChairs: "heavy",
         width: 40,
-        fit:true
+        fit: true
       });
       console.rearm();
     }, 100);
@@ -99,7 +99,9 @@ export let BasicCommands = {
         }
         c.log(c.bot.lang.files.core.reloadLang_finish);
         break;
-      case "modules":
+      case "config":
+        c.bot.cm.reloadConfig();
+        c.log("Reloaded Configs!");
         break;
       default:
         c.error("Unknown command {arg}", {arg: args[0]});
@@ -128,6 +130,9 @@ export let BasicCommands = {
       default:
         console.log("Invalid subcommand!");
     }
+  },
+  plugins(c: ChairConsole, args: string[]) {
+    c.log(Object.keys(c.bot.pm.plugins).toString())
   }
 }
 

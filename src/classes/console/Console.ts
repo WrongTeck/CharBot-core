@@ -1,5 +1,5 @@
 import Logger from "./Logger";
-import { Terminal, terminal } from "terminal-kit";
+import { terminal } from "terminal-kit";
 import ChairWoom from "../ChairWoom";
 const term = terminal;
 import { Commands } from "../../interfaces";
@@ -12,7 +12,7 @@ export class ChairConsole extends Logger {
   /**
    * The terminal manger (terminal-kit)
    */
-  term: Terminal;
+  term: any;
   /**
    * The commands that are loaded in the bot
    */

@@ -55,19 +55,20 @@ export default class PluginManager {
   private directoryParser(files: Dirent[]): void {
     // Makes the dirent globals
     this.toLoad = files;
-    for (let dirent of this.toLoad) {
+    while (this.toLoad.length) {
+      let dirent = this.toLoad[0];
       // Runs pre-load checks to control that everything is OK
       let result: boolean | string[] = this.preLoadCheck(dirent);
       if (!result) {
         this.bot.console.error("Could not load the plugin {name}", {
-          name: dirent.name,
+          name: (dirent) ? dirent.name : "",
         });
         continue;
       }
-      // Remove the element from the array
-      this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
       // Effectively loads the plugin in the bot
       this.loadPlugin(dirent.name);
+      // Remove the element from the array
+      this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
     }
     this.bot.emit("core.plugins.finish");
   }
@@ -99,6 +100,8 @@ export default class PluginManager {
     dirent: Dirent | string,
     _options?: any
   ): boolean | string[] {
+    if(typeof dirent == "undefined")
+      return false;
     if (typeof dirent == "string") {
       // Builds a dummy Dirent Object
       dirent = {
@@ -206,17 +209,17 @@ export default class PluginManager {
    * @param option Options to use instead of the default one
    */
   private preUnloadCheck(name: string, options?: any): boolean {
-    if(typeof options == "object")
+    if(typeof options != "object")
       options = {};
     if(options.force) {
       return true;
     }
     for(let plugin of Object.keys(this.plugins)) {
-      let cond = typeof this.plugins.dependecies == "object" && this.plugins[plugin].dependecies.includes(name);
+      let cond = typeof this.plugins[plugin].dependecies == "object" && this.plugins[plugin].dependecies.includes(name);
       if( cond && !options.unloadDependecies)
         return false;
-      else if(cond){
-        this.unloadPlugin(name);
+      else if(cond && options.unloadDependecies){
+        this.unloadPlugin(plugin);
       }
     }
     return true;
@@ -224,7 +227,7 @@ export default class PluginManager {
 
   /**
    * Load the dependecies of a plugin
-   * @param name Plugin name
+   * @param preloaded The preloaded plugin
    * @returns Which dependecies where loaded
    */
   private loadDependecies(preloaded: ChairPlugin): boolean {
@@ -237,8 +240,6 @@ export default class PluginManager {
       });
       // Check if it has found it in the plugins to load
       if (typeof dirent != "undefined") {
-        // Remove the plugin form the ones to be loaded
-        this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
         let result: boolean | string[] = this.preLoadCheck(dirent);
         if (!result) {
           this.bot.console.error(this.bot.lang.files.core.plugins.cannot_load, {
@@ -248,6 +249,8 @@ export default class PluginManager {
         }
         // Loads the plugin
         this.loadPlugin(dependency);
+        // Remove the plugin form the ones to be loaded
+        this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
         // Check if the plugin is already loaded
       } else if (Object.keys(this.plugins).includes(dependency)) {
         // IF already loaded skips to the next one

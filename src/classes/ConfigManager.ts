@@ -49,6 +49,7 @@ export class ConfigManager {
         config.unloadConfig = this.unloadConfig;
         config.loadConfig = this.loadConfig;
         this.bot.emit("core.config.finish");
+        this.bot.config = config;
         resolve(config);
       });
     });
