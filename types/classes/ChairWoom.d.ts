@@ -1,4 +1,5 @@
 import { EventEmitter2 } from "eventemitter2";
+import { ConfigManager } from "./ConfigManager";
 import ChairConsole from "./console/Console";
 import PluginManager from "./PluginManager";
 import { Configs } from "../interfaces";
@@ -10,6 +11,7 @@ export declare class ChairWoom extends EventEmitter2 {
     console: ChairConsole;
     lang: LangManager;
     config: Configs;
+    cm: ConfigManager;
     pm: PluginManager;
     repo: RepoManager;
     eventManager: EventManager;
