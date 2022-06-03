@@ -125,15 +125,16 @@ export class ChairConsole extends Logger {
    * Register an Command object in the ChairWoom console
    * @param commands Command object to register
    */
-  registerCommand(commands: Commands) {
+  registerCommand(commands?: Commands) {
     this.bot.emit("core.console.register", Object.keys(commands));
-    if (this.commands) {
-      this.commands = Object.assign(this.commands, commands);
-      super.commands = this.commands;
-    } else {
-      this.commands = commands;
-      super.commands = this.commands;
-    }
+    if(typeof commands == "object")
+      if (typeof this.commands == "object") {
+        this.commands = Object.assign(this.commands, commands);
+        super.commands = this.commands;
+      } else {
+        this.commands = commands;
+        super.commands = this.commands;
+      }
     const { BasicCommands } = require("./Commands");
     Object.assign(this.commands, BasicCommands);
   }

@@ -11,6 +11,6 @@ export declare class ChairConsole extends Logger {
     command(last: string): void;
     enter(): void;
     unregisterCommand(name?: string): void;
-    registerCommand(commands: Commands): void;
+    registerCommand(commands?: Commands): void;
 }
 export default ChairConsole;

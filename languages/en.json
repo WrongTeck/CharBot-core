@@ -10,7 +10,7 @@
     "reload_commands": "Reloading commands...",
     "reloadLang_start": "Reloading all langs...",
     "reloadLang_finish": "All lang files were reloaded!",
-    "reload_help": "Usage 'reload <arg>'\nValid args are:\n - commands\n - lang\n - module\n - plugin"
+    "reload_help": "Usage 'reload <arg>'\nValid args are:\n - commands\n - lang\n - config\n - plugin"
   },
   "plugins": {
     "read_dir_err": "Failed to read the Plugin Directory!",

@@ -53,13 +53,13 @@ export let BasicCommands = {
       process.stdout.moveCursor(-2, 0);
       console.term.table([
         ['COMMAND','DESCRIPTION'],
-        ['^YclearLogs','Deletes the Chairbot\' log files'],
-        ['^Yexit','Alias for "stop" command'],
-        ['^Yhelp','Shows this table about commands'],
-        ['^Yhistory',''],
-        ['^YreloadCommands',''],
-        ['^YreloadLang','Reloads the localization files'],
-        ['^Ystop','Stops the bot'],
+        ['^Y clearLogs','Deletes the Chairbot\' log files'],
+        ['^Y exit','Alias for "stop" command'],
+        ['^Y help','Shows this table about commands'],
+        ['^Y history',''],
+        ['^Y reloadCommands',''],
+        ['^Y reloadLang','Reloads the localization files'],
+        ['^Y stop','Stops the bot'],
       ],
       {
         contentHasMarkup: true,
@@ -84,13 +84,13 @@ export let BasicCommands = {
       case "commands":
         c.log(c.bot.lang.files.core.commands.reload_commands);
         c.unregisterCommand();
-        c.registerCommand(this);
+        c.registerCommand();
         break;
       case "lang":
         c.log(c.bot.lang.files.core.reloadLang_start);
         for(const name in c.bot.lang.files) {
           if(name == "core") {
-            c.bot.lang.setLang(this.bot.config.core.lang);
+            c.bot.lang.setLang(c.bot.cm.config.core.lang);
             continue;
           }
           let type: string = c.bot.lang.files[name].type;
@@ -104,7 +104,7 @@ export let BasicCommands = {
         c.log("Reloaded Configs!");
         break;
       default:
-        c.error("Unknown command {arg}", {arg: args[0]});
+        c.error("Unknown sub-command {arg}", {arg: args[1]});
     }
   },
   /**
@@ -131,8 +131,12 @@ export let BasicCommands = {
         console.log("Invalid subcommand!");
     }
   },
-  plugins(c: ChairConsole, args: string[]) {
+  plugins(c: ChairConsole) {
     c.log(Object.keys(c.bot.pm.plugins).toString())
+  },
+  configs(c: ChairConsole) {
+    console.dir(c.bot.cm.config.core);
+    c.rearm();
   }
 }
 

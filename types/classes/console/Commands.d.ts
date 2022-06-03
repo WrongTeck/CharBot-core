@@ -9,6 +9,7 @@ export declare let BasicCommands: {
     reload(c: ChairConsole, args: string[]): void;
     clear(console: ChairConsole): void;
     repo(console: ChairConsole, args: string[]): void;
-    plugins(c: ChairConsole, args: string[]): void;
+    plugins(c: ChairConsole): void;
+    configs(c: ChairConsole): void;
 };
 export default BasicCommands;

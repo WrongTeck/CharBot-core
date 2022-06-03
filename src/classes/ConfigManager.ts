@@ -28,11 +28,7 @@ export class ConfigManager {
    * @returns A promise with the config
    */
   loadConfig() {
-    let config = {
-      reloadConfig: null,
-      unloadConfig: null,
-      loadConfig: null,
-    };
+    let config = {};
     return new Promise((resolve, reject) => {
       readdir("./config", { encoding: "utf-8" }, (err, files) => {
         if(err) {
@@ -45,11 +41,8 @@ export class ConfigManager {
             config[file.replace(".json", "")] = require(`../config/${file}`);
           }
         });
-        config.reloadConfig = this.reloadConfig;
-        config.unloadConfig = this.unloadConfig;
-        config.loadConfig = this.loadConfig;
         this.bot.emit("core.config.finish");
-        this.bot.config = config;
+        this.config = config;
         resolve(config);
       });
     });
@@ -69,7 +62,7 @@ export class ConfigManager {
    */
   unloadConfig(name: string) {
     this.bot.emit("core.config.unload", name);
-    delete this.bot.config[name];
+    delete this.config[name];
     this.bot.emit("core.config.unloaded", name);
   }
 }

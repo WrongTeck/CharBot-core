@@ -82,7 +82,7 @@ export default class Logger extends PlaceHolders {
    * @param type The logging level
    */
   private file(message: string, type: string) {
-    if (!this.bot.config.core.logging) return;
+    if (!this.bot.cm.config.core.logging) return;
     let data: string;
     if (type == "INPUT") {
       data = `> ${message}\n`;
@@ -233,7 +233,8 @@ export default class Logger extends PlaceHolders {
   }
   /**
    * Prints a message to the console with Plugin Unload level
-   * Should be used **ONLY** by the PluginManager
+   * 
+   * Should be used by the PluginManager
    * @param message The message to print
    * @param placeholders PlaceHolder data
    */
@@ -262,7 +263,7 @@ export default class Logger extends PlaceHolders {
    * @param placeholders PlaceHolder data
    */
   debug(message: string, placeholders?: PlaceHolder) {
-    if(this.bot.config.core.debug)
+    if(this.bot.cm.config.core.debug)
       this.printer(message, placeholders, "DEBUG", "brightBlue");
   }
   /**

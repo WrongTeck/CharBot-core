@@ -42,7 +42,7 @@ export default class RepoManager {
         hashes.core = "";
       hashes.core = data;
     });
-    axios.get(this.bot.config.core.repo.url + "/updates").then((value) => {
+    axios.get(this.bot.cm.config.core.repo.url + "/updates").then((value) => {
       let data: HashUpdate = JSON.parse(value.data);
       if(hashes.plugins != data.plugins)
         this.fetchPlugins();
@@ -71,7 +71,7 @@ export default class RepoManager {
    * @param name The path
    */
   private fetchUpdate(name: "core" | "plugins") {
-    axios.get(this.bot.config.core.repo.url + `/${name}`).then((res) => {
+    axios.get(this.bot.cm.config.core.repo.url + `/${name}`).then((res) => {
       writeFile(`./cache/${name}.json`, res.data, (err) => {
         if(err)
           this.bot.console.error(this.bot.lang.files.core.repo.error_write, { name });
@@ -131,7 +131,7 @@ export default class RepoManager {
         if(!value.isDirectory())
           return;
         try {
-          let load = require(`./plugins/${value.name}/index.js`);
+          let load = require(`../../../plugins/${value.name}/index.js`);
           installed.push({
             name: load.name,
             version: load.version
