@@ -1,6 +1,6 @@
 {
   "name": "chairwoom",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Types for ChairWoom",
   "types": "./types/index.d.ts",
   "scripts": {
