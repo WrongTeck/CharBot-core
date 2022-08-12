@@ -1,6 +1,5 @@
 src/
 languages/
-classes/
 .dockerignore
 .jshintrc.json
 build.sh

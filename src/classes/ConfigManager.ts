@@ -32,7 +32,7 @@ export class ConfigManager {
     return new Promise((resolve, reject) => {
       readdir("./config", { encoding: "utf-8" }, (err, files) => {
         if(err) {
-          this.bot.emit("core.config.err");
+          this.bot.emit("core.config.err", err);
           this.bot.console.error(err.message)
           return reject(err);
         }

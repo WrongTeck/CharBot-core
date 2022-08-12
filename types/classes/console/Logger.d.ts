@@ -18,7 +18,7 @@ export default class Logger extends PlaceHolders {
     private cons;
     private prelog;
     private printer;
-    log(message: string, placeholders?: PlaceHolder): void;
+    log(message: string, placeholders?: PlaceHolder, color?: string): void;
     warn(message: string, placeholders?: PlaceHolder): void;
     error(message: string, placeholders?: PlaceHolder): void;
     grave(message: string, placeholders?: PlaceHolder): void;

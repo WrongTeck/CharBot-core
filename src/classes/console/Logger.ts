@@ -3,10 +3,13 @@ import { appendFile, mkdir } from "fs";
 import PlaceHolders from "./PlaceHolders";
 import { Commands, PlaceHolder } from "../../interfaces";
 import { ChairWoom } from "../ChairWoom";
+import readline from "readline";
+
+
 
 function formatTime(): string {
   let date = new Date();
-  var hours: any = date.getHours(), minutes: any = date.getMinutes(), seconds: any = date.getSeconds();
+  let hours: any = date.getHours(), minutes: any = date.getMinutes(), seconds: any = date.getSeconds();
   if(hours < 10)
     hours = `0${hours}`;
   if(minutes < 10)
@@ -112,7 +115,7 @@ export default class Logger extends PlaceHolders {
       },
       (err, arg) => {
         if (err) return this.error(err);
-        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
+        readline.moveCursor(process.stdout, -process.stdout.getWindowSize()[0], 1);
         this.file(arg, "INPUT");
         this.executor(arg);
       }
@@ -129,13 +132,13 @@ export default class Logger extends PlaceHolders {
     const time = formatTime();
     this.file(message, type);
     console.log("\n");
-    process.stdout.moveCursor(0, -2);
+    readline.moveCursor(process.stdout, 0, -2);
     if(this.lastCons) {
         this.lastCons.abort();
-        process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 0);
+        readline.moveCursor(process.stdout, -process.stdout.getWindowSize()[0], 0);
     }
     if(this.isShuttingDown)
-      process.stdout.moveCursor(-process.stdout.getWindowSize()[0], 1);
+      readline.moveCursor(process.stdout, -process.stdout.getWindowSize()[0], 1);
     return time;
   }
   /**
@@ -162,10 +165,10 @@ export default class Logger extends PlaceHolders {
         terminal[color](`[${time} ${type}] ${parsedMessage}`);
         this.bot.emit(`core.logger.${type.toLowerCase()}`, parsedMessage);
         if(multiline)
-          process.stdout.moveCursor(0, 1);
+          readline.moveCursor(process.stdout, 0, 1);
       }
       if(multiline)
-        process.stdout.moveCursor(0, -1);
+        readline.moveCursor(process.stdout, 0, -1);
       clearInterval(interval);
       this.rearm();
       this.inUse = false;
@@ -177,8 +180,8 @@ export default class Logger extends PlaceHolders {
    * @param message The message to log
    * @param placeholders An object with PlaceHolder data
    */
-  log(message: string, placeholders?: PlaceHolder) {
-    this.printer(message, placeholders, "INFO", "white");
+  log(message: string, placeholders?: PlaceHolder, color?: string) {
+    this.printer(message, placeholders, "INFO", color || "white");
   }
   /**
    * Print a formatted message to console with WARN level

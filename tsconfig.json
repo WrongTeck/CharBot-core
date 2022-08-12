@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "allowJs": false,
     "declaration": false,
-    "outDir": "./",
+    "outDir": "./dist",
     "removeComments": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -56,19 +56,10 @@ export default class PluginManager {
     // Makes the dirent globals
     this.toLoad = files;
     while (this.toLoad.length) {
-      let dirent = this.toLoad[0];
-      // Runs pre-load checks to control that everything is OK
-      let result: boolean | string[] = this.preLoadCheck(dirent);
-      if (!result) {
-        this.bot.console.error("Could not load the plugin {name}", {
-          name: (dirent) ? dirent.name : "",
-        });
-        continue;
-      }
-      // Effectively loads the plugin in the bot
-      this.loadPlugin(dirent.name);
-      // Remove the element from the array
-      this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
+      // Tries to load the plugin
+      this.loadPlugin(this.toLoad[0]);
+      // Delete the plugin from the list
+      this.toLoad.splice(0, 1);
     }
     this.bot.emit("core.plugins.finish");
   }
@@ -77,17 +68,32 @@ export default class PluginManager {
    * Load a plugin in the manager
    * @param name The plugin directory name
    * @param options Options to use while loading the plugin
+   * @returns If the loading process was successful or not
    */
-  public loadPlugin(name: string, _options?: any) {
-    this.plugins[name] = {name, version: ""};
-    let plugin = require(`../plugins/${name}/index.js`);
-    if(plugin.main)
-      this.plugins[name] = new plugin.main(this.bot);
-    if(plugin.commands) {
-      this.bot.console.registerCommand(plugin.commands);
+  public loadPlugin(pluginDir: Dirent, _options?: any): boolean {
+    try {
+      let plugin = this.preLoadCheck(pluginDir, _options);
+      if(typeof plugin == "boolean")
+        throw new Error("Failed the preloading check!");
+      // Prepare a space in the loaded plugins
+      this.plugins[pluginDir.name] = { name: pluginDir.name, version: "" };
+      // Checks if a main class exists
+      if(plugin.main)
+        this.plugins[pluginDir.name] = new plugin.main(this.bot);
+      // Check if the plugin has commands to register
+      if(plugin.commands) {
+        this.bot.console.registerCommand(plugin.commands);
+      }
+      // Effectively assign the plugin to its "namespace"
+      Object.assign(this.plugins[pluginDir.name], plugin);
+    } catch (e) {
+      // Emit an error bot-wide
+      this.bot.emit("core.plugins.errorLoading", pluginDir.name, e);
+      // Delete the loaded parts of the plugin
+      delete this.plugins[pluginDir.name];
+      return false;
     }
-    Object.assign(this.plugins[name], plugin);
-    
+    return true;
   }
 
   /**
@@ -97,38 +103,11 @@ export default class PluginManager {
    * @param options Options to use
    */
   private preLoadCheck(
-    dirent: Dirent | string,
+    dirent: Dirent,
     _options?: any
-  ): boolean | string[] {
+  ): ChairPlugin | boolean {
     if(typeof dirent == "undefined")
       return false;
-    if (typeof dirent == "string") {
-      // Builds a dummy Dirent Object
-      dirent = {
-        name: dirent,
-        isDirectory: () => {
-          return true;
-        },
-        isFIFO() {
-          return false;
-        },
-        isBlockDevice() {
-          return false;
-        },
-        isFile() {
-          return !this.isDirectory();
-        },
-        isSocket() {
-          return false;
-        },
-        isCharacterDevice() {
-          return false;
-        },
-        isSymbolicLink() {
-          return false;
-        },
-      };
-    }
     // Checks that the plugin name is a Directory (Single files are no longer supported)
     if (!dirent.isDirectory()) {
       this.bot.console.error(this.bot.lang.files.core.plugins.not_dir, {
@@ -171,7 +150,7 @@ export default class PluginManager {
         return false;
       }
     }
-    return true;
+    return preload;
   }
 
   /**
@@ -240,17 +219,11 @@ export default class PluginManager {
       });
       // Check if it has found it in the plugins to load
       if (typeof dirent != "undefined") {
-        let result: boolean | string[] = this.preLoadCheck(dirent);
-        if (!result) {
-          this.bot.console.error(this.bot.lang.files.core.plugins.cannot_load, {
-            name: dependency,
-          });
-          return false;
-        }
-        // Loads the plugin
-        this.loadPlugin(dependency);
         // Remove the plugin form the ones to be loaded
         this.toLoad.splice(this.toLoad.indexOf(dirent), 1);
+        // Loads the plugin
+        if(!this.loadPlugin(dirent))
+          return false;
         // Check if the plugin is already loaded
       } else if (Object.keys(this.plugins).includes(dependency)) {
         // IF already loaded skips to the next one
